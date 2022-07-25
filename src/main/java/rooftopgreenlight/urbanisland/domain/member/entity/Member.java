@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
 
     @Column(unique = true, nullable = false, updatable = false)
     private String email;
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private String password;
     @Column(updatable = false, nullable = false, length = 10)
     private String name;
@@ -30,10 +30,11 @@ public class Member extends BaseEntity {
     private Authority authority;
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String password, String name, String phoneNumber) {
+    public Member(String email, String password, String name, String phoneNumber, Authority authority) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.authority = authority;
     }
 }
