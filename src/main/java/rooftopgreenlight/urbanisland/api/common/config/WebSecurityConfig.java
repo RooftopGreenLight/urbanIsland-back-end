@@ -37,7 +37,8 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
+        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**",
+                        "/swagger-resources/**", "/v3/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
