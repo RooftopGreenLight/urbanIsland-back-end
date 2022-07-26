@@ -27,16 +27,41 @@ public class ControllerAdvice {
         e.getFieldErrors().forEach(
                 error -> errorDto.getErrors().add(new ErrorDetailDto(error.getField(), error.getDefaultMessage()))
         );
-        return new ResponseDto(errorDto);
+        return ResponseDto.of(errorDto);
     }
 
+    /**
+     * 회원을 찾을 수 없을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDto notFoundMemberException(NotFoundMemberException e) {
-        return new ResponseDto(createError(e.getMessage()));
+        return ResponseDto.of(createError(e.getMessage()));
     }
 
+    /**
+     * 이미 존재하는 회원일 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto duplicatedMemberException(DuplicatedMemberException e) {
+        return ResponseDto.of(createError(e.getMessage()));
+    }
 
+    /**
+     * 이메일 전송 오류 발생했을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto mailSendException(MailSendException e) {
+        return ResponseDto.of(createError(e.getMessage()));
+    }
 
     private ErrorDto createError(String errorMessage) {
         ErrorDto errorDto = new ErrorDto();
