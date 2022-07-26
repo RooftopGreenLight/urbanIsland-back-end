@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class ResponseDto<T> {
     private T data;
 }
