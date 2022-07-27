@@ -94,7 +94,6 @@ public class AuthController {
                 .email(joinDto.getEmail())
                 .password(encoder.encode(joinDto.getPassword()))
                 .name(joinDto.getName())
-                .phoneNumber(joinDto.getPhoneNumber())
                 .authority(Authority.ROLE_USER)
                 .build();
     }
