@@ -63,6 +63,39 @@ public class ControllerAdvice {
         return ResponseDto.of(createError(e.getMessage()));
     }
 
+    /**
+     * refresh-token 갱신 시 유효한 access-token을 가진 요청이 들어왔을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto NotExpiredAccessTokenException(NotExpiredAccessTokenException e) {
+        return ResponseDto.of(createError(e.getMessage()));
+    }
+
+    /**
+     * refresh-token이 만료되었을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto ExpiredRefreshTokenException(ExpiredRefreshTokenException e) {
+        return ResponseDto.of(createError(e.getMessage()));
+    }
+
+    /**
+     * DB에 저장된 refresh-token과 일치하지 않을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto NotMatchedRefreshTokenException(NotMatchedRefreshTokenException e) {
+        return ResponseDto.of(createError(e.getMessage()));
+    }
+
     private ErrorDto createError(String errorMessage) {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setErrorMessage(errorMessage);
