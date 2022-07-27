@@ -33,7 +33,7 @@ public class JwtProvider {
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto createJwt(String id, String authorities) {
+    public TokenDto createJwt(String id, String authorities, String refreshToken) {
         Date expirationDate = new Date(System.currentTimeMillis() + Long.parseLong(jwtProperties.getExpirationTime()));
 
         String token = Jwts.builder()
@@ -44,11 +44,7 @@ public class JwtProvider {
                 .compact();
 
 
-        return TokenDto.createTokenDto()
-                .type(jwtProperties.getType())
-                .accessToken(token)
-                .refreshToken(createRefreshToken(id, authorities))
-                .build();
+        return TokenDto.of(jwtProperties.getType(), token, refreshToken == null ? createRefreshToken(id, authorities) : refreshToken);
     }
 
     private String createRefreshToken(String id, String authorities) {
