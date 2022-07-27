@@ -7,10 +7,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import rooftopgreenlight.urbanisland.api.common.exception.ExpiredRefreshTokenException;
 import rooftopgreenlight.urbanisland.api.common.exception.MailSendException;
+import rooftopgreenlight.urbanisland.api.common.exception.NotMatchedRefreshTokenException;
 import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
 import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
 import rooftopgreenlight.urbanisland.api.common.properties.MailProperties;
+import rooftopgreenlight.urbanisland.domain.member.entity.Member;
+import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
@@ -21,10 +26,12 @@ import java.util.stream.Collectors;
 public class AuthService {
 
     private final JwtProvider jwtProvider;
+    private final MemberService memberService;
     private final JavaMailSender javaMailSender;
     private final MailProperties mailProperties;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public TokenDto login(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
@@ -32,7 +39,24 @@ public class AuthService {
         String authorities = authenticate.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.joining(" "));
 
-        return jwtProvider.createJwt(authenticate.getName(), authorities);
+        String id = authenticate.getName();
+        TokenDto tokenDto = jwtProvider.createJwt(id, authorities, null);
+
+        String refreshToken = tokenDto.getRefreshToken();
+        memberService.findById(Long.valueOf(id)).changeRefreshToken(refreshToken);
+        return tokenDto;
+    }
+
+    public TokenDto checkRefreshToken(String refreshToken) {
+        Member findMember = memberService.findByRefreshToken(refreshToken);
+
+        if(!jwtProvider.isTokenValid(refreshToken)) {
+            throw new ExpiredRefreshTokenException("Refresh-token is not valid. Please Re-Login.");
+        }
+        if(!findMember.getRefreshToken().equals(refreshToken)) {
+            throw new NotMatchedRefreshTokenException("Refresh-token is not matched. Please Re-Login.");
+        }
+        return jwtProvider.createJwt(String.valueOf(findMember.getId()), findMember.getAuthority().toString(), refreshToken);
     }
 
     public String send(String email) {

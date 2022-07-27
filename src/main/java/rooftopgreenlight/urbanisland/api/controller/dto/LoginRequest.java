@@ -8,12 +8,10 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-public class RequestJoinDto {
-    @Email(message = "올바른 이메일 입력 형식이 아닙니다.")
+public class LoginRequest {
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
     @NotBlank(message = "올바른 이메일 입력 형식이 아닙니다.")
     private String email;
     @NotBlank(message = "올바른 비밀번호 입력 형식이 아닙니다.")
     private String password;
-    @NotBlank(message = "올바른 이름 입력 형식이 아닙니다.")
-    private String name;
 }
