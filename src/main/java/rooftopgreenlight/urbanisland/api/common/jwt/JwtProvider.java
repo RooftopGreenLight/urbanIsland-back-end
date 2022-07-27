@@ -1,9 +1,6 @@
 package rooftopgreenlight.urbanisland.api.common.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -81,4 +78,17 @@ public class JwtProvider {
 
         return new UsernamePasswordAuthenticationToken(principal, "", roleList);
     }
+
+    public boolean isTokenValid(String token) {
+        try {
+            JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+            return !jwtParser.parseClaimsJws(token).getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            if(e instanceof ExpiredJwtException) {
+                return false;
+            }
+        }
+        return false;
+    }
+
 }
