@@ -8,7 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import rooftopgreenlight.urbanisland.api.common.annotation.Jwt;
 import rooftopgreenlight.urbanisland.api.common.exception.DuplicatedMemberException;
+import rooftopgreenlight.urbanisland.api.common.exception.NotExpiredAccessTokenException;
+import rooftopgreenlight.urbanisland.api.common.exception.NotMatchedRefreshTokenException;
+import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
+import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
 import rooftopgreenlight.urbanisland.api.controller.dto.RequestJoinDto;
 import rooftopgreenlight.urbanisland.api.controller.dto.RequestLoginDto;
 import rooftopgreenlight.urbanisland.api.controller.dto.ResponseDto;
@@ -23,6 +28,7 @@ import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private final BCryptPasswordEncoder encoder;
 
@@ -87,6 +93,27 @@ public class AuthController {
     @ApiOperation(value = "이메일 인증 기능", notes = "정상 동작 시 이메일 전송 및 인증 성공")
     public ResponseDto verifyEmail(@RequestParam(value = "email") String email) {
         return ResponseDto.of(authService.send(email));
+    }
+
+    /**
+     * Access-token 갱신 기능
+     * @param refreshToken
+     * @return 새로운 access-token
+     */
+    @GetMapping("/check-refresh-token")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Access-Token 갱신 기능", notes = "정상 동작 시 Access-Token 갱신 성공")
+    public ResponseDto checkRefreshToken(@RequestHeader(value = "refresh-token") String refreshToken) {
+        Member findMember = memberService.findByRefreshToken(refreshToken);
+        if(!jwtProvider.isTokenValid(refreshToken)) {
+            throw new NotMatchedRefreshTokenException("Refresh-token is not valid. Please Re-Login.");
+        }
+        if(!findMember.getRefreshToken().equals(refreshToken)) {
+            throw new NotMatchedRefreshTokenException("Refresh-token is not matched. Check Your Refresh-token.");
+        }
+        TokenDto tokenDto = jwtProvider.createJwt(String.valueOf(findMember.getId()),
+                findMember.getAuthority().toString());
+        return ResponseDto.of(tokenDto);
     }
 
     private Member createMember(RequestJoinDto joinDto) {

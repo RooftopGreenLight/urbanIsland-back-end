@@ -25,12 +25,18 @@ public class Member extends BaseEntity {
     private String name;
     @Column
     private String phoneNumber;
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    public void changePassword(String password) {this.password = password;}
     public void changePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void changeRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Builder(builderMethodName = "createMember")
