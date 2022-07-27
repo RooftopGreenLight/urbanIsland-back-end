@@ -100,7 +100,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Access-Token 갱신 기능", notes = "정상 동작 시 Access-Token 갱신 성공")
     public APIResponse checkRefreshToken(@RequestHeader(value = "refresh-token") String refreshToken) {
-        return APIResponse.of(checkRefreshToken(refreshToken));
+        return APIResponse.of(authService.checkRefreshToken(refreshToken));
     }
 
     private Member createMember(JoinRequest joinDto) {
