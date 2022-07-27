@@ -2,12 +2,12 @@ package rooftopgreenlight.urbanisland.api.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import rooftopgreenlight.urbanisland.api.controller.dto.ResponseDto;
+import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
+import rooftopgreenlight.urbanisland.api.controller.dto.APIErrorResponse;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,14 +25,14 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
-        String refreshToken = request.getHeader("refresh-token");
 
-        if(refreshToken == null && authorization != null && authorization.startsWith("Bearer ")) {
+        if(authorization != null && authorization.startsWith("Bearer ")) {
             String token = authorization.replace("Bearer ", "");
             if(!jwtProvider.isTokenValid(token)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json");
-                response.getWriter().write("Please give Refresh-Token.");
+
+                response.getWriter().write(objectMapper.writeValueAsString(APIErrorResponse.of(false, ErrorCode.JWT_ACCESS_ERROR)));
                 return;
             }
             Authentication authentication = jwtProvider.getMemberInfo(token);
