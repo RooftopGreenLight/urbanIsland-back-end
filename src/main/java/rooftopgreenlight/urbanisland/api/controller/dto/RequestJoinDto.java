@@ -16,6 +16,4 @@ public class RequestJoinDto {
     private String password;
     @NotBlank(message = "올바른 이름 입력 형식이 아닙니다.")
     private String name;
-    @NotBlank(message = "올바른 전화번호 입력 형식이 아닙니다.")
-    private String phoneNumber;
 }

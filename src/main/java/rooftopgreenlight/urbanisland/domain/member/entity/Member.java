@@ -23,11 +23,15 @@ public class Member extends BaseEntity {
     private String password;
     @Column(updatable = false, nullable = false, length = 10)
     private String name;
-    @Column(nullable = false)
+    @Column
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    public void changePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     @Builder(builderMethodName = "createMember")
     public Member(String email, String password, String name, String phoneNumber, Authority authority) {
