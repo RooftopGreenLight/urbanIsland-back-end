@@ -23,14 +23,15 @@ public enum ErrorCode {
 
     INTERNAL_SEVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error"),
     SPRING_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value() + 51, HttpStatus.INTERNAL_SERVER_ERROR, "Spring-Detected Internal Error"),
-    DATA_ACCESS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value() + 52, HttpStatus.INTERNAL_SERVER_ERROR, "Data Access Error");
+    DATA_ACCESS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value() + 52, HttpStatus.INTERNAL_SERVER_ERROR, "Data Access Error"),
+    FILE_IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value() + 53, HttpStatus.INTERNAL_SERVER_ERROR, "File I/O Error");
 
     private final Integer code;
     private final HttpStatus httpStatus;
     private final String message;
 
     public String getMessage(Throwable e) {
-        return this.getMessage(this.getMessage() + "-" + e.getMessage());
+        return this.getMessage(this.getMessage() + " - " + e.getMessage());
     }
 
     public String getMessage(String message) {

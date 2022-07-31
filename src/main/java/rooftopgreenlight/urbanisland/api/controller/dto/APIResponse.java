@@ -20,7 +20,7 @@ public class APIResponse<T> extends APIErrorResponse {
         return new APIResponse(data);
     }
 
-    public static <T> APIResponse<T> empty(T data) {
+    public static <T> APIResponse<T> empty() {
         return new APIResponse(null);
     }
 }
