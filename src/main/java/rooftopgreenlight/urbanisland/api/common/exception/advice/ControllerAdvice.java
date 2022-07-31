@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import rooftopgreenlight.urbanisland.api.common.exception.DuplicatedMemberException;
-import rooftopgreenlight.urbanisland.api.common.exception.ExpiredRefreshTokenException;
-import rooftopgreenlight.urbanisland.api.common.exception.MailSendException;
-import rooftopgreenlight.urbanisland.api.common.exception.NotMatchedRefreshTokenException;
+import rooftopgreenlight.urbanisland.api.common.exception.*;
 import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIErrorResponse;
 import rooftopgreenlight.urbanisland.domain.exception.NotFoundMemberException;
+import rooftopgreenlight.urbanisland.domain.exception.NotFoundProfileException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +76,39 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse NotMatchedRefreshTokenException(NotMatchedRefreshTokenException e) {
         return APIErrorResponse.of(false, ErrorCode.JWT_REFRESH_ERROR, e);
+    }
+
+    /**
+     * 회원 Profile 저장 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public APIErrorResponse fileIOException(FileIOException e) {
+        return APIErrorResponse.of(false, ErrorCode.FILE_IO_ERROR, e);
+    }
+
+    /**
+     * 최상위 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundProfileException(NotFoundProfileException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
+     * 최상위 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public APIErrorResponse exception(Exception e) {
+        return APIErrorResponse.of(false, ErrorCode.INTERNAL_SEVER_ERROR, e);
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import rooftopgreenlight.urbanisland.domain.BaseEntity;
+import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 
 import javax.persistence.*;
 
@@ -29,6 +30,9 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    @OneToOne(mappedBy = "member")
+    private Profile profile;
 
     public void changePassword(String password) {this.password = password;}
     public void changePhoneNumber(String phoneNumber) {
