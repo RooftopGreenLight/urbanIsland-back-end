@@ -9,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rooftopgreenlight.urbanisland.api.common.exception.DuplicatedMemberException;
-import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.JoinRequest;
 import rooftopgreenlight.urbanisland.api.controller.dto.LoginRequest;
@@ -24,7 +23,6 @@ import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private final BCryptPasswordEncoder encoder;
 
