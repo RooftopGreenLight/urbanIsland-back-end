@@ -90,6 +90,17 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 채팅방을 찾을 수 없을 때
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse NotFoundChatRoomException(NotFoundChatRoomException e) {
+        return APIErrorResponse.of(false, ErrorCode.NOT_FOUND, e);
+    }
+
+    /**
      * 최상위 오류
      * @param e
      * @return 에러 정보 전달
