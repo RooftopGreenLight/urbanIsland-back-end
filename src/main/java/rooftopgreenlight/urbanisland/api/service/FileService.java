@@ -4,9 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,28 +12,21 @@ import rooftopgreenlight.urbanisland.api.common.exception.FileIOException;
 import rooftopgreenlight.urbanisland.api.common.properties.AwsS3Properties;
 import rooftopgreenlight.urbanisland.api.common.properties.ProfileDirProperties;
 import rooftopgreenlight.urbanisland.api.controller.dto.FileResponse;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundMemberException;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundProfileException;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
-import rooftopgreenlight.urbanisland.domain.file.entity.QProfile;
-import rooftopgreenlight.urbanisland.domain.file.repository.ProfileRepository;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
-import rooftopgreenlight.urbanisland.domain.member.repository.MemberRepository;
+import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import static rooftopgreenlight.urbanisland.domain.file.entity.QProfile.profile;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FileService {
 
-    private final ProfileRepository profileRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     private final AmazonS3Client amazonS3Client;
     private final AwsS3Properties awsS3Properties;
@@ -46,7 +37,7 @@ public class FileService {
      */
     @Transactional
     public FileResponse saveProfile(MultipartFile file, Long memberId) {
-        Member member = findMember(memberId);
+        Member findMember = memberService.findByIdWithProfile(memberId);
 
         String ext = getExt(file.getOriginalFilename());
         String storeFilename = createStoreFilename(ext);
@@ -57,14 +48,13 @@ public class FileService {
             file.transferTo(new File(fullStorePath));
             fileUrl = uploadS3(new File(fullStorePath), storeFilename);
 
-            Predicate predicate = profile.member.id.eq(member.getId());
-            Profile profile = profileRepository.findOne(predicate).orElse(null);
+            Profile profile = findMember.getProfile();
 
             if (profile != null) {
                 deleteFileS3(profile.getStoreFilename());
                 profile.changeProfile(file.getContentType(), file.getOriginalFilename(), storeFilename, fileUrl);
             } else {
-                saveProfileInfo(file.getOriginalFilename(), member, ext, storeFilename, fileUrl);
+                saveProfileInfo(file.getOriginalFilename(), findMember, ext, storeFilename, fileUrl);
             }
 
             deleteSavedProfile(fullStorePath);
@@ -72,17 +62,15 @@ public class FileService {
             throw new FileIOException("회원 프로필 저장 오류");
         }
 
-        return FileResponse.of(member.getId(), ext, fileUrl);
+        return FileResponse.of(ext, fileUrl);
     }
 
     @Transactional
     public void deleteProfile(Long memberId) {
-        Profile findProfile = profileRepository.findOne(QProfile.profile.member.id.eq(memberId)).orElseThrow(() -> {
-            throw new NotFoundProfileException("프로필을 찾을 수 없습니다.");
-        });
+        Member findMember = memberService.findByIdWithProfile(memberId);
 
-        profileRepository.delete(findProfile);
-        deleteFileS3(findProfile.getStoreFilename());
+        deleteFileS3(findMember.getProfile().getStoreFilename());
+        findMember.changeProfile(null);
     }
 
     /**
@@ -99,16 +87,6 @@ public class FileService {
 //        }
 //         return Base64.getEncoder().encodeToString(fileBytes);
 //    }
-
-    /**
-     * 회원 찾기
-     */
-    private Member findMember(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> {
-            throw new NotFoundMemberException("회원을 찾을 수 없습니다.");
-        });
-        return member;
-    }
 
     /**
      * 기존에 저장된 프로필이 존재하면 저장 후 삭제
@@ -130,8 +108,7 @@ public class FileService {
                 .type(ext)
                 .build();
 
-        saveProfile.updateMember(member);
-        profileRepository.save(saveProfile);
+        member.changeProfile(saveProfile);
     }
 
 

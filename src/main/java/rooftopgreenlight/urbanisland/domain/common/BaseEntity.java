@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.domain;
+package rooftopgreenlight.urbanisland.domain.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;

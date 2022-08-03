@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.domain.exception;
+package rooftopgreenlight.urbanisland.domain.common.exception;
 
 public class NotFoundMemberException extends RuntimeException{
 

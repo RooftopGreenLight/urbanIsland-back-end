@@ -1,23 +1,27 @@
 package rooftopgreenlight.urbanisland.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundMemberException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundMemberException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.repository.MemberRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * 회원 저장
      * @param member 저장할 회원
      * @return 저장된 회원
      */
+    @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
     }
@@ -54,5 +58,23 @@ public class MemberService {
     public Member changeRefreshToken(String refreshToken, Member findMember) {
         findMember.changeRefreshToken(refreshToken);
         return findMember;
+    }
+
+    public Member findByIdWithProfile(Long memberId) {
+        return memberRepository.findMemberByMemberIdWithProfile(memberId).orElseThrow(() -> {
+            throw new NotFoundMemberException("회원을 찾을 수 없습니다.");
+        });
+    }
+
+    @Transactional
+    public void changePassword(Long memberId, String password) {
+        Member findMember = findById(memberId);
+        findMember.changePassword(passwordEncoder.encode(password));
+    }
+
+    @Transactional
+    public void changePhoneNumber(Long memberId, String phoneNumber) {
+        Member findMember = findById(memberId);
+        findMember.changePhoneNumber(phoneNumber);
     }
 }

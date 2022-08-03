@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import rooftopgreenlight.urbanisland.domain.BaseEntity;
+import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 
 import javax.persistence.*;
@@ -31,10 +31,16 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    public void changePassword(String password) {this.password = password;}
+    public void changeProfile(Profile profile) {
+        this.profile = profile;
+    }
+    public void changePassword(String password) {
+        this.password = password;
+    }
     public void changePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
