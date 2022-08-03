@@ -3,7 +3,7 @@ package rooftopgreenlight.urbanisland.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundMemberException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundMemberException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.repository.MemberRepository;
 

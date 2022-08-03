@@ -2,7 +2,7 @@ package rooftopgreenlight.urbanisland.domain.file.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundProfileException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundProfileException;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 import rooftopgreenlight.urbanisland.domain.file.entity.QProfile;
 import rooftopgreenlight.urbanisland.domain.file.repository.ProfileRepository;

@@ -13,8 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import rooftopgreenlight.urbanisland.api.common.exception.*;
 import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIErrorResponse;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundMemberException;
-import rooftopgreenlight.urbanisland.domain.exception.NotFoundProfileException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundMemberException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundProfileException;
 
 import java.util.ArrayList;
 import java.util.List;
