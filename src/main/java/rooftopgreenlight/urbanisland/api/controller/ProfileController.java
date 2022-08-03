@@ -9,7 +9,7 @@ import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.FileResponse;
 import rooftopgreenlight.urbanisland.api.service.FileService;
-import rooftopgreenlight.urbanisland.domain.file.service.ProfileService;
+import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,11 +17,12 @@ import rooftopgreenlight.urbanisland.domain.file.service.ProfileService;
 public class ProfileController {
 
     private final FileService fileService;
-    private final ProfileService profileService;
+    private final MemberService memberService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Member Profile 저장", notes = "정상 저장 시 저장 Url 반환")
+    @ApiOperation(value = "Member Profile 저장",
+            notes = "요청 데이터(Parameter) -> key : file, valueType : MultipartFile")
     public APIResponse saveMemberProfile(@RequestParam("file") MultipartFile profile,
                                          @PK Long memberId) {
         return APIResponse.of(fileService.saveProfile(profile, memberId));
@@ -29,16 +30,16 @@ public class ProfileController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Member Profile 조회", notes = "정상 조회 시 저장 Url 반환")
+    @ApiOperation(value = "Member Profile 조회",
+            notes = "요청 데이터 -> 없음")
     public APIResponse getMemberProfile(@PK Long memberId) {
-        return APIResponse.of(
-                FileResponse.fromProfile(memberId, profileService.getProfileByMemberId(memberId))
-        );
+        return APIResponse.of(FileResponse.fromMember(memberService.findByIdWithProfile(memberId).getProfile()));
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Member Profile 삭제", notes = "삭제 성공 시 OK 반환")
+    @ApiOperation(value = "Member Profile 삭제",
+            notes = "요청 데이터 -> JWT")
     public APIResponse deleteMemberProfile(@PK Long memberId) {
         fileService.deleteProfile(memberId);
 

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
 import javax.persistence.*;
 
@@ -15,20 +14,13 @@ import javax.persistence.*;
 public class Profile {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "profile_id")
     private Long id;
 
     private String type;
     private String uploadFilename;
     private String storeFilename;
     private String fileUrl;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    public void updateMember(Member member) {
-        this.member = member;
-    }
 
     public void changeProfile(String type, String uploadFilename, String storeFilename, String fileUrl) {
         if (StringUtils.hasText(type)) this.type = type;
