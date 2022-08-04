@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.api.service;
+package rooftopgreenlight.urbanisland.domain.file.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.exception.FileIOException;
-import rooftopgreenlight.urbanisland.api.common.properties.AwsS3Properties;
-import rooftopgreenlight.urbanisland.api.common.properties.ProfileDirProperties;
+import rooftopgreenlight.urbanisland.domain.common.properties.AwsS3Properties;
+import rooftopgreenlight.urbanisland.domain.common.properties.FileDirProperties;
 import rooftopgreenlight.urbanisland.api.controller.dto.FileResponse;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
+import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
+import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImageType;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
@@ -30,29 +32,29 @@ public class FileService {
 
     private final AmazonS3Client amazonS3Client;
     private final AwsS3Properties awsS3Properties;
-    private final ProfileDirProperties profileDirProperties;
+    private final FileDirProperties fileDirProperties;
 
     /**
      * 프로필 저장 및 DB 저장
      */
     @Transactional
-    public FileResponse saveProfile(MultipartFile file, Long memberId) {
+    public Profile saveProfile(MultipartFile file, Long memberId) {
         Member findMember = memberService.findByIdWithProfile(memberId);
 
         String ext = getExt(file.getOriginalFilename());
         String storeFilename = createStoreFilename(ext);
         String fullStorePath = getFullStorePath(storeFilename);
         String fileUrl = "";
+        Profile profile = null;
 
         try {
             file.transferTo(new File(fullStorePath));
             fileUrl = uploadS3(new File(fullStorePath), storeFilename);
-
-            Profile profile = findMember.getProfile();
+            profile = findMember.getProfile();
 
             if (profile != null) {
                 deleteFileS3(profile.getStoreFilename());
-                profile.changeProfile(file.getContentType(), file.getOriginalFilename(), storeFilename, fileUrl);
+                profile.changeFile(file.getContentType(), file.getOriginalFilename(), storeFilename, fileUrl);
             } else {
                 saveProfileInfo(file.getOriginalFilename(), findMember, ext, storeFilename, fileUrl);
             }
@@ -62,7 +64,7 @@ public class FileService {
             throw new FileIOException("회원 프로필 저장 오류");
         }
 
-        return FileResponse.of(ext, fileUrl);
+        return profile;
     }
 
     @Transactional
@@ -71,6 +73,31 @@ public class FileService {
 
         deleteFileS3(findMember.getProfile().getStoreFilename());
         findMember.changeProfile(null);
+    }
+
+    /**
+     * 녹화 옥상 사진 저장 및 DB 저장
+     */
+    @Transactional
+    public RooftopImage createRooftopImage(MultipartFile file, RooftopImageType imageType) {
+        String ext = getExt(file.getOriginalFilename());
+        String storeFilename = createStoreFilename(ext);
+        String fullStorePath = getFullStorePath(storeFilename);
+        String fileUrl = "";
+
+        try {
+            file.transferTo(new File(fullStorePath));
+            fileUrl = uploadS3(new File(fullStorePath), storeFilename);
+            deleteSavedProfile(fullStorePath);
+        } catch (IOException e) {
+            throw new FileIOException("옥상 이미지 저장 오류");
+        }
+
+        return rooftopImage(file.getOriginalFilename(), ext, storeFilename, fileUrl, imageType);
+    }
+
+    public void deleteRooftopImage(String rooftopStoreImage) {
+        deleteFileS3(rooftopStoreImage);
     }
 
     /**
@@ -111,6 +138,19 @@ public class FileService {
         member.changeProfile(saveProfile);
     }
 
+    /**
+     * RooftopImage 생성
+     */
+    public RooftopImage rooftopImage(String originalFilename, String ext, String storeFilename, String fileUrl, RooftopImageType imageType) {
+        return RooftopImage.createRooftopImage()
+                .storeFilename(storeFilename)
+                .uploadFilename(originalFilename)
+                .fileUrl(fileUrl)
+                .type(ext)
+                .rooftopImageType(imageType)
+                .build();
+    }
+
 
     /**
      * 저장할 파일 이름 생성
@@ -130,7 +170,7 @@ public class FileService {
      * profile 저장 Dir 생성
      */
     private String createAndGetProfileDir() {
-        String path = Paths.get("").toAbsolutePath() + "/" + profileDirProperties.getProfileDir();
+        String path = Paths.get("").toAbsolutePath() + "/" + fileDirProperties.getDir();
 
         File dir = new File(path);
         if(!dir.exists()) dir.mkdir();

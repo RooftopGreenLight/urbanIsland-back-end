@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 @EnableJpaAuditing
 @SpringBootApplication
 @RequiredArgsConstructor
-@ConfigurationPropertiesScan(basePackages = "rooftopgreenlight.urbanisland.api.common.properties")
+@ConfigurationPropertiesScan(basePackages = "rooftopgreenlight.urbanisland.domain.common.properties")
 public class UrbanIslandApplication {
 
 	private final EntityManager em;

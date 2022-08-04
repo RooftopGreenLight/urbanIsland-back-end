@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.api.common.config;
+package rooftopgreenlight.urbanisland.domain.common.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
