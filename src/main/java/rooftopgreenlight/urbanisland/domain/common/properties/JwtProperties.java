@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.api.common.properties;
+package rooftopgreenlight.urbanisland.domain.common.properties;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
