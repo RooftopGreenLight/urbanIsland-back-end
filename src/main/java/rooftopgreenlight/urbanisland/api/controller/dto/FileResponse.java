@@ -10,10 +10,11 @@ public class FileResponse {
     private String type;
     private String fileUrl;
 
-    public static FileResponse fromMember(Profile profile) {
+    public static FileResponse fromProfile(Profile profile) {
         return FileResponse.of(
                 profile.getType(),
                 profile.getFileUrl()
         );
     }
+
 }

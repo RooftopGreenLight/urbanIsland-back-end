@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.api.common.config;
+package rooftopgreenlight.urbanisland.domain.common.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rooftopgreenlight.urbanisland.api.common.properties.AwsS3Properties;
+import rooftopgreenlight.urbanisland.domain.common.properties.AwsS3Properties;
 
 @Configuration
 @RequiredArgsConstructor

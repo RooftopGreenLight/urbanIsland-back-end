@@ -13,7 +13,7 @@ import rooftopgreenlight.urbanisland.api.common.exception.MailSendException;
 import rooftopgreenlight.urbanisland.api.common.exception.NotMatchedRefreshTokenException;
 import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
 import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
-import rooftopgreenlight.urbanisland.api.common.properties.MailProperties;
+import rooftopgreenlight.urbanisland.domain.common.properties.MailProperties;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
