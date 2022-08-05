@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 엔드포인트에 interceptor를 추가해서 소켓 등록.
-        registry.addEndpoint("/ws/api/v1/chat")
+        registry.addEndpoint("/ws/api/v1/chat/websocket")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
