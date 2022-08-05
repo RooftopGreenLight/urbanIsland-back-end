@@ -13,6 +13,7 @@ import rooftopgreenlight.urbanisland.api.common.exception.MailSendException;
 import rooftopgreenlight.urbanisland.api.common.exception.NotMatchedRefreshTokenException;
 import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
 import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
+import rooftopgreenlight.urbanisland.api.controller.dto.MemberResponse;
 import rooftopgreenlight.urbanisland.domain.common.properties.MailProperties;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
@@ -32,7 +33,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public TokenDto login(String email, String password) {
+    public MemberResponse login(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
@@ -44,7 +45,7 @@ public class AuthService {
 
         String refreshToken = tokenDto.getRefreshToken();
         memberService.findById(Long.valueOf(id)).changeRefreshToken(refreshToken);
-        return tokenDto;
+        return MemberResponse.of(Long.valueOf(id), tokenDto);
     }
 
     public TokenDto checkRefreshToken(String refreshToken) {
