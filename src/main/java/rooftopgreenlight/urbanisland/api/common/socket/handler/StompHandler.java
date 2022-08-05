@@ -1,6 +1,7 @@
 package rooftopgreenlight.urbanisland.api.common.socket.handler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -11,6 +12,7 @@ import rooftopgreenlight.urbanisland.api.common.jwt.JwtProvider;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StompHandler implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
 
@@ -20,6 +22,14 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String authorization = accessor.getFirstNativeHeader("Authorization");
         String token = authorization.replace("Bearer ", "");
+
+        log.info("authorization = {}", authorization);
+        log.info("token = {}", token);
+        log.info("accessor = {}", accessor);
+        log.info("accessor.getCommand = {}", accessor.getCommand());
+        log.info("message = {}", message);
+        log.info("channel = {}", channel);
+
         if(accessor.getCommand() == StompCommand.CONNECT) {
             if(!jwtProvider.isTokenValid(token)) {
                 // 우선 RuntimeException으로 반환함!
