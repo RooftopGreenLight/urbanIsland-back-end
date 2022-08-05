@@ -89,7 +89,7 @@ public class ChatController {
      * 요청 데이터) 옥상 id, 사용자 id
      * 응답 데이터) roomId
      */
-    @GetMapping("/inquiry/room/{rooftopId}")
+    @GetMapping("/inquiry/join/room/{rooftopId}")
     public APIResponse joinChatRoom(@PathVariable(value = "rooftopId") Long rooftopId,
                                     @PK Long memberId) {
         return APIResponse.of(chatRoomService.joinChatRoom(rooftopId, memberId));
