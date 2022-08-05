@@ -2,6 +2,7 @@ package rooftopgreenlight.urbanisland.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 import rooftopgreenlight.urbanisland.domain.member.entity.Authority;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
@@ -19,6 +20,8 @@ public class MemberResponse {
     private String profileUrl;
     private String profileType;
 
+    private TokenDto tokenDto;
+
     protected MemberResponse(long id, String email, String name, String phoneNumber, Authority authority) {
         this.id = id;
         this.email = email;
@@ -35,6 +38,11 @@ public class MemberResponse {
         this.authority = authority;
         this.profileUrl = profileUrl;
         this.profileType = profileType;
+    }
+
+    protected MemberResponse(Long id, TokenDto tokenDto) {
+        this.id = id;
+        this.tokenDto = tokenDto;
     }
 
     public static MemberResponse of(long id, String email, String name, String phoneNumber, Authority authority) {
@@ -55,4 +63,7 @@ public class MemberResponse {
                 member.getAuthority(), memberProfile.getFileUrl(), memberProfile.getType());
     }
 
+    public static MemberResponse of(long id, TokenDto tokenDto) {
+        return new MemberResponse(id, tokenDto);
+    }
 }

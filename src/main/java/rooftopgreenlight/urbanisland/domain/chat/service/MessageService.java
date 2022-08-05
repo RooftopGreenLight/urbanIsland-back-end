@@ -20,7 +20,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
 
     @Transactional
-    public void sendMessage(Long roomId, Long memberId, String content) {
+    public LocalDateTime sendMessage(Long roomId, Long memberId, String content) {
         Member findMember = memberService.findById(memberId);
         ChatRoom findRoom = chatRoomService.findById(roomId);
 
@@ -34,6 +34,7 @@ public class MessageService {
         message.updateMember(findMember);
         message.updateChatRoom(findRoom);
         messageRepository.save(message);
+        return date;
     }
 
 
@@ -42,7 +43,7 @@ public class MessageService {
     }
 
     public Message getFirstMsgJoinFetchMember(Long memberId, Long roomId) {
-        return messageRepository.findByJoinFetchMember(memberId, roomId)
+        return messageRepository.findByJoinFetchMemberOrdered(memberId, roomId)
                 .stream().findFirst().orElse(null);
     }
 }
