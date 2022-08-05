@@ -4,14 +4,16 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.util.StringUtils;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
 
 import javax.persistence.MappedSuperclass;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class File extends BaseEntity {
 
     private String type;

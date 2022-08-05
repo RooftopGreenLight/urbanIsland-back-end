@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Rooftop {
 
@@ -38,7 +40,6 @@ public class Rooftop {
     private RooftopPeopleCount peopleCount;
 
     @Embedded
-    @Column(nullable = false)
     private RooftopAddress rooftopAddress;
 
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
