@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.ChatRequest;
 import rooftopgreenlight.urbanisland.api.controller.dto.ChatRoomResponse;
@@ -39,7 +40,7 @@ public class ChatController {
      * 그냥 그럴 필요 없이 어떤 것이든 대답 온 거 누르면 채팅 내역이 뜨는 게 더 낫지 않나 싶다...
      */
     @GetMapping("/inquiry/response")
-    public APIResponse getInquiryResponse(@RequestParam Long memberId) {
+    public APIResponse getInquiryResponse(@PK Long memberId) {
         List<ChatRoom> roomList = chatRoomService.getRoomList(memberId);
         List<ChatRoomResponse> roomResList = new ArrayList<>();
 
@@ -65,7 +66,7 @@ public class ChatController {
      */
     @GetMapping("/inquiry/room/{roomId}")
     public APIResponse getInquiryRoom(@PathVariable(value = "roomId") Long roomId,
-                                      @RequestParam Long memberId) {
+                                      @PK Long memberId) {
         List<ChatRoomResponse> roomResList = new ArrayList<>();
         List<Message> messages = messageService.getMessageByRoomId(memberId, roomId);
         messages.stream().forEach(message -> {
@@ -88,9 +89,9 @@ public class ChatController {
      * 요청 데이터) 옥상 id, 사용자 id
      * 응답 데이터) roomId
      */
-    @GetMapping("/inquiry/room/{rooftopId}/{memberId}")
+    @GetMapping("/inquiry/room/{rooftopId}")
     public APIResponse joinChatRoom(@PathVariable(value = "rooftopId") Long rooftopId,
-                                    @PathVariable(value = "memberId") Long memberId) {
+                                    @PK Long memberId) {
         return APIResponse.of(chatRoomService.joinChatRoom(rooftopId, memberId));
     }
 
