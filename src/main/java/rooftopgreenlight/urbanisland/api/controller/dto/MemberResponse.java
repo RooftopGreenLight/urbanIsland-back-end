@@ -56,10 +56,10 @@ public class MemberResponse {
     public static MemberResponse of(Member member) {
         Profile memberProfile = member.getProfile();
         if (memberProfile == null) {
-            return MemberResponse.of(member.getId(), member.getEmail(), member.getName(), member.getPhoneNumber(), member.getAuthority());
+            return MemberResponse.of(member.getId(), member.getEmail(), member.getNickname(), member.getPhoneNumber(), member.getAuthority());
         }
 
-        return MemberResponse.of(member.getId(), member.getEmail(), member.getName(), member.getPhoneNumber(),
+        return MemberResponse.of(member.getId(), member.getEmail(), member.getNickname(), member.getPhoneNumber(),
                 member.getAuthority(), memberProfile.getFileUrl(), memberProfile.getType());
     }
 

@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**",
+        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/oauth2/**", "/api-docs", "/swagger-ui/**",
                         "/swagger-resources/**", "/v3/api-docs", "/ws/api/v1/chat/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
