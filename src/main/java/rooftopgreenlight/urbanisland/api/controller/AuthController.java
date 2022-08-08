@@ -105,7 +105,7 @@ public class AuthController {
         return Member.createMember()
                 .email(joinDto.getEmail())
                 .password(encoder.encode(joinDto.getPassword()))
-                .name(joinDto.getName())
+                .nickname(joinDto.getNickname())
                 .authority(Authority.ROLE_USER)
                 .build();
     }

@@ -24,8 +24,8 @@ public class Member extends BaseEntity {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(updatable = false, nullable = false, length = 10)
-    private String name;
+    @Column(nullable = false, unique = true, length = 10)
+    private String nickname;
     @Column
     private String phoneNumber;
     private String refreshToken;
@@ -52,10 +52,10 @@ public class Member extends BaseEntity {
     }
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String password, String name, String phoneNumber, Authority authority) {
+    public Member(String email, String password, String nickname, String phoneNumber, Authority authority) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.authority = authority;
     }
