@@ -50,6 +50,15 @@ public class MemberService {
         return memberRepository.existsByEmail(email);
     }
 
+    /**
+     * 존재하는 닉네임인지 확인
+     * @param nickname 검색할 닉네임
+     * @return True/False
+     */
+    public boolean existByNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
     public Member findByRefreshToken(String refreshToken) {
         return memberRepository.findMemberByRefreshToken(refreshToken)
                 .orElseThrow(() -> {throw new NotFoundMemberException("회원을 찾을 수 없습니다.");});
@@ -76,5 +85,11 @@ public class MemberService {
     public void changePhoneNumber(Long memberId, String phoneNumber) {
         Member findMember = findById(memberId);
         findMember.changePhoneNumber(phoneNumber);
+    }
+
+    @Transactional
+    public void changeNickname(Long memberId, String nickname) {
+        Member findMember = findById(memberId);
+        findMember.changeNickname(nickname);
     }
 }

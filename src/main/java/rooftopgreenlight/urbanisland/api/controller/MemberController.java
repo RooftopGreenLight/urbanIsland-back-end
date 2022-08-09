@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
-import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.MemberResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.PasswordRequest;
-import rooftopgreenlight.urbanisland.api.controller.dto.PhoneNumberRequest;
+import rooftopgreenlight.urbanisland.api.controller.dto.*;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
@@ -48,6 +45,17 @@ public class MemberController {
     public APIResponse changeMemberPhoneNumber(@PK Long memberId,
                                                @RequestBody @Validated PhoneNumberRequest request) {
         memberService.changePhoneNumber(memberId, request.getPhoneNumber());
+
+        return APIResponse.empty();
+    }
+
+    @PostMapping("/change-nickname")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "로그인 후 회원 전화번호 변경",
+            notes = "요청 데이터(Body) - key : nickname")
+    public APIResponse changeMemberNickname(@PK Long memberId,
+                                            @RequestBody @Validated NicknameRequest request) {
+        memberService.changeNickname(memberId, request.getNickname());
 
         return APIResponse.empty();
     }

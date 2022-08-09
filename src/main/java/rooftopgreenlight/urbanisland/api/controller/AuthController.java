@@ -44,7 +44,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "로그인 기능", notes = "정상 동작 시 로그인 성공")
+    @ApiOperation(value = "로그인 기능", notes = "key - email(@ 이메일 형식, null, blank X) , password(null, blank X)")
     public APIResponse login(@Validated @RequestBody LoginRequest loginDto) {
         return APIResponse.of(authService.login(loginDto.getEmail(), loginDto.getPassword()));
     }
@@ -56,7 +56,7 @@ public class AuthController {
      */
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "회원가입 기능", notes = "정상 동작 시 회원가입 성공" )
+    @ApiOperation(value = "회원가입 기능", notes = "key - email(@ 이메일 형식, null, blank X) , password(null, blank X), nickname(null, blank X)" )
     public APIResponse join(@Validated @RequestBody JoinRequest joinDto) {
         memberService.save(createMember(joinDto));
         return APIResponse.of("회원가입 성공!");
@@ -69,9 +69,24 @@ public class AuthController {
      */
     @GetMapping("/check-email")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "회원 중복 체크 기능", notes = "정상 동작 시 회원 중복 체크 성공")
+    @ApiOperation(value = "회원 중복 체크 기능", notes = "key - email(@ 이메일 형식, null, blank X)")
     public APIResponse checkEmail(@RequestParam(value = "email") String email) {
         if(memberService.existByEmail(email)) {
+            throw new DuplicatedMemberException("이미 존재하는 회원입니다.");
+        }
+        return APIResponse.of("성공!");
+    }
+
+    /**
+     * 닉네임 중복 확인
+     * @param nickname
+     * @return 중복 체크 성공 여부
+     */
+    @GetMapping("/check-nickname")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "회원 닉네임 중복 체크 기능", notes = "key - nickname(blank X)")
+    public APIResponse checkNickname(@RequestParam(value = "nickname") String nickname) {
+        if(memberService.existByNickname(nickname)) {
             throw new DuplicatedMemberException("이미 존재하는 회원입니다.");
         }
         return APIResponse.of("성공!");
@@ -84,7 +99,7 @@ public class AuthController {
      */
     @GetMapping("/verify-email")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "이메일 인증 기능", notes = "정상 동작 시 이메일 전송 및 인증 성공")
+    @ApiOperation(value = "이메일 인증 기능", notes = "key - email(@ 이메일 형식, null, blank X)")
     public APIResponse verifyEmail(@RequestParam(value = "email") String email) {
         return APIResponse.of(authService.send(email));
     }
@@ -96,7 +111,7 @@ public class AuthController {
      */
     @GetMapping("/check-refresh-token")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Access-Token 갱신 기능", notes = "정상 동작 시 Access-Token 갱신 성공")
+    @ApiOperation(value = "Access-Token 갱신 기능", notes = "header - refresh-token")
     public APIResponse checkRefreshToken(@RequestHeader(value = "refresh-token") String refreshToken) {
         return APIResponse.of(authService.checkRefreshToken(refreshToken));
     }

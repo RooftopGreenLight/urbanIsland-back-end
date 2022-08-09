@@ -46,6 +46,9 @@ public class Member extends BaseEntity {
     public void changePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public void changeRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
