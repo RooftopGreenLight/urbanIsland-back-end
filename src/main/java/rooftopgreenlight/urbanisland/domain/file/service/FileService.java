@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.exception.FileIOException;
 import rooftopgreenlight.urbanisland.domain.common.properties.AwsS3Properties;
 import rooftopgreenlight.urbanisland.domain.common.properties.FileDirProperties;
-import rooftopgreenlight.urbanisland.api.controller.dto.FileResponse;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImageType;

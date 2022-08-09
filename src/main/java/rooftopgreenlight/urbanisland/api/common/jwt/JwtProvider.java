@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import rooftopgreenlight.urbanisland.api.common.jwt.dto.TokenDto;
-import rooftopgreenlight.urbanisland.domain.common.properties.JwtProperties;
+import rooftopgreenlight.urbanisland.api.common.properties.JwtProperties;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;

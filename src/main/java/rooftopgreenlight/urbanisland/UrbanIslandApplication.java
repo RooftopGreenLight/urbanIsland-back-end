@@ -11,14 +11,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 
 @EnableJpaAuditing
 @SpringBootApplication
 @RequiredArgsConstructor
-@ConfigurationPropertiesScan(basePackages = "rooftopgreenlight.urbanisland.domain.common.properties")
+@ConfigurationPropertiesScan(basePackages = {"rooftopgreenlight.urbanisland.domain.common.properties",
+		"rooftopgreenlight.urbanisland.api.common.properties"})
 public class UrbanIslandApplication {
 
 	private final EntityManager em;
@@ -37,6 +40,13 @@ public class UrbanIslandApplication {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		return objectMapper;
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+		return restTemplate;
 	}
 
 	@Bean

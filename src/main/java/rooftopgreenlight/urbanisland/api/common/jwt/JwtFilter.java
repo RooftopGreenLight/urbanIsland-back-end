@@ -26,7 +26,10 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
 
-        if(!request.getRequestURI().startsWith("/api/v1/auth") && authorization != null && authorization.startsWith("Bearer ")) {
+        if(!request.getRequestURI().startsWith("/api/v1/auth") &&
+                !request.getRequestURI().startsWith("/api/v1/oauth2") &&
+                authorization != null &&
+                authorization.startsWith("Bearer ")) {
             String token = authorization.replace("Bearer ", "");
             if(!jwtProvider.isTokenValid(token)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

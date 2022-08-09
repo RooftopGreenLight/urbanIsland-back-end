@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import rooftopgreenlight.urbanisland.api.common.exception.*;
 import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIErrorResponse;
+import rooftopgreenlight.urbanisland.domain.common.exception.ExistMemberException;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundMemberException;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundProfileException;
 
@@ -101,13 +102,24 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 최상위 오류
+     * 프로필 조회 오류
      * @param e
      * @return 에러 정보 전달
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse notFoundProfileException(NotFoundProfileException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
+     * 프로필 조회 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse existMemberException(ExistMemberException e) {
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
 
@@ -119,6 +131,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public APIErrorResponse exception(Exception e) {
+        e.printStackTrace();
         return APIErrorResponse.of(false, ErrorCode.INTERNAL_SEVER_ERROR, e);
     }
 
