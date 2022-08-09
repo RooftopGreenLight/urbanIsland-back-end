@@ -11,6 +11,11 @@ import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
 public class APIResponse<T> extends APIErrorResponse {
     private T data;
 
+    protected APIResponse() {
+        super(true, ErrorCode.CREATED.getCode(), ErrorCode.CREATED.getMessage());
+        this.data = null;
+    }
+
     protected APIResponse(T data) {
         super(true, ErrorCode.OK.getCode(), ErrorCode.OK.getMessage());
         this.data = data;
@@ -22,5 +27,9 @@ public class APIResponse<T> extends APIErrorResponse {
 
     public static <T> APIResponse<T> empty() {
         return new APIResponse(null);
+    }
+
+    public static <T> APIResponse<T> createEmpty() {
+        return new APIResponse();
     }
 }
