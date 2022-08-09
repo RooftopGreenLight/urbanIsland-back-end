@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
@@ -41,7 +42,14 @@ public class Rooftop extends BaseEntity {
     private RooftopPeopleCount peopleCount;
 
     @Embedded
-    private RooftopAddress rooftopAddress;
+    @AttributeOverrides(
+            value = {
+                    @AttributeOverride(name = "city", column = @Column(name = "rooftop_address_city")),
+                    @AttributeOverride(name = "district", column = @Column(name = "rooftop_address_street")),
+                    @AttributeOverride(name = "detail", column = @Column(name = "rooftop_address_detail"))
+            }
+    )
+    private Address address;
 
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopImage> rooftopImages = new ArrayList<>();
@@ -63,7 +71,7 @@ public class Rooftop extends BaseEntity {
     @Builder(builderMethodName = "createRooftop")
     public Rooftop(String width, String explainContent, String refundContent, String roleContent,
                    LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
-                   RooftopAddress rooftopAddress, RooftopType rooftopType) {
+                   Address address, RooftopType rooftopType) {
         this.width = width;
         this.explainContent = explainContent;
         this.refundContent = refundContent;
@@ -71,7 +79,7 @@ public class Rooftop extends BaseEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.peopleCount = peopleCount;
-        this.rooftopAddress = rooftopAddress;
+        this.address = address;
         this.rooftopType = rooftopType;
     }
 }
