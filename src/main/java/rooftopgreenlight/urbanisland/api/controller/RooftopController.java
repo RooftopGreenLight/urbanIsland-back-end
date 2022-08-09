@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.RooftopRequest;
-import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopAddress;
+import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
 
@@ -41,11 +41,11 @@ public class RooftopController {
 
         RooftopPeopleCount peopleCount
                 = RooftopPeopleCount.of(request.getAdultCount(), request.getKidCount(), request.getPetCount(), request.getTotalCount());
-        RooftopAddress rooftopAddress
-                = RooftopAddress.of(request.getCounty(), request.getCity(), request.getDetail());
+        Address address
+                = Address.of(request.getCounty(), request.getCity(), request.getDetail());
 
         rooftopService.createGreenRooftop(request.getWidth(), request.getExplainContent(), request.getRefundContent(),
-                request.getRoleContent(), request.getStartTime(), request.getEndTime(), peopleCount, rooftopAddress,
+                request.getRoleContent(), request.getStartTime(), request.getEndTime(), peopleCount, address,
                 normalFiles, structureFiles, details, options, prices, memberId);
 
         return APIResponse.empty();

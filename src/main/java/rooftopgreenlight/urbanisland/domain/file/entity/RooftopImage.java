@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class RooftopImage extends File {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RooftopImageType rooftopImageType;
+    private ImageType rooftopImageType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rooftop_id")
@@ -30,8 +31,9 @@ public class RooftopImage extends File {
 
     @Builder(builderMethodName = "createRooftopImage")
     public RooftopImage(String type, String uploadFilename, String storeFilename,
-                        String fileUrl, RooftopImageType rooftopImageType) {
+                        String fileUrl, ImageType rooftopImageType) {
         super(type, uploadFilename, storeFilename, fileUrl);
         this.rooftopImageType = rooftopImageType;
     }
+
 }

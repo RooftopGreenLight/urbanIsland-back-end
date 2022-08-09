@@ -11,9 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.exception.FileIOException;
 import rooftopgreenlight.urbanisland.domain.common.properties.AwsS3Properties;
 import rooftopgreenlight.urbanisland.domain.common.properties.FileDirProperties;
+import rooftopgreenlight.urbanisland.domain.file.entity.GreenBeeImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
-import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImageType;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
@@ -28,7 +30,6 @@ import java.util.UUID;
 public class FileService {
 
     private final MemberService memberService;
-
     private final AmazonS3Client amazonS3Client;
     private final AwsS3Properties awsS3Properties;
     private final FileDirProperties fileDirProperties;
@@ -78,7 +79,7 @@ public class FileService {
      * 녹화 옥상 사진 저장 및 DB 저장
      */
     @Transactional
-    public RooftopImage createRooftopImage(MultipartFile file, RooftopImageType imageType) {
+    public Object createImage(MultipartFile file, ImageType imageType, ImageName imageName) {
         String ext = getExt(file.getOriginalFilename());
         String storeFilename = createStoreFilename(ext);
         String fullStorePath = getFullStorePath(storeFilename);
@@ -92,16 +93,18 @@ public class FileService {
             throw new FileIOException("옥상 이미지 저장 오류");
         }
 
-        return rooftopImage(file.getOriginalFilename(), ext, storeFilename, fileUrl, imageType);
+        if (imageName == ImageName.ROOFTOP) {
+            return rooftopImage(file.getOriginalFilename(), ext, storeFilename, fileUrl, imageType);
+        }
+
+        return greenBeeImage(file.getOriginalFilename(), imageType, ext, storeFilename, fileUrl);
     }
 
     public void deleteRooftopImage(String rooftopStoreImage) {
         deleteFileS3(rooftopStoreImage);
     }
 
-    /**
-     * 파일 정보 Bytes -> String
-     */
+
 //    private String getFileString(String fullStorePath) {
 //        byte[] fileBytes = null;
 //        try {
@@ -113,7 +116,6 @@ public class FileService {
 //        }
 //         return Base64.getEncoder().encodeToString(fileBytes);
 //    }
-
     /**
      * 기존에 저장된 프로필이 존재하면 저장 후 삭제
      */
@@ -140,7 +142,7 @@ public class FileService {
     /**
      * RooftopImage 생성
      */
-    public RooftopImage rooftopImage(String originalFilename, String ext, String storeFilename, String fileUrl, RooftopImageType imageType) {
+    public RooftopImage rooftopImage(String originalFilename, String ext, String storeFilename, String fileUrl, ImageType imageType) {
         return RooftopImage.createRooftopImage()
                 .storeFilename(storeFilename)
                 .uploadFilename(originalFilename)
@@ -150,6 +152,18 @@ public class FileService {
                 .build();
     }
 
+    /**
+     * greenBeeImage 생성
+     */
+    private GreenBeeImage greenBeeImage(String originalFilename, ImageType imageType, String ext, String storeFilename, String fileUrl) {
+        return GreenBeeImage.createGreenBeeImage()
+                .fileUrl(fileUrl)
+                .uploadFilename(originalFilename)
+                .storeFilename(storeFilename)
+                .type(ext)
+                .greenBeeImageType(imageType)
+                .build();
+    }
 
     /**
      * 저장할 파일 이름 생성
