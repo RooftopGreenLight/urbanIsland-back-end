@@ -27,7 +27,6 @@ public class OAuth2Controller {
 
     @GetMapping("/login/naver")
     public APIResponse oauth2NaverLogin(@RequestParam("code") String code) {
-        System.out.println("code = " + code);
         return APIResponse.of(oauth2Service.loginNaver(code));
     }
 

@@ -56,7 +56,6 @@ public class Oauth2Service {
     @Transactional
     public MemberResponse loginNaver(String code) {
         NaverToken naverToken = getNaverToken(code);
-        System.out.println("naverToken.getAccessToken() = " + naverToken.getAccessToken());
         NaverUserInfo naverUserInfo = getNaverUserInfo(naverToken);
 
         Member member = getMember(naverUserInfo.getId() + "@naver.com",
@@ -104,12 +103,10 @@ public class Oauth2Service {
 
     private NaverUserInfo getNaverUserInfo(NaverToken naverToken) {
         String token = "Bearer " + naverToken.getAccessToken();
-        System.out.println("token = " + token);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", token);
 
         ResponseEntity<String> result = restTemplate.exchange(createGetRequestEntity(naverProperties.getUserInfoUri(), httpHeaders), String.class);
-        System.out.println("result.getBody() = " + result.getBody());
         Gson gson = new Gson();
         JsonElement response = gson.fromJson(result.getBody(), JsonObject.class).get("response");
         NaverUserInfo naverUserInfo = gson.fromJson(response, NaverUserInfo.class);
