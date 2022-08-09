@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
-import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImageType;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.file.service.FileService;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
@@ -32,11 +34,11 @@ public class RooftopService {
     @Transactional
     public void createGreenRooftop(String width, String explainContent, String refundContent, String roleContent,
                                    LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
-                                   RooftopAddress rooftopAddress, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
+                                   Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
                                    List<Integer> details, List<String> options, List<Integer> prices, Long memberId) {
 
         Rooftop rooftop = getRooftop(width, explainContent, refundContent, roleContent, startTime,
-                endTime, peopleCount, rooftopAddress, RooftopType.GREEN);
+                endTime, peopleCount, address, RooftopType.GREEN);
 
         saveRooftopImages(normalFiles, structureFiles, rooftop);
         saveRooftopDetails(details, rooftop);
@@ -79,14 +81,14 @@ public class RooftopService {
     private void saveRooftopImages(List<MultipartFile> normalFiles, List<MultipartFile> structureFiles, Rooftop rooftop) {
         List<RooftopImage> rooftopImages = rooftop.getRooftopImages();
         normalFiles.parallelStream()
-                .map(file -> fileService.createRooftopImage(file, RooftopImageType.NORMAL))
+                .map(file -> (RooftopImage) fileService.createImage(file, ImageType.NORMAL, ImageName.ROOFTOP))
                 .forEach(rooftopImage -> {
                     rooftopImage.changeRooftop(rooftop);
                     rooftopImages.add(rooftopImage);
                 });
 
         structureFiles.parallelStream()
-                .map(file -> fileService.createRooftopImage(file, RooftopImageType.STRUCTURE))
+                .map(file -> (RooftopImage) fileService.createImage(file, ImageType.STRUCTURE, ImageName.ROOFTOP))
                 .forEach(rooftopImage -> {
                     rooftopImage.changeRooftop(rooftop);
                     rooftopImages.add(rooftopImage);
@@ -95,7 +97,7 @@ public class RooftopService {
 
     private Rooftop getRooftop(String width, String explainContent, String refundContent, String roleContent,
                                LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
-                               RooftopAddress rooftopAddress, RooftopType rooftopType) {
+                               Address address, RooftopType rooftopType) {
         return Rooftop.createRooftop()
                 .width(width)
                 .explainContent(explainContent)
@@ -104,7 +106,7 @@ public class RooftopService {
                 .startTime(startTime)
                 .endTime(endTime)
                 .peopleCount(peopleCount)
-                .rooftopAddress(rooftopAddress)
+                .address(address)
                 .rooftopType(rooftopType)
                 .build();
     }
