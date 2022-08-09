@@ -15,6 +15,7 @@ public interface MemberRepository extends
         QuerydslPredicateExecutor<Member> {
 
     boolean existsByEmail(String email);
+    boolean existsByNickname(String nickname);
     Optional<Member> findMemberByEmail(String email);
     Optional<Member> findMemberByRefreshToken(String refreshToken);
 
