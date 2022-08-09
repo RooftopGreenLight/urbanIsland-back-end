@@ -54,6 +54,10 @@ public class Member extends BaseEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void changeAuthority(Authority authority) {
+        this.authority = authority;
+    }
+
     @Builder(builderMethodName = "createMember")
     public Member(String email, String password, String nickname, String phoneNumber, Authority authority) {
         this.email = email;
