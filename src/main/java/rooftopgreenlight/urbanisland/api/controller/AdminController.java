@@ -33,6 +33,26 @@ public class AdminController {
         );
     }
 
+    @PostMapping("/green-bees/accept/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "승인 대기 중 그린비 승인",
+            notes = "요청 데이터(path) - memberId : 승인할 memberId")
+    public APIResponse acceptGreenBee(@PathVariable("memberId") long memberId) {
+        greenBeeService.acceptGreenBee(memberId);
+
+        return APIResponse.empty();
+    }
+
+    @PostMapping("/green-bees/reject/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "승인 대기 중 그린비 거절",
+            notes = "요청 데이터(path) - memberId : 거절할 memberId")
+    public APIResponse rejectGreenBee(@PathVariable("memberId") long memberId) {
+        greenBeeService.rejectGreenBee(memberId);
+
+        return APIResponse.empty();
+    }
+
     @GetMapping("/owner/waits")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "승인 대기 중 옥상지기 정보 가져오기",
@@ -45,6 +65,26 @@ public class AdminController {
                 ownerDtoPage.getTotalElements(),
                 OwnerInfoResponse.of(ownerDtoPage))
         );
+    }
+
+    @PostMapping("/owner/accept/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "승인 대기 중 옥상지기 승인",
+            notes = "요청 데이터(path) - memberId : 승인할 memberId")
+    public APIResponse acceptOwner(@PathVariable("memberId") long memberId) {
+        ownerService.acceptGreenBee(memberId);
+        
+        return APIResponse.empty();
+    }
+
+    @PostMapping("/owner/reject/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "승인 대기 중 옥상지기 거절",
+            notes = "요청 데이터(path) - memberId : 거절할 memberId")
+    public APIResponse rejectOwner(@PathVariable("memberId") long memberId) {
+        ownerService.rejectGreenBee(memberId);
+
+        return APIResponse.empty();
     }
 
 }
