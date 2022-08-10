@@ -13,14 +13,19 @@ public class RooftopRequest {
 
     @NotBlank(message = "올바른 넓이 입력 형식이 아닙니다.")
     private String width;
+    private String phoneNumber;
     private String explainContent;
     private String refundContent;
     private String roleContent;
+    private String ownerContent;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startTime;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endTime;
+
+    private int totalPrice;
+    private int widthPrice;
 
     private int adultCount;
     private int kidCount;

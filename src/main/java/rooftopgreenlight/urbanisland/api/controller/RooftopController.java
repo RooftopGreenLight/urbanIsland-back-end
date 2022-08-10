@@ -27,26 +27,33 @@ public class RooftopController {
     @PostMapping("/green")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Green Rooftop 저장",
-            notes = "요청 데이터(Parameter) -> key : width, explainContent, refundContent, roleContent, startTime, endTime, " +
-                    "adultCount, kidCount, petCount, totalCount, county, city, detail, normalFile, structureFile, detailNum, optionContent, " +
-                    "optionPrice <-> valueType : normalFile, structureFile -> MultipartType")
+            notes = "요청 데이터(Parameter) -> width, phoneNumber, explainContent, refundContent, roleContent, ownerContent," +
+                    "startTime, endTime, totalPrice, widthPrice" +
+                    "adultCount, kidCount, petCount, totalCount, county, city, detail, " +
+                    "rooftopType(G, NG), normalFile, structureFile, detailInfoNum, requiredItemNum, " +
+                    "deadLineNum, optionContent, optionPrice " +
+                    "<-> valueType : normalFile, structureFile -> MultipartType")
     public APIResponse createRooftop(@PK Long memberId,
                                      @Validated RooftopRequest request,
+                                     @RequestParam(name = "rooftopType") String rooftopType,
                                      @RequestParam(name = "normalFile", required = false) List<MultipartFile> normalFiles,
                                      @RequestParam(name = "structureFile", required = false) List<MultipartFile> structureFiles,
-                                     @RequestParam(name = "detailNum", required = false) List<Integer> details,
+                                     @RequestParam(name = "detailInfoNum", required = false) List<Integer> detailInfos,
+                                     @RequestParam(name = "requiredItemNum", required = false) List<Integer> requiredItems,
+                                     @RequestParam(name = "deadLineNum", required = false) List<Integer> deadLines,
                                      @RequestParam(name = "optionContent", required = false) List<String> options,
-                                     @RequestParam(name = "optionPrice", required = false) List<Integer> prices
+                                     @RequestParam(name = "optionPrice", required = false) List<Integer> prices,
+                                     @RequestParam(name = "optionCount", required = false) List<Integer> counts
     ) {
-
         RooftopPeopleCount peopleCount
                 = RooftopPeopleCount.of(request.getAdultCount(), request.getKidCount(), request.getPetCount(), request.getTotalCount());
         Address address
                 = Address.of(request.getCounty(), request.getCity(), request.getDetail());
 
-        rooftopService.createGreenRooftop(request.getWidth(), request.getExplainContent(), request.getRefundContent(),
-                request.getRoleContent(), request.getStartTime(), request.getEndTime(), peopleCount, address,
-                normalFiles, structureFiles, details, options, prices, memberId);
+        rooftopService.createGreenRooftop(rooftopType, request.getWidth(), request.getPhoneNumber(), request.getExplainContent(),
+                request.getRefundContent(), request.getRoleContent(), request.getOwnerContent(), request.getStartTime(),
+                request.getEndTime(), request.getTotalPrice(), request.getWidthPrice(), peopleCount, address,
+                normalFiles, structureFiles, detailInfos, requiredItems, deadLines, options, prices, counts, memberId);
 
         return APIResponse.empty();
 

@@ -32,30 +32,41 @@ public class RooftopService {
      * Rooftop 저장
      */
     @Transactional
-    public void createGreenRooftop(String width, String explainContent, String refundContent, String roleContent,
-                                   LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
+    public void createGreenRooftop(String rooftopType, String width, String phoneNumber, String explainContent,
+                                   String refundContent, String roleContent, String ownerContent, LocalDateTime startTime,
+                                   LocalDateTime endTime, int totalPrice, int widthPrice, RooftopPeopleCount peopleCount,
                                    Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
-                                   List<Integer> details, List<String> options, List<Integer> prices, Long memberId) {
+                                   List<Integer> detailInfos, List<Integer> requiredItems, List<Integer> deadLines,
+                                   List<String> options, List<Integer> prices, List<Integer> counts, Long memberId) {
 
-        Rooftop rooftop = getRooftop(width, explainContent, refundContent, roleContent, startTime,
-                endTime, peopleCount, address, RooftopType.GREEN);
+        int wPrice = rooftopType.equals("G") ? 0 : widthPrice;
+        RooftopType type = rooftopType.equals("G") ? RooftopType.GREEN : RooftopType.NOT_GREEN;
+        RooftopProgress progress = rooftopType.equals("G") ? RooftopProgress.ADMIN_WAIT : RooftopProgress.GREENBEE_WAIT;
+
+        Rooftop rooftop = getRooftop(width, phoneNumber, explainContent, refundContent, roleContent, ownerContent,
+                startTime, endTime, totalPrice, wPrice, peopleCount, address, type, progress);
 
         saveRooftopImages(normalFiles, structureFiles, rooftop);
-        saveRooftopDetails(details, rooftop);
-        saveRooftopOptions(options, prices, rooftop);
+
+        if(rooftopType.equals("NG")) {
+            saveRooftopDetails(requiredItems, RooftopDetailType.REQUIRED_ITEM, rooftop);
+            saveRooftopDetails(deadLines, RooftopDetailType.DEADLINE, rooftop);
+        }
+
+        saveRooftopDetails(detailInfos, RooftopDetailType.DETAIL, rooftop);
+        saveRooftopOptions(options, prices, counts, rooftop);
         rooftop.changeMember(memberService.findById(memberId));
 
         rooftopRepository.save(rooftop);
-
     }
 
     /**
      * RooftopOption 저장
      */
-    private void saveRooftopOptions(List<String> options, List<Integer> prices, Rooftop rooftop) {
+    private void saveRooftopOptions(List<String> options, List<Integer> prices, List<Integer> counts, Rooftop rooftop) {
         List<RooftopOption> rooftopOptions = rooftop.getRooftopOptions();
         IntStream.range(0, options.size()).forEach(i -> {
-            RooftopOption rooftopOption = RooftopOption.of(options.get(i), prices.get(i));
+            RooftopOption rooftopOption = RooftopOption.of(options.get(i), prices.get(i), counts.get(i));
             rooftopOption.changeRooftop(rooftop);
             rooftopOptions.add(rooftopOption);
         });
@@ -65,10 +76,10 @@ public class RooftopService {
     /**
      * RooftopDetail 저장
      */
-    private void saveRooftopDetails(List<Integer> details, Rooftop rooftop) {
+    private void saveRooftopDetails(List<Integer> details, RooftopDetailType type, Rooftop rooftop) {
         List<RooftopDetail> rooftopDetails = rooftop.getRooftopDetails();
         details.stream()
-                .map(RooftopDetail::of)
+                .map(detail -> RooftopDetail.of(detail, type))
                 .forEach(rooftopDetail -> {
                     rooftopDetail.changeRooftop(rooftop);
                     rooftopDetails.add(rooftopDetail);
@@ -95,19 +106,26 @@ public class RooftopService {
                 });
     }
 
-    private Rooftop getRooftop(String width, String explainContent, String refundContent, String roleContent,
-                               LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
-                               Address address, RooftopType rooftopType) {
+
+    private Rooftop getRooftop(String width, String phoneNumber, String explainContent, String refundContent,
+                               String roleContent, String ownerContent, LocalDateTime startTime, LocalDateTime endTime,
+                               int totalPrice, int widthPrice, RooftopPeopleCount peopleCount, Address address,
+                               RooftopType rooftopType, RooftopProgress progress) {
         return Rooftop.createRooftop()
                 .width(width)
+                .phoneNumber(phoneNumber)
                 .explainContent(explainContent)
                 .refundContent(refundContent)
                 .roleContent(roleContent)
+                .ownerContent(ownerContent)
                 .startTime(startTime)
                 .endTime(endTime)
+                .totalPrice(totalPrice)
+                .widthPrice(widthPrice)
                 .peopleCount(peopleCount)
                 .address(address)
                 .rooftopType(rooftopType)
+                .rooftopProgress(progress)
                 .build();
     }
 }
