@@ -12,6 +12,7 @@ import rooftopgreenlight.urbanisland.api.common.exception.FileIOException;
 import rooftopgreenlight.urbanisland.domain.common.properties.AwsS3Properties;
 import rooftopgreenlight.urbanisland.domain.common.properties.FileDirProperties;
 import rooftopgreenlight.urbanisland.domain.file.entity.GreenBeeImage;
+import rooftopgreenlight.urbanisland.domain.file.entity.OwnerImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.Profile;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
@@ -97,6 +98,10 @@ public class FileService {
             return rooftopImage(file.getOriginalFilename(), ext, storeFilename, fileUrl, imageType);
         }
 
+        if (imageName == ImageName.Owner) {
+            return ownerImage(file.getOriginalFilename(), ext, storeFilename, fileUrl, imageType);
+        }
+
         return greenBeeImage(file.getOriginalFilename(), imageType, ext, storeFilename, fileUrl);
     }
 
@@ -149,6 +154,19 @@ public class FileService {
                 .fileUrl(fileUrl)
                 .type(ext)
                 .rooftopImageType(imageType)
+                .build();
+    }
+
+    /**
+     * ownerImage 생성
+     */
+    public OwnerImage ownerImage(String originalFilename, String ext, String storeFilename, String fileUrl, ImageType imageType) {
+        return OwnerImage.createOwnerImage()
+                .fileUrl(fileUrl)
+                .uploadFilename(originalFilename)
+                .storeFilename(storeFilename)
+                .type(ext)
+                .ownerImageType(imageType)
                 .build();
     }
 
@@ -211,7 +229,7 @@ public class FileService {
     /**
      * S3 파일 삭제
      */
-    private void deleteFileS3(String filename) {
+    public void deleteFileS3(String filename) {
         amazonS3Client.deleteObject(new DeleteObjectRequest(awsS3Properties.getBucket(), filename));
     }
 }

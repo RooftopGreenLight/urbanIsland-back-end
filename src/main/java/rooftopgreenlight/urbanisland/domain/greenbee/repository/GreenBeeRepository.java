@@ -10,8 +10,15 @@ import java.util.Optional;
 
 public interface GreenBeeRepository extends
         JpaRepository<GreenBee, Long>,
-        QuerydslPredicateExecutor<GreenBee> {
+        QuerydslPredicateExecutor<GreenBee>,
+        GreenBeeRepositoryCustom {
 
     @Query("select g from GreenBee g left join fetch g.greenBeeImages gi where g.id = :memberId")
     Optional<GreenBee> findByIdWithImages(@Param("memberId") Long memberId);
+
+    @Query("select g from GreenBee g left join fetch g.greenBeeImages gi where g.member.id = :memberId")
+    Optional<GreenBee> findByMemberIdWithImages(@Param("memberId") Long memberId);
+
+    @Query("select g from GreenBee g left join fetch g.member gm where gm.id = :memberId")
+    Optional<GreenBee> findByMemberIdWithMember(@Param("memberId") Long memberId);
 }

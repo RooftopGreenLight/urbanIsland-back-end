@@ -30,8 +30,8 @@ public class GreenBeeController {
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "그린비 등록하기",
-            notes = "요청 데이터(Body) - key : officeNumber(NotBlank), content(NotBlank), city(NotBlank), district(NotBlank)," +
-                    " detail(NotBlank), normalFile(Multipart), confirmationFile(Multipart)")
+            notes = "요청 데이터(form-data) - key : officeNumber(NotBlank), content(NotBlank), city(NotBlank), district(NotBlank)," +
+                    " detail(form-data), normalFile(Multipart), confirmationFile(Multipart)")
     public APIResponse joinGreenBee(@PK Long memberId,
                                     @Validated GreenBeeRequest request,
                                     @RequestParam(name = "normalFile", required = false) List<MultipartFile> normalFiles,
@@ -69,4 +69,5 @@ public class GreenBeeController {
                 greenBeeInfo.getGreenBeeImages().stream().map(GreenBeeImageResponse::of).collect(Collectors.toList())
         ));
     }
+
 }
