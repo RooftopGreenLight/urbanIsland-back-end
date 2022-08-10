@@ -122,6 +122,16 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 권한 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public APIErrorResponse authorizationException(AuthorizationException e) {
+        return APIErrorResponse.of(false, ErrorCode.FORBIDDEN, e);
+    }
+    
      * 그린비 신청 조회 오류
      * @param e
      * @return 에러 정보 전달

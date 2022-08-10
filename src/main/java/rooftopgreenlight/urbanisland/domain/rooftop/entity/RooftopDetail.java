@@ -22,16 +22,20 @@ public class RooftopDetail {
     @JoinColumn(name = "rooftop_id")
     private Rooftop rooftop;
 
+    @Enumerated(value = EnumType.STRING)
+    private RooftopDetailType rooftopDetailType;
+
     public void changeRooftop(Rooftop rooftop) {
         this.rooftop = rooftop;
     }
 
-    protected RooftopDetail(int contentNum) {
+    protected RooftopDetail(int contentNum, RooftopDetailType detailType) {
         this.contentNum = contentNum;
+        this.rooftopDetailType = detailType;
     }
 
-    public static RooftopDetail of(int contentNum) {
-        return new RooftopDetail(contentNum);
+    public static RooftopDetail of(int contentNum, RooftopDetailType detailType) {
+        return new RooftopDetail(contentNum, detailType);
     }
 
 }

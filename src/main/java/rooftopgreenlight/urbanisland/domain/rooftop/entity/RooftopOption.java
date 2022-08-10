@@ -18,6 +18,7 @@ public class RooftopOption {
     @Column(nullable = false)
     private String content;
     private Integer price;
+    private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rooftop_id")
@@ -27,12 +28,13 @@ public class RooftopOption {
         this.rooftop = rooftop;
     }
 
-    protected RooftopOption(String content, Integer price) {
+    protected RooftopOption(String content, Integer price, Integer count) {
         this.content = content;
         this.price = price;
+        this.count = count;
     }
 
-    public static RooftopOption of(String content, Integer price) {
-        return new RooftopOption(content, price);
+    public static RooftopOption of(String content, Integer price, Integer count) {
+        return new RooftopOption(content, price, count);
     }
 }
