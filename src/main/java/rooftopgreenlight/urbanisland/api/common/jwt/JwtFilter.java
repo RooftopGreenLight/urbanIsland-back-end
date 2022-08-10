@@ -26,23 +26,25 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
 
-        if(!request.getRequestURI().startsWith("/api/v1/auth") &&
-                !request.getRequestURI().startsWith("/api/v1/oauth2") &&
-                authorization != null &&
-                authorization.startsWith("Bearer ")) {
+        if(authorization != null && authorization.startsWith("Bearer ")) {
             String token = authorization.replace("Bearer ", "");
-            if(!jwtProvider.isTokenValid(token)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.setContentType("application/json");
-
-                response.getWriter().write(objectMapper.writeValueAsString(APIErrorResponse.of(false, ErrorCode.JWT_ACCESS_ERROR)));
-                return;
-            }
-            Authentication authentication = jwtProvider.getMemberInfo(token);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (!isAuthentication(response, token)) return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isAuthentication(HttpServletResponse response, String token) throws IOException {
+        if(!jwtProvider.isTokenValid(token)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json");
+
+            response.getWriter().write(objectMapper.writeValueAsString(APIErrorResponse.of(false, ErrorCode.JWT_ACCESS_ERROR)));
+            return false;
+        }
+        Authentication authentication = jwtProvider.getMemberInfo(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return true;
     }
 }

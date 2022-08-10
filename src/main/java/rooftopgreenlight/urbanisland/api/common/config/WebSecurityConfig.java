@@ -40,9 +40,11 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/oauth2/**", "/api-docs", "/swagger-ui/**",
                         "/swagger-resources/**", "/v3/api-docs", "/ws/api/v1/chat/**").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/green-bees/join").hasRole("USER")
+                .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/green-bees/**").hasAnyRole("GREENBEE", "ROOFTOPOWNER", "ADMIN")
+                .authorizeRequests().antMatchers("/api/v1/green-bees/join", "/api/v1/owners/join").hasRole("USER")
+                .and()
+                .authorizeRequests().antMatchers("/api/v1/green-bees/**", "/api/v1/owners/**").hasAnyRole("GREENBEE", "ROOFTOPOWNER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

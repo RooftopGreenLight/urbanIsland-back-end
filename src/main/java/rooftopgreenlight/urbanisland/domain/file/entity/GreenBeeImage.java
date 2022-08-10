@@ -16,6 +16,7 @@ import javax.persistence.*;
 public class GreenBeeImage extends File {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "greenbee_image_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
