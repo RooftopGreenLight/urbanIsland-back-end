@@ -13,9 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import rooftopgreenlight.urbanisland.api.common.exception.*;
 import rooftopgreenlight.urbanisland.api.common.exception.error.ErrorCode;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIErrorResponse;
-import rooftopgreenlight.urbanisland.domain.common.exception.ExistMemberException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundMemberException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundProfileException;
+import rooftopgreenlight.urbanisland.domain.common.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,13 +111,35 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 프로필 조회 오류
+     * 멤버 중복 오류
      * @param e
      * @return 에러 정보 전달
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse existMemberException(ExistMemberException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
+     * 그린비 신청 조회 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundGreenBeeException(NotFoundGreenBeeException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
+     * 옥상지기 신청 조회 오류
+     * @param e
+     * @return 에러 정보 전달
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundOwnerException(NotFoundOwnerException e) {
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
 

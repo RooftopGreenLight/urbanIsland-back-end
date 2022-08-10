@@ -229,7 +229,7 @@ public class FileService {
     /**
      * S3 파일 삭제
      */
-    private void deleteFileS3(String filename) {
+    public void deleteFileS3(String filename) {
         amazonS3Client.deleteObject(new DeleteObjectRequest(awsS3Properties.getBucket(), filename));
     }
 }
