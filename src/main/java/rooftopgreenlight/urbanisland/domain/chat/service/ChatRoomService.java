@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.domain.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rooftopgreenlight.urbanisland.api.common.exception.AuthorizationException;
 import rooftopgreenlight.urbanisland.api.common.exception.NotFoundChatRoomException;
 import rooftopgreenlight.urbanisland.domain.chat.entity.ChatRoom;
 import rooftopgreenlight.urbanisland.domain.chat.entity.QChatRoom;
@@ -15,17 +16,17 @@ import java.util.stream.StreamSupport;
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
-    private final ChatRoomRepository repository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
     public Long joinChatRoom(Long rooftopId, Long memberId) {
-        ChatRoom chatRoom = repository.findByRooftopIdAndAndMemberId(rooftopId, memberId).orElse(null);
+        ChatRoom chatRoom = chatRoomRepository.findByRooftopIdAndAndMemberId(rooftopId, memberId).orElse(null);
         if(chatRoom == null) {
             ChatRoom newChatRoom = ChatRoom.createChatRoom()
                     .rooftopId(rooftopId)
                     .memberId(memberId)
                     .build();
-            repository.save(newChatRoom);
+            chatRoomRepository.save(newChatRoom);
             return newChatRoom.getId();
         }
         return chatRoom.getId();
@@ -33,13 +34,17 @@ public class ChatRoomService {
 
     public List<ChatRoom> getRoomList(Long memberId) {
         return StreamSupport.stream(
-                repository.findAll(QChatRoom.chatRoom.memberId.eq(memberId)).spliterator(), false)
+                chatRoomRepository.findAll(QChatRoom.chatRoom.memberId.eq(memberId)).spliterator(), false)
                 .collect(Collectors.toList());
     }
 
     public ChatRoom findById(Long roomId) {
-        return repository.findById(roomId).orElseThrow(() -> {
+        return chatRoomRepository.findById(roomId).orElseThrow(() -> {
             throw new NotFoundChatRoomException("문의 내역을 찾을 수 없습니다.");
         });
+    }
+
+    public void deleteByRoomId(Long roomId) {
+        chatRoomRepository.deleteById(roomId);
     }
 }

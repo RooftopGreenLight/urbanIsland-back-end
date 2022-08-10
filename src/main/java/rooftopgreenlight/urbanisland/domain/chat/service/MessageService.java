@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.domain.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rooftopgreenlight.urbanisland.api.common.exception.AuthorizationException;
 import rooftopgreenlight.urbanisland.domain.chat.entity.ChatRoom;
 import rooftopgreenlight.urbanisland.domain.chat.entity.Message;
 import rooftopgreenlight.urbanisland.domain.chat.repository.MessageRepository;
@@ -45,5 +46,14 @@ public class MessageService {
     public Message getFirstMsgJoinFetchMember(Long memberId, Long roomId) {
         return messageRepository.findByJoinFetchMemberOrdered(memberId, roomId)
                 .stream().findFirst().orElse(null);
+    }
+
+    public void deleteMessageByRoomId(Long memberId, Long roomId) {
+        ChatRoom findChatRoom = chatRoomService.findById(roomId);
+        if(!findChatRoom.getMemberId().equals(memberId)) {
+            throw new AuthorizationException("권한이 없습니다.");
+        }
+        messageRepository.deleteBulkMessages(roomId);
+        chatRoomService.deleteByRoomId(roomId);
     }
 }

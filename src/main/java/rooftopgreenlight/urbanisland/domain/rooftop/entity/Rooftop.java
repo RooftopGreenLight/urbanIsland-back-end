@@ -27,15 +27,25 @@ public class Rooftop extends BaseEntity {
 
     @Column(nullable = false)
     private String width;
+    private String phoneNumber;
+
     private String explainContent;
     private String refundContent;
     private String roleContent;
+    private String ownerContent;
+
+    @Column(nullable = false)
+    private Integer totalPrice;
+    private Integer widthPrice;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
     private RooftopType rooftopType;
+
+    @Enumerated(EnumType.STRING)
+    private RooftopProgress rooftopProgress;
 
     @Embedded
     @Column(nullable = false)
@@ -69,17 +79,23 @@ public class Rooftop extends BaseEntity {
     }
 
     @Builder(builderMethodName = "createRooftop")
-    public Rooftop(String width, String explainContent, String refundContent, String roleContent,
-                   LocalDateTime startTime, LocalDateTime endTime, RooftopPeopleCount peopleCount,
-                   Address address, RooftopType rooftopType) {
+    public Rooftop(String width, String phoneNumber, String explainContent, String refundContent, String roleContent,
+                   String ownerContent, LocalDateTime startTime, LocalDateTime endTime, Integer totalPrice,
+                   Integer widthPrice, RooftopPeopleCount peopleCount, Address address,
+                   RooftopType rooftopType, RooftopProgress rooftopProgress) {
         this.width = width;
+        this.phoneNumber = phoneNumber;
         this.explainContent = explainContent;
         this.refundContent = refundContent;
         this.roleContent = roleContent;
+        this.ownerContent = ownerContent;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.totalPrice = totalPrice;
+        this.widthPrice = widthPrice;
         this.peopleCount = peopleCount;
         this.address = address;
         this.rooftopType = rooftopType;
+        this.rooftopProgress = rooftopProgress;
     }
 }

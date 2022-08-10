@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     OK(HttpStatus.OK.value(), HttpStatus.OK, "OK!"),
     CREATED(HttpStatus.CREATED.value(), HttpStatus.CREATED, "CREATED!"),
+    FORBIDDEN(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, "FORBIDDEN!"),
 
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "Bad Request"),
     SPRING_BAD_REQUEST(HttpStatus.BAD_REQUEST.value() + 51, HttpStatus.BAD_REQUEST, "Spring-detected bad request"),
