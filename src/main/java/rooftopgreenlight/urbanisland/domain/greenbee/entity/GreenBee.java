@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
+import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.file.entity.GreenBeeImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
@@ -32,6 +33,9 @@ public class GreenBee extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    private Progress progress;
+
     @Embedded
     @AttributeOverrides(
             value = {
@@ -53,6 +57,10 @@ public class GreenBee extends BaseEntity {
         this.member = member;
     }
 
+    public void changeProgress(Progress progress) {
+        this.progress = progress;
+    }
+
     public void addGreenBeeImage(GreenBeeImage greenBeeImage) {
         this.greenBeeImages.add(greenBeeImage);
     }
@@ -62,5 +70,6 @@ public class GreenBee extends BaseEntity {
         this.officeNumber = officeNumber;
         this.content = content;
         this.address = address;
+        this.progress = Progress.NONE;
     }
 }
