@@ -4,10 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.ChatRequest;
@@ -71,6 +68,21 @@ public class ChatController {
         });
         return APIResponse.of(roomResList);
     }
+
+    /**
+     * 문의 응답 확인하기 (세부정보) - 문의 삭제
+     * @param roomId
+     * @param memberId
+     * @return null -
+     */
+    @DeleteMapping("/inquery/room/{roomId}")
+    @ApiOperation(value = "문의 응답 확인하기 - 문의 삭제")
+    public APIResponse deleteInquiryRoom(@PathVariable(value = "roomId") Long roomId,
+                                         @PK Long memberId) {
+        messageService.deleteMessageByRoomId(memberId, roomId);
+        return APIResponse.empty();
+    }
+
 
     /**
      * 문의하기
