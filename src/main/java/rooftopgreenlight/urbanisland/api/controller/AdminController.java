@@ -43,7 +43,7 @@ public class AdminController {
         return APIResponse.empty();
     }
 
-    @PostMapping("/green-bees/reject/{memberId}")
+    @DeleteMapping("/green-bees/reject/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "승인 대기 중 그린비 거절",
             notes = "요청 데이터(path) - memberId : 거절할 memberId")
@@ -77,7 +77,7 @@ public class AdminController {
         return APIResponse.empty();
     }
 
-    @PostMapping("/owner/reject/{memberId}")
+    @DeleteMapping("/owner/reject/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "승인 대기 중 옥상지기 거절",
             notes = "요청 데이터(path) - memberId : 거절할 memberId")
