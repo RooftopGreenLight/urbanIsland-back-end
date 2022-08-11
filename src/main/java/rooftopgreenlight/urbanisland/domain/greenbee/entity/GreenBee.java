@@ -70,6 +70,5 @@ public class GreenBee extends BaseEntity {
         this.officeNumber = officeNumber;
         this.content = content;
         this.address = address;
-        this.progress = Progress.NONE;
     }
 }

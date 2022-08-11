@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/green-bees/join", "/api/v1/owners/join").hasRole("USER")
+                .authorizeRequests().antMatchers("/api/v1/green-bees/join", "/api/v1/owners/join").hasAnyRole("USER", "GREENBEE", "ROOFTOPOWNER")
                 .and()
                 .authorizeRequests().antMatchers("/api/v1/green-bees/**", "/api/v1/owners/**").hasAnyRole("GREENBEE", "ROOFTOPOWNER", "ADMIN")
                 .anyRequest().authenticated()

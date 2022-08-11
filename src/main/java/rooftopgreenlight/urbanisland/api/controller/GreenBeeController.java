@@ -8,13 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
-import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.GreenBeeImageResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.GreenBeeInfoResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.GreenBeeRequest;
+import rooftopgreenlight.urbanisland.api.controller.dto.*;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.greenbee.entity.GreenBee;
 import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/green-bees")
 public class GreenBeeController {
 
+    private final RooftopService rooftopService;
     private final GreenBeeService greenBeeService;
 
     @PostMapping("/join")
@@ -63,11 +63,26 @@ public class GreenBeeController {
     public APIResponse getOtherGreenBeeInfo(@PathVariable("memberId") Long memberId) {
 
         GreenBee greenBeeInfo = greenBeeService.getMyGreenBeeInfo(memberId);
-
         return APIResponse.of(GreenBeeInfoResponse.of(
                 greenBeeInfo,
                 greenBeeInfo.getGreenBeeImages().stream().map(GreenBeeImageResponse::of).collect(Collectors.toList())
         ));
+    }
+
+    // 마이페이지(그린비) - 녹화가 필요한 옥상 찾기
+    @GetMapping("/required-green")
+    @ResponseStatus(HttpStatus.OK)
+    public APIResponse getRequiredGreenRooftop() {
+        List<NGRooftopDto> ngRooftop = rooftopService.getNGRooftop();
+        return APIResponse.of(ngRooftop.stream().map(RooftopResponse::of).collect(Collectors.toList()));
+    }
+
+    // 녹화가 필요한 옥상 찾기 - 각 옥상 클릭
+    @GetMapping("/required-green/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    public APIResponse getRequiredGreenRooftopDetail(@PathVariable("rooftopId") Long rooftopId) {
+        NGRooftopDto ngRooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
+        return APIResponse.of(RooftopResponse.of(ngRooftopDto));
     }
 
 }

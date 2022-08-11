@@ -41,7 +41,6 @@ public class Owner extends BaseEntity {
     
     @Builder(builderMethodName = "createOwner")
     public Owner(OwnerImage ownerImage) {
-        this.progress = Progress.NONE;
         this.ownerImage = ownerImage;
     }
 }

@@ -63,7 +63,7 @@ public class GreenBeeService {
         }
 
         greenBee.changeMember(member);
-        greenBee.changeProgress(Progress.WAIT);
+        greenBee.changeProgress(Progress.ADMIN_WAIT);
 
         greenBeeRepository.save(greenBee);
     }
@@ -111,7 +111,7 @@ public class GreenBeeService {
             member.changeAuthority(Authority.ROLE_GREENBEE);
         }
 
-        greenBee.changeProgress(Progress.COMPLETED);
+        greenBee.changeProgress(Progress.ADMIN_COMPLETED);
     }
 
     /**

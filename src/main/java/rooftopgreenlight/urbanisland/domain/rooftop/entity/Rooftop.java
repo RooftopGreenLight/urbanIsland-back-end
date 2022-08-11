@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
+import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
@@ -38,6 +39,9 @@ public class Rooftop extends BaseEntity {
     private Integer totalPrice;
     private Integer widthPrice;
 
+    @Column(name = "rooftop_views")
+    private Integer views;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
@@ -45,7 +49,7 @@ public class Rooftop extends BaseEntity {
     private RooftopType rooftopType;
 
     @Enumerated(EnumType.STRING)
-    private RooftopProgress rooftopProgress;
+    private Progress rooftopProgress;
 
     @Embedded
     @Column(nullable = false)
@@ -82,7 +86,7 @@ public class Rooftop extends BaseEntity {
     public Rooftop(String width, String phoneNumber, String explainContent, String refundContent, String roleContent,
                    String ownerContent, LocalDateTime startTime, LocalDateTime endTime, Integer totalPrice,
                    Integer widthPrice, RooftopPeopleCount peopleCount, Address address,
-                   RooftopType rooftopType, RooftopProgress rooftopProgress) {
+                   RooftopType rooftopType, Progress rooftopProgress, Integer views) {
         this.width = width;
         this.phoneNumber = phoneNumber;
         this.explainContent = explainContent;
@@ -97,5 +101,6 @@ public class Rooftop extends BaseEntity {
         this.address = address;
         this.rooftopType = rooftopType;
         this.rooftopProgress = rooftopProgress;
+        this.views = views;
     }
 }

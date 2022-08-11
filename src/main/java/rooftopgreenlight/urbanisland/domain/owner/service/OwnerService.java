@@ -14,7 +14,6 @@ import rooftopgreenlight.urbanisland.domain.file.entity.OwnerImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.file.service.FileService;
-import rooftopgreenlight.urbanisland.domain.greenbee.service.dto.GreenBeeDto;
 import rooftopgreenlight.urbanisland.domain.member.entity.Authority;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
@@ -38,7 +37,7 @@ public class OwnerService {
                 .createImage(file, ImageType.CONFIRMATION, ImageName.Owner));
 
         owner.changeMember(member);
-        owner.changeProgress(Progress.WAIT);
+        owner.changeProgress(Progress.ADMIN_WAIT);
 
         ownerRepository.save(owner);
     }
@@ -68,7 +67,7 @@ public class OwnerService {
             member.changeAuthority(Authority.ROLE_ROOFTOPOWNER);
         }
 
-        owner.changeProgress(Progress.COMPLETED);
+        owner.changeProgress(Progress.ADMIN_COMPLETED);
     }
 
     /**

@@ -155,6 +155,18 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 옥상 조회 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundRooftopException(NotFoundRooftopException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+
+    /**
      * 최상위 오류
      * @param e
      * @return 에러 정보 전달
