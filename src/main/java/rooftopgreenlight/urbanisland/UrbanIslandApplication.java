@@ -2,6 +2,10 @@ package rooftopgreenlight.urbanisland;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -13,8 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@ConfigurationPropertiesScan(basePackages = {"rooftopgreenlight.urbanisland.domain.common.properties",
-		"rooftopgreenlight.urbanisland.api.common.properties"})
+@ConfigurationPropertiesScan(basePackages = {
+		"rooftopgreenlight.urbanisland.domain.common.properties",
+		"rooftopgreenlight.urbanisland.api.common.properties"}
+)
 public class UrbanIslandApplication {
 
 	public static void main(String[] args) {
@@ -29,7 +35,11 @@ public class UrbanIslandApplication {
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.findAndRegisterModules()
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+				.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL)
+				.registerModules(new JavaTimeModule(), new Jdk8Module());
 		return objectMapper;
 	}
 
