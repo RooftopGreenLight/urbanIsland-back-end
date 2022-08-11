@@ -2,10 +2,13 @@ package rooftopgreenlight.urbanisland.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopImageDto;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -60,14 +63,17 @@ public class RooftopResponse {
                 rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), greenBeeImages);
     }
 
-    public static RooftopResponse of(NGRooftopDto ngRooftop) {
-        List<RooftopImageResponse> rooftopImages = ngRooftop.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList());
-        RooftopImageResponse structureImage = RooftopImageResponse.of(ngRooftop.getStructureImage());
+    public static RooftopResponse of(NGRooftopDto ngRooftopDto, boolean isOne) {
+        if (!isOne) {
+            return new RooftopResponse(ngRooftopDto.getId(), ngRooftopDto.getWidthPrice(), ngRooftopDto.getWidth(),
+                    ngRooftopDto.getCity(), ngRooftopDto.getDistrict(), ngRooftopDto.getDetail(),
+                    ngRooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()));
+        }
 
-        return new RooftopResponse(ngRooftop.getId(), ngRooftop.getWidthPrice(), ngRooftop.getRequiredTermType(),
-                ngRooftop.getWidth(), ngRooftop.getCity(), ngRooftop.getDistrict(), ngRooftop.getDetail(),
-                ngRooftop.getPhoneNumber(), ngRooftop.getOwnerContent(), rooftopImages, structureImage);
+        return new RooftopResponse(ngRooftopDto.getId(), ngRooftopDto.getWidthPrice(), 3, ngRooftopDto.getWidth(),
+                ngRooftopDto.getCity(), ngRooftopDto.getDistrict(), ngRooftopDto.getDetail(), ngRooftopDto.getPhoneNumber(),
+                ngRooftopDto.getOwnerContent(), ngRooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()),
+                RooftopImageResponse.of(ngRooftopDto.getStructureImage()));
     }
-
 
 }
