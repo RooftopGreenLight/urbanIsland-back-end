@@ -12,7 +12,6 @@ import rooftopgreenlight.urbanisland.domain.owner.service.dto.QOwnerDto;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static rooftopgreenlight.urbanisland.domain.file.entity.QOwnerImage.ownerImage;
 import static rooftopgreenlight.urbanisland.domain.owner.entity.QOwner.owner;
 
 public class OwnerRepositoryImpl implements OwnerRepositoryCustom {
@@ -31,7 +30,7 @@ public class OwnerRepositoryImpl implements OwnerRepositoryCustom {
                 .from(owner)
                 .leftJoin(owner.ownerImage)
                 .where(
-                        owner.progress.eq(Progress.WAIT)
+                        owner.progress.eq(Progress.ADMIN_WAIT)
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -41,7 +40,7 @@ public class OwnerRepositoryImpl implements OwnerRepositoryCustom {
                 .select(owner.count())
                 .from(owner)
                 .where(
-                        owner.progress.eq(Progress.WAIT)
+                        owner.progress.eq(Progress.ADMIN_WAIT)
                 );
 
         return PageableExecutionUtils.getPage(content, pageRequest, countQuery::fetchOne);
