@@ -131,7 +131,8 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     public APIErrorResponse authorizationException(AuthorizationException e) {
         return APIErrorResponse.of(false, ErrorCode.FORBIDDEN, e);
     }
-    
+
+    /**
      * 그린비 신청 조회 오류
      * @param e
      * @return 에러 정보 전달
@@ -152,6 +153,18 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     public APIErrorResponse notFoundOwnerException(NotFoundOwnerException e) {
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
+
+    /**
+     * 옥상 조회 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundRooftopException(NotFoundRooftopException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
 
     /**
      * 최상위 오류
