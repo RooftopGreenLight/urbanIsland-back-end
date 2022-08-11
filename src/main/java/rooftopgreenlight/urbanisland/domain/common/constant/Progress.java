@@ -1,5 +1,5 @@
 package rooftopgreenlight.urbanisland.domain.common.constant;
 
 public enum Progress {
-    NONE, WAIT, COMPLETED
+    GREENBEE_WAIT, GREENBEE_COMPLETED, ADMIN_WAIT, ADMIN_COMPLETED
 }
