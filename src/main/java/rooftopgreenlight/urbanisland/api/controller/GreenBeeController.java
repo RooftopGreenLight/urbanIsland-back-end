@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.api.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,10 @@ import rooftopgreenlight.urbanisland.api.controller.dto.*;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.greenbee.entity.GreenBee;
 import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,9 +75,10 @@ public class GreenBeeController {
     // 마이페이지(그린비) - 녹화가 필요한 옥상 찾기
     @GetMapping("/required-green")
     @ResponseStatus(HttpStatus.OK)
-    public APIResponse getRequiredGreenRooftop() {
-        List<NGRooftopDto> ngRooftop = rooftopService.getNGRooftop();
-        return APIResponse.of(ngRooftop.stream().map(RooftopResponse::of).collect(Collectors.toList()));
+    public APIResponse getRequiredGreenRooftop(@RequestParam("page") int page) {
+        RooftopPageDto ngRooftopPageDto = rooftopService.getNGRooftop(page);
+
+        return APIResponse.of(RooftopPageResponse.of(ngRooftopPageDto));
     }
 
     // 녹화가 필요한 옥상 찾기 - 각 옥상 클릭
@@ -82,7 +86,8 @@ public class GreenBeeController {
     @ResponseStatus(HttpStatus.OK)
     public APIResponse getRequiredGreenRooftopDetail(@PathVariable("rooftopId") Long rooftopId) {
         NGRooftopDto ngRooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
-        return APIResponse.of(RooftopResponse.of(ngRooftopDto));
+
+        return APIResponse.of(RooftopResponse.of(ngRooftopDto, true));
     }
 
 }
