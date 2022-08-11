@@ -1,15 +1,21 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.service.dto;
 
 import lombok.Data;
+import rooftopgreenlight.urbanisland.api.controller.dto.RooftopImageResponse;
+import rooftopgreenlight.urbanisland.api.controller.dto.RooftopResponse;
+import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopOption;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class NGRooftopDto {
     private Long id;
     private int widthPrice;
-    private int requiredTermType;
+    private Integer requiredTermType;
 
     private String width;
     private String city;
@@ -54,8 +60,33 @@ public class NGRooftopDto {
     }
 
 
-    public static NGRooftopDto of(Long id, int widthPrice, int requiredTermType, String width, String city, String district, String detail, String phoneNumber, String ownerContent, List<RooftopImageDto> greenBeeImages, RooftopImageDto structureImage) {
-        return new NGRooftopDto(id, widthPrice, requiredTermType, width, city, district, detail, phoneNumber, ownerContent, greenBeeImages, structureImage);
+    public static NGRooftopDto of(Long id, int widthPrice, Integer requiredTermType, String width, String city, String district, String detail, String phoneNumber, String ownerContent) {
+        return new NGRooftopDto(id, widthPrice, requiredTermType, width, city, district, detail, phoneNumber, ownerContent, null, null);
+    }
+
+    public static NGRooftopDto of(Rooftop rooftop, boolean isOne) {
+        NGRooftopDto ngRooftopDto = isOne ? createDetailNGRooftopDto(rooftop) : createListInfoNGRooftopDto(rooftop);
+
+        Map<Boolean, List<RooftopImageDto>> listMap = rooftop.getRooftopImages().stream().map(RooftopImageDto::of)
+                .collect(Collectors.partitioningBy(rooftopImageResponse -> rooftopImageResponse.getRooftopImageType() == ImageType.NORMAL));
+
+        ngRooftopDto.setRooftopImages(listMap.get(true));
+        if (listMap.get(false) != null) {
+            ngRooftopDto.setStructureImage(listMap.get(false).get(0));
+        }
+
+        return ngRooftopDto;
+    }
+
+    private static NGRooftopDto createListInfoNGRooftopDto(Rooftop rooftop) {
+        return new NGRooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getWidth(),
+                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), null);
+    }
+
+    private static NGRooftopDto createDetailNGRooftopDto(Rooftop rooftop) {
+        return NGRooftopDto.of(rooftop.getId(), rooftop.getWidthPrice(), 3, rooftop.getWidth(),
+                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(),
+                rooftop.getPhoneNumber(), rooftop.getOwnerContent());
     }
 
 }
