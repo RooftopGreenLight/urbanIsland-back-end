@@ -1,4 +1,4 @@
-package rooftopgreenlight.urbanisland.api.common.exception;
+package rooftopgreenlight.urbanisland.domain.common.exception;
 
 public class NotFoundChatRoomException extends RuntimeException {
     public NotFoundChatRoomException() {

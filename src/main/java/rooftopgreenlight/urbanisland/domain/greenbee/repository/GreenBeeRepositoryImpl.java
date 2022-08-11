@@ -33,7 +33,7 @@ public class GreenBeeRepositoryImpl implements GreenBeeRepositoryCustom {
                 .from(greenBeeImage)
                 .leftJoin(greenBeeImage.greenBee, greenBee)
                 .where(
-                        greenBee.progress.eq(Progress.WAIT)
+                        greenBee.progress.eq(Progress.ADMIN_WAIT)
                                 .and(greenBeeImage.greenBeeImageType.eq(ImageType.CONFIRMATION))
                 )
                 .offset(pageRequest.getOffset())
@@ -44,7 +44,7 @@ public class GreenBeeRepositoryImpl implements GreenBeeRepositoryCustom {
                 .select(greenBeeImage.count())
                 .from(greenBeeImage)
                 .where(
-                        greenBee.progress.eq(Progress.WAIT)
+                        greenBee.progress.eq(Progress.ADMIN_WAIT)
                                 .and(greenBeeImage.greenBeeImageType.eq(ImageType.CONFIRMATION))
                 );
 

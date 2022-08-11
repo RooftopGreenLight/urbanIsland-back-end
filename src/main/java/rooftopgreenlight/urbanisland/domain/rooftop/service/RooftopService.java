@@ -2,10 +2,15 @@ package rooftopgreenlight.urbanisland.domain.rooftop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
+import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopException;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
@@ -13,9 +18,14 @@ import rooftopgreenlight.urbanisland.domain.file.service.FileService;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.repository.RooftopRepository;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopImageDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -33,15 +43,15 @@ public class RooftopService {
      */
     @Transactional
     public void createGreenRooftop(String rooftopType, String width, String phoneNumber, String explainContent,
-                                   String refundContent, String roleContent, String ownerContent, LocalDateTime startTime,
-                                   LocalDateTime endTime, int totalPrice, int widthPrice, RooftopPeopleCount peopleCount,
+                                   String refundContent, String roleContent, String ownerContent, LocalTime startTime,
+                                   LocalTime endTime, int totalPrice, int widthPrice, RooftopPeopleCount peopleCount,
                                    Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
                                    List<Integer> detailInfos, List<Integer> requiredItems, List<Integer> deadLines,
                                    List<String> options, List<Integer> prices, List<Integer> counts, Long memberId) {
 
         int wPrice = rooftopType.equals("G") ? 0 : widthPrice;
         RooftopType type = rooftopType.equals("G") ? RooftopType.GREEN : RooftopType.NOT_GREEN;
-        RooftopProgress progress = rooftopType.equals("G") ? RooftopProgress.ADMIN_WAIT : RooftopProgress.GREENBEE_WAIT;
+        Progress progress = rooftopType.equals("G") ? Progress.ADMIN_WAIT : Progress.GREENBEE_WAIT;
 
         Rooftop rooftop = getRooftop(width, phoneNumber, explainContent, refundContent, roleContent, ownerContent,
                 startTime, endTime, totalPrice, wPrice, peopleCount, address, type, progress);
@@ -108,9 +118,9 @@ public class RooftopService {
 
 
     private Rooftop getRooftop(String width, String phoneNumber, String explainContent, String refundContent,
-                               String roleContent, String ownerContent, LocalDateTime startTime, LocalDateTime endTime,
+                               String roleContent, String ownerContent, LocalTime startTime, LocalTime endTime,
                                int totalPrice, int widthPrice, RooftopPeopleCount peopleCount, Address address,
-                               RooftopType rooftopType, RooftopProgress progress) {
+                               RooftopType rooftopType, Progress progress) {
         return Rooftop.createRooftop()
                 .width(width)
                 .phoneNumber(phoneNumber)
@@ -126,6 +136,22 @@ public class RooftopService {
                 .address(address)
                 .rooftopType(rooftopType)
                 .rooftopProgress(progress)
+                .views(0)
                 .build();
+    }
+
+    public RooftopPageDto getNGRooftop(int page) {
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Rooftop> rooftopPage = rooftopRepository.findByNGRooftopPage(RooftopType.NOT_GREEN, pageRequest);
+
+        return RooftopPageDto.of(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent());
+    }
+
+    public NGRooftopDto getNGRooftopDetail(Long rooftopId) {
+        Rooftop rooftop = rooftopRepository.findById(rooftopId).orElseThrow(() -> {
+            throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");
+        });
+
+        return NGRooftopDto.of(rooftop, true);
     }
 }

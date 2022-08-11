@@ -1,17 +1,16 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
+import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,14 +37,17 @@ public class Rooftop extends BaseEntity {
     private Integer totalPrice;
     private Integer widthPrice;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @Column(name = "rooftop_views")
+    private Integer views;
+
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
     private RooftopType rooftopType;
 
     @Enumerated(EnumType.STRING)
-    private RooftopProgress rooftopProgress;
+    private Progress rooftopProgress;
 
     @Embedded
     @Column(nullable = false)
@@ -61,12 +63,15 @@ public class Rooftop extends BaseEntity {
     )
     private Address address;
 
+    @BatchSize(size = 6)
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopImage> rooftopImages = new ArrayList<>();
 
+    @BatchSize(size = 20)
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopDetail> rooftopDetails = new ArrayList<>();
 
+    @BatchSize(size = 20)
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopOption> rooftopOptions = new ArrayList<>();
 
@@ -80,9 +85,9 @@ public class Rooftop extends BaseEntity {
 
     @Builder(builderMethodName = "createRooftop")
     public Rooftop(String width, String phoneNumber, String explainContent, String refundContent, String roleContent,
-                   String ownerContent, LocalDateTime startTime, LocalDateTime endTime, Integer totalPrice,
+                   String ownerContent, LocalTime startTime, LocalTime endTime, Integer totalPrice,
                    Integer widthPrice, RooftopPeopleCount peopleCount, Address address,
-                   RooftopType rooftopType, RooftopProgress rooftopProgress) {
+                   RooftopType rooftopType, Progress rooftopProgress, Integer views) {
         this.width = width;
         this.phoneNumber = phoneNumber;
         this.explainContent = explainContent;
@@ -97,5 +102,6 @@ public class Rooftop extends BaseEntity {
         this.address = address;
         this.rooftopType = rooftopType;
         this.rooftopProgress = rooftopProgress;
+        this.views = views;
     }
 }

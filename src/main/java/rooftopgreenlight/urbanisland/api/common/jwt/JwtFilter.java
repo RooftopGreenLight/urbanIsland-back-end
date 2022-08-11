@@ -20,7 +20,6 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
-    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,6 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isAuthentication(HttpServletResponse response, String token) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         if(!jwtProvider.isTokenValid(token)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
