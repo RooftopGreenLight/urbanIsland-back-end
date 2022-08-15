@@ -84,7 +84,7 @@ public class NGRooftopDto {
     }
 
     private static NGRooftopDto createDetailNGRooftopDto(Rooftop rooftop) {
-        return NGRooftopDto.of(rooftop.getId(), rooftop.getWidthPrice(), 3, rooftop.getWidth(),
+        return NGRooftopDto.of(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getDeadLineType(), rooftop.getWidth(),
                 rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(),
                 rooftop.getPhoneNumber(), rooftop.getOwnerContent());
     }
