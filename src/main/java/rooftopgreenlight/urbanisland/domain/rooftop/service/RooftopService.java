@@ -46,7 +46,7 @@ public class RooftopService {
     @Transactional
     public void createGreenRooftop(String rooftopType, String width, String phoneNumber, String explainContent,
                                    String refundContent, String roleContent, String ownerContent, LocalTime startTime,
-                                   LocalTime endTime, int totalPrice, int widthPrice, RooftopPeopleCount peopleCount,
+                                   LocalTime endTime, Integer totalPrice, Integer widthPrice, RooftopPeopleCount peopleCount,
                                    Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
                                    List<Integer> detailInfos, List<Integer> requiredItems, Integer deadLine,
                                    List<String> options, List<Integer> prices, List<Integer> counts, Long memberId) {
@@ -205,7 +205,8 @@ public class RooftopService {
      */
     private Rooftop createRooftop(String width, String phoneNumber, String explainContent, String refundContent,
                                String roleContent, String ownerContent, LocalTime startTime, LocalTime endTime,
-                               int totalPrice, int widthPrice, RooftopPeopleCount peopleCount, Address address, int deadLineType) {
+                               Integer totalPrice, Integer widthPrice, RooftopPeopleCount peopleCount,
+                                  Address address, Integer deadLineType) {
         return Rooftop.createRooftop()
                 .width(width)
                 .phoneNumber(phoneNumber)

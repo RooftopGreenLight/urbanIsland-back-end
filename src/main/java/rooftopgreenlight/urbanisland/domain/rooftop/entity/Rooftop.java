@@ -112,10 +112,10 @@ public class Rooftop extends BaseEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalPrice = totalPrice;
-        this.widthPrice = widthPrice;
+        if(widthPrice != null) this.widthPrice = widthPrice;
         this.peopleCount = peopleCount;
         this.address = address;
         this.views = views;
-        this.deadLineType = deadLineType;
+        if(deadLineType != null) this.deadLineType = deadLineType;
     }
 }
