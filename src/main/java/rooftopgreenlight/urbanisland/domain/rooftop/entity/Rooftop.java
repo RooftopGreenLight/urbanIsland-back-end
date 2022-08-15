@@ -39,6 +39,7 @@ public class Rooftop extends BaseEntity {
 
     @Column(name = "rooftop_views")
     private Integer views;
+    private Integer deadLineType;
 
     private LocalTime startTime;
     private LocalTime endTime;
@@ -75,6 +76,10 @@ public class Rooftop extends BaseEntity {
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopOption> rooftopOptions = new ArrayList<>();
 
+    @BatchSize(size = 20)
+    @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RooftopGreeningApply> rooftopGreeningApplies = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -83,11 +88,18 @@ public class Rooftop extends BaseEntity {
         this.member = member;
     }
 
+    public void changeProgress(Progress progress) {
+        this.rooftopProgress = progress;
+    }
+
+    public void changeRooftopType(RooftopType rooftopType) {
+        this.rooftopType = rooftopType;
+    }
+
     @Builder(builderMethodName = "createRooftop")
     public Rooftop(String width, String phoneNumber, String explainContent, String refundContent, String roleContent,
                    String ownerContent, LocalTime startTime, LocalTime endTime, Integer totalPrice,
-                   Integer widthPrice, RooftopPeopleCount peopleCount, Address address,
-                   RooftopType rooftopType, Progress rooftopProgress, Integer views) {
+                   Integer widthPrice, RooftopPeopleCount peopleCount, Address address, Integer views, Integer deadLineType) {
         this.width = width;
         this.phoneNumber = phoneNumber;
         this.explainContent = explainContent;
@@ -100,8 +112,7 @@ public class Rooftop extends BaseEntity {
         this.widthPrice = widthPrice;
         this.peopleCount = peopleCount;
         this.address = address;
-        this.rooftopType = rooftopType;
-        this.rooftopProgress = rooftopProgress;
         this.views = views;
+        this.deadLineType = deadLineType;
     }
 }
