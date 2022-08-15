@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 public class RooftopGreeningApplyService {
     private final RooftopGreeningApplyRepository greeningApplyRepository;
 
+    /**
+     * 그린비 -> 옥상 신청 시 신청 정보 저장하기
+     */
     @Transactional
     public void saveApply(Rooftop rooftop, GreenBee greenBee, Long memberId) {
         RooftopGreeningApply greeningApply = RooftopGreeningApply.createApply()
@@ -37,6 +40,9 @@ public class RooftopGreeningApplyService {
         greeningApplyRepository.save(greeningApply);
     }
 
+    /**
+     * 옥상지기 -> 본인의 옥상 및 신청한 그린비 정보 가져오기
+     */
     public GreeningApplyPageDto getGreenBeeWaitingList(int page, Long memberId) {
         PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.ASC,"applyTime"));
         Page<RooftopGreeningApply> byGreenBeeCompleted = greeningApplyRepository.getGreenBeeWaitingList(memberId, pageRequest);
@@ -44,10 +50,12 @@ public class RooftopGreeningApplyService {
                 byGreenBeeCompleted.getTotalElements(), byGreenBeeCompleted.getContent());
     }
 
-    public List<RooftopGreeningApply> getNotSelectedApply(Long rooftopId) {
-        return greeningApplyRepository.getRooftopApply(rooftopId);
-    }
-
+    /**
+     * 그린비가 신청한 옥상 정보 가져오기
+     * 녹화 중인 옥상 (ACCEPTED)
+     * 신청 완료, 신청 거절 (SELECTED)
+     * 녹화 확정 옥상 (COMPLETED)
+     */
     public List<GreeningApplyDto> getRooftopOfGreenBee(Long memberId, String type) {
         List<RooftopGreeningApply> greeningRooftops =
                 type.equals("ACCEPTED") ? greeningApplyRepository.getGreeningRooftopOfGreenBee(memberId, Progress.GREENING_ACCEPTED)
@@ -58,8 +66,25 @@ public class RooftopGreeningApplyService {
         return greeningRooftops.stream().map(greeningRooftop -> GreeningApplyDto.of(greeningRooftop, type)).collect(Collectors.toList());
     }
 
-    public RooftopGreeningApply completeGreeningRooftop(Long rooftopId, Long memberId) {
+    /**
+     * 옥상지기가 거절한 그린비의 신청 정보 리스트 가져오기
+     */
+    public List<RooftopGreeningApply> getNotSelectedApply(Long rooftopId) {
+        return greeningApplyRepository.getRooftopApply(rooftopId);
+    }
+
+    /**
+     * 그린비 id와 옥상 id로 녹화 신청 정보 가져오기
+     */
+    public RooftopGreeningApply getRooftopApplyByGreenBeeId(Long rooftopId, Long memberId) {
         return greeningApplyRepository.getRooftopApplyByGreenBeeId(rooftopId, memberId)
                 .orElseThrow(NotFoundRooftopException::new);
+    }
+
+    /**
+     * 옥상 녹화 신청 정보 삭제하기
+     */
+    public void deleteGreeningApplies(Long rooftopId) {
+        greeningApplyRepository.deleteGreeningApplies(rooftopId);
     }
 }

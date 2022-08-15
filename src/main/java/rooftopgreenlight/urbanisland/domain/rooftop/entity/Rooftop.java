@@ -1,6 +1,9 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.common.Address;
@@ -102,10 +105,10 @@ public class Rooftop extends BaseEntity {
                    Integer widthPrice, RooftopPeopleCount peopleCount, Address address, Integer views, Integer deadLineType) {
         this.width = width;
         this.phoneNumber = phoneNumber;
-        this.explainContent = explainContent;
-        this.refundContent = refundContent;
-        this.roleContent = roleContent;
-        this.ownerContent = ownerContent;
+        if(explainContent != null) this.explainContent = explainContent;
+        if(refundContent != null) this.refundContent = refundContent;
+        if(roleContent != null) this.roleContent = roleContent;
+        if(ownerContent != null) this.ownerContent = ownerContent;
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalPrice = totalPrice;

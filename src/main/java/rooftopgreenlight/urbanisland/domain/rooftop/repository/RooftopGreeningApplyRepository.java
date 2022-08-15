@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.domain.rooftop.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
@@ -34,4 +35,8 @@ public interface RooftopGreeningApplyRepository extends JpaRepository<RooftopGre
 
     @Query("select r from RooftopGreeningApply r where r.rooftop.id =:rooftopId and r.greenBeeMemberId=:memberId")
     Optional<RooftopGreeningApply> getRooftopApplyByGreenBeeId(Long rooftopId, Long memberId);
+
+    @Modifying
+    @Query("delete from RooftopGreeningApply r where r.rooftop.id =:rooftopId")
+    void deleteGreeningApplies(Long rooftopId);
 }
