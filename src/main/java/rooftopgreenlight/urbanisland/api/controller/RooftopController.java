@@ -40,7 +40,7 @@ public class RooftopController {
                                      @RequestParam(name = "structureFile", required = false) List<MultipartFile> structureFiles,
                                      @RequestParam(name = "detailInfoNum", required = false) List<Integer> detailInfos,
                                      @RequestParam(name = "requiredItemNum", required = false) List<Integer> requiredItems,
-                                     @RequestParam(name = "deadLineNum", required = false) List<Integer> deadLines,
+                                     @RequestParam(name = "deadLineNum", required = false) Integer deadLine,
                                      @RequestParam(name = "optionContent", required = false) List<String> options,
                                      @RequestParam(name = "optionPrice", required = false) List<Integer> prices,
                                      @RequestParam(name = "optionCount", required = false) List<Integer> counts
@@ -53,7 +53,7 @@ public class RooftopController {
         rooftopService.createGreenRooftop(rooftopType, request.getWidth(), request.getPhoneNumber(), request.getExplainContent(),
                 request.getRefundContent(), request.getRoleContent(), request.getOwnerContent(), request.getStartTime(),
                 request.getEndTime(), request.getTotalPrice(), request.getWidthPrice(), peopleCount, address,
-                normalFiles, structureFiles, detailInfos, requiredItems, deadLines, options, prices, counts, memberId);
+                normalFiles, structureFiles, detailInfos, requiredItems, deadLine, options, prices, counts, memberId);
 
         return APIResponse.empty();
 
