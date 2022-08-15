@@ -27,7 +27,7 @@ public class RooftopController {
     @PostMapping("/green")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Green Rooftop 저장",
-            notes = "요청 데이터(Parameter) -> width, phoneNumber, explainContent, refundContent, roleContent, ownerContent," +
+            notes = "요청 데이터(Parameter) - key -> width, phoneNumber, explainContent, refundContent, roleContent, ownerContent," +
                     "startTime, endTime, totalPrice, widthPrice" +
                     "adultCount, kidCount, petCount, totalCount, county, city, detail, " +
                     "rooftopType(G, NG), normalFile, structureFile, detailInfoNum, requiredItemNum, " +

@@ -72,62 +72,66 @@ public class GreenBeeController {
         ));
     }
 
-    // 마이페이지(그린비) - 녹화가 필요한 옥상 찾기
     @GetMapping("/required-green")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "마이페이지(그린비) - 녹화가 필요한 옥상 찾기",
+            notes = "요청 데이터(Parameter) - key : page")
     public APIResponse getRequiredGreenRooftop(@RequestParam("page") int page) {
         RooftopPageDto ngRooftopPageDto = rooftopService.getNGRooftop(page);
 
         return APIResponse.of(RooftopPageResponse.of(ngRooftopPageDto));
     }
 
-    // 녹화가 필요한 옥상 찾기 - 각 옥상 클릭
     @GetMapping("/required-green/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "녹화가 필요한 옥상 찾기 - 개별 NG 옥상 정보 조회",
+        notes = "요청 데이터(path) - /rooftopId")
     public APIResponse getRequiredGreenRooftopDetail(@PathVariable("rooftopId") Long rooftopId) {
         NGRooftopDto ngRooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
 
         return APIResponse.of(RooftopResponse.of(ngRooftopDto, true));
     }
 
-    /**** 여기서부터 테스트 필요 *******/
-    // 그린비 -> 옥상 신청하기
     @GetMapping("/required-green/select/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "그린비 -> 옥상 녹화 신청하기 ",
+        notes = "요청 데이터(path) - /rooftopId")
     public APIResponse selectRequiredGreenRooftop(@PathVariable("rooftopId") Long rooftopId,
                                                   @PK Long memberId) {
         rooftopService.selectGreenBeeNGRooftop(rooftopId, memberId);
         return APIResponse.empty();
     }
 
-    // (16) 본인을 선택한 옥상 확인하기 - 녹화중인 옥상 (GREENING_ACCEPTED)
-    // 옥상주소, 옥상지기 연락처
     @GetMapping("/greening-rooftop")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화 중인 옥상",
+        notes = "요청 데이터 - 없음")
     public APIResponse getGreeningRooftop(@PK Long memberId) {
         return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "ACCEPTED"));
     }
 
-    // (16) 본인을 선택한 옥상 확인하기 - 녹화 중 옥상 - 녹화 확정하기
     @GetMapping("/greening-rooftop/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화 확정하기",
+        notes = "요청 데이터(path) - /rooftopId")
     public APIResponse completeGreeningRooftop(@PathVariable(value = "rooftopId") Long rooftopId,
                                                @PK Long memberId) {
         rooftopService.completeGreeningRooftop(rooftopId, memberId);
         return APIResponse.empty();
     }
 
-    // (16) 본인을 선택한 옥상 확인하기 - 녹화를 신청한 옥상
-    // 여기서는 그러면 GREENBEE_COMPLETED, GREENING_REJECTED
     @GetMapping("/greening-select-rooftop")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화를 신청한 옥상",
+        notes = "요청 데이터 - 없음")
     public APIResponse getSelectedRooftop(@PK Long memberId) {
         return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "SELECTED"));
     }
 
-    // (16) 본인을 선택한 옥상 확인하기 - 녹화를 완료한 옥상 - ADMIN_COMPLETED 상태
     @GetMapping("/greening-completed-rooftop")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화를 완료한 옥상",
+        notes = "요청 데이터 - 없음")
     public APIResponse getCompletedRooftop(@PK Long memberId) {
         return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "COMPLETED"));
     }

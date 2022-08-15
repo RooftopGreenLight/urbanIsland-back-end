@@ -34,28 +34,28 @@ public class OwnerController {
         return APIResponse.createEmpty();
     }
 
-    /*******여기서부터 테스트 필요 ****/
-    // (14) 그린비 대기사항
-    // 옥상 목록과 신청한 그린비 목록 가져오기
     @GetMapping("/greenbee-waiting")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(14) 그린비 대기사항 - 옥상, 그린비 목록 가져오기",
+        notes = "요청 데이터(Parameter) - key : page")
     public APIResponse getGreenBeeWaitingList(@PK Long memberId,
                                               @RequestParam("page") int page) {
         return APIResponse.of(greeningApplyService.getGreenBeeWaitingList(page, memberId));
     }
 
-    // (14) 그린비 대기사항 - 공고 내리기 - 연쇄 삭제 확인 필요
     @DeleteMapping("/delete-ngrooftop/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(14) 그린비 대기사항 - 공고 내리기",
+        notes = "요청 데이터(path) - /rooftopId")
     public APIResponse deleteNGRooftop(@PathVariable(value = "rooftopId") Long rooftopId) {
         rooftopService.deleteNGRooftop(rooftopId);
         return APIResponse.empty();
     }
 
-    // (14) 확정하기
-    // 누르면 해당 옥상의 해당 그린비를 제외한 나머지는 상태 변경하기
     @GetMapping("/confirm-greenbee/{rooftopId}/{greenbeeId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(14) 그린비 대기사항 - 확정하기",
+        notes = "요청 데이터(path) - /rooftopId/greenbeeId")
     public APIResponse confirmGreenBee(@PathVariable(value ="rooftopId") Long rooftopId,
                                       @PathVariable(value = "greenbeeId") Long greenbeeId) {
         rooftopService.confirmGreenBeeNGRooftop(rooftopId, greenbeeId);
