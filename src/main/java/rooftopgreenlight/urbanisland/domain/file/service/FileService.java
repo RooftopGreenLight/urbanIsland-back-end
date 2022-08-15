@@ -105,11 +105,6 @@ public class FileService {
         return greenBeeImage(file.getOriginalFilename(), imageType, ext, storeFilename, fileUrl);
     }
 
-    public void deleteRooftopImage(String rooftopStoreImage) {
-        deleteFileS3(rooftopStoreImage);
-    }
-
-
 //    private String getFileString(String fullStorePath) {
 //        byte[] fileBytes = null;
 //        try {

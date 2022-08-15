@@ -100,9 +100,7 @@ public class GreenBeeService {
      */
     @Transactional
     public void acceptGreenBee(long memberId) {
-        GreenBee greenBee = greenBeeRepository.findByMemberIdWithMember(memberId).orElseThrow(() -> {
-            throw new NotFoundGreenBeeException("그린비 요청 정보를 찾을 수 없습니다.");
-        });
+        GreenBee greenBee = getGreenBee(memberId);
 
         Member member = greenBee.getMember();
         if (member.getAuthority() == Authority.ROLE_ROOFTOPOWNER) {
@@ -127,5 +125,12 @@ public class GreenBeeService {
         greenBeeImages.forEach(greenBeeImage -> fileService.deleteFileS3(greenBeeImage.getStoreFilename()));
 
         greenBeeRepository.delete(greenBee);
+    }
+
+    public GreenBee getGreenBee(long memberId) {
+        GreenBee greenBee = greenBeeRepository.findByMemberIdWithMember(memberId).orElseThrow(() -> {
+            throw new NotFoundGreenBeeException("그린비 요청 정보를 찾을 수 없습니다.");
+        });
+        return greenBee;
     }
 }
