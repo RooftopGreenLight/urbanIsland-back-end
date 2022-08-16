@@ -32,6 +32,8 @@ public class RooftopImageResponse {
     }
 
     public static RooftopImageResponse of(RooftopImageDto rooftopImage) {
+        if (rooftopImage == null) return null;
+
         return new RooftopImageResponse(
                 rooftopImage.getType(),
                 rooftopImage.getUploadFilename(),

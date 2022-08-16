@@ -23,6 +23,8 @@ public class RooftopImageDto {
     }
 
     public static RooftopImageDto of(RooftopImage rooftopImage) {
+        if (rooftopImage == null) return null;
+
         return new RooftopImageDto(
                 rooftopImage.getType(),
                 rooftopImage.getUploadFilename(),

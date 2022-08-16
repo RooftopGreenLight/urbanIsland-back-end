@@ -14,7 +14,7 @@ import rooftopgreenlight.urbanisland.domain.greenbee.entity.GreenBee;
 import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopGreeningApplyService;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
-import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
 import java.util.List;
@@ -79,7 +79,7 @@ public class GreenBeeController {
     public APIResponse getRequiredGreenRooftop(@RequestParam("page") int page) {
         RooftopPageDto ngRooftopPageDto = rooftopService.getNGRooftop(page);
 
-        return APIResponse.of(RooftopPageResponse.of(ngRooftopPageDto));
+        return APIResponse.of(RooftopPageResponse.of(ngRooftopPageDto, false));
     }
 
     @GetMapping("/required-green/{rooftopId}")
@@ -87,9 +87,9 @@ public class GreenBeeController {
     @ApiOperation(value = "녹화가 필요한 옥상 찾기 - 개별 NG 옥상 정보 조회",
         notes = "요청 데이터(path) - /rooftopId")
     public APIResponse getRequiredGreenRooftopDetail(@PathVariable("rooftopId") Long rooftopId) {
-        NGRooftopDto ngRooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
+        RooftopDto rooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
 
-        return APIResponse.of(RooftopResponse.of(ngRooftopDto, true));
+        return APIResponse.of(RooftopResponse.of(rooftopDto, true));
     }
 
     @GetMapping("/required-green/select/{rooftopId}")

@@ -20,7 +20,7 @@ import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.repository.RooftopRepository;
-import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.NGRooftopDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
 import java.time.LocalTime;
@@ -134,15 +134,15 @@ public class RooftopService {
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Rooftop> rooftopPage = rooftopRepository.findByNGRooftopPage(RooftopType.NOT_GREEN, pageRequest);
 
-        return RooftopPageDto.of(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent());
+        return RooftopPageDto.of(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), false);
     }
 
     /**
      * 녹화되지 않은 옥상 개별 조회
      */
-    public NGRooftopDto getNGRooftopDetail(Long rooftopId) {
+    public RooftopDto getNGRooftopDetail(Long rooftopId) {
         Rooftop rooftop = findByRooftopId(rooftopId);
-        return NGRooftopDto.of(rooftop, true);
+        return RooftopDto.of(rooftop, true);
     }
 
     /**
@@ -157,16 +157,18 @@ public class RooftopService {
     }
 
     /**
-     * 옥상 녹화 공고 내리기
+     * 옥상 삭제
      */
     @Transactional
-    public void deleteNGRooftop(Long rooftopId) {
+    public void deleteRooftop(Long rooftopId, boolean isNg) {
         rooftopRepository.deleteRooftopDetails(rooftopId);
         rooftopRepository.deleteRooftopOptions(rooftopId);
         List<RooftopImage> rooftopImages = rooftopRepository.findRooftopImagesByRooftopId(rooftopId);
         rooftopImages.forEach(rooftopImage -> fileService.deleteFileS3(rooftopImage.getStoreFilename()));
         rooftopRepository.deleteRooftopImages(rooftopId);
-        greeningApplyService.deleteGreeningApplies(rooftopId);
+
+        if (isNg) greeningApplyService.deleteGreeningApplies(rooftopId);
+
         rooftopRepository.deleteRooftopsById(rooftopId);
     }
 
@@ -235,4 +237,33 @@ public class RooftopService {
         return rooftop;
     }
 
+    /**
+     * Admin
+     * 옥상 Progress 기준으로 옥상 정보 가져오기
+     */
+    public RooftopPageDto getRooftopPageByProgress(int page, Progress progress) {
+        PageRequest pageRequest = PageRequest.of(page, 20);
+
+        Page<Rooftop> rooftopPage = rooftopRepository.findRooftopPageByProgress(progress, pageRequest);
+        return RooftopPageDto.of(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), true);
+    }
+
+    /**
+     * Admin
+     * 옥상 신청 승인
+     */
+    @Transactional
+    public void acceptRooftop(long rooftopId) {
+        Rooftop rooftop = findByRooftopId(rooftopId);
+        rooftop.changeProgress(Progress.ADMIN_COMPLETED);
+    }
+
+    /**
+     * Admin
+     * 옥상 신청 거절
+     */
+    @Transactional
+    public void rejectRooftop(long rooftopId) {
+        deleteRooftop(rooftopId, false);
+    }
 }

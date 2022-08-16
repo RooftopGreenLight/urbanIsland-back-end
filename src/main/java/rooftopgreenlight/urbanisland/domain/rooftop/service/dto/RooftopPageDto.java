@@ -14,13 +14,26 @@ public class RooftopPageDto {
 
     private int totalPages;
     private long totalElements;
-    private List<NGRooftopDto> rooftopResponses;
+    private List<RooftopDto> rooftopResponses;
 
-    public static RooftopPageDto of(int totalPages, long totalElements, List<Rooftop> rooftops) {
+    public static RooftopPageDto of(int totalPages, long totalElements, List<Rooftop> rooftops, boolean isAdmin) {
+        if (isAdmin) {
+            return new RooftopPageDto(
+                    totalPages,
+                    totalElements,
+                    rooftops.stream().map(rooftop -> RooftopDto.of(
+                            rooftop.getId(),
+                            rooftop.getPhoneNumber(),
+                            rooftop.getOwnerContent(),
+                            rooftop.getRooftopImages()
+                    )).collect(Collectors.toList())
+            );
+        }
+
         return new RooftopPageDto(
                 totalPages,
                 totalElements,
-                rooftops.stream().map(rooftop -> NGRooftopDto.of(rooftop, false)).collect(Collectors.toList())
+                rooftops.stream().map(rooftop -> RooftopDto.of(rooftop, false)).collect(Collectors.toList())
         );
     }
 }
