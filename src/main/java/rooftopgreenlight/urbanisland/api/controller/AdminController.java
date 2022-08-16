@@ -101,7 +101,7 @@ public class AdminController {
     @PostMapping("/rooftop/accept/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "승인 대기 중 옥상 승인",
-            notes = "요청 데이터(path) - rooftopId : 승인할 memberId")
+            notes = "요청 데이터(path) - rooftopId : 승인할 rooftopId")
     public APIResponse acceptRooftop(@PathVariable("rooftopId") long rooftopId) {
         rooftopService.acceptRooftop(rooftopId);
 
