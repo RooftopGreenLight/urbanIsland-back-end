@@ -48,7 +48,7 @@ public class OwnerController {
     @ApiOperation(value = "(14) 그린비 대기사항 - 공고 내리기",
         notes = "요청 데이터(path) - /rooftopId")
     public APIResponse deleteNGRooftop(@PathVariable(value = "rooftopId") Long rooftopId) {
-        rooftopService.deleteNGRooftop(rooftopId);
+        rooftopService.deleteRooftop(rooftopId, true);
         return APIResponse.empty();
     }
 
