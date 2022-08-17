@@ -1,0 +1,71 @@
+# 로그인
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+> {%
+client.global.set("accessToken", response.body.data.tokenDto.accessToken);
+ %}
+
+###
+# Rooftop 생성 - formData
+POST {{host}}/api/v1/rooftops/green
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="normalFile"; filename="usecase1.png"
+
+< /Users/yc/Documents/usecase/usecase1.png
+--boundary
+Content-Disposition: form-data; name="structureFile"; filename="usecase2.png"
+
+< /Users/yc/Documents/usecase/usecase2.png
+--boundary
+Content-Disposition: form-data; name="width"
+
+16
+--boundary
+Content-Disposition: form-data; name="county"
+
+testtset2
+--boundary
+Content-Disposition: form-data; name="city"
+
+testtset2
+--boundary
+Content-Disposition: form-data; name="detail"
+
+testtset2
+--boundary
+Content-Disposition: form-data; name="rooftopType"
+
+G
+--boundary
+Content-Disposition: form-data; name="startTime"
+
+15:00:00
+--boundary
+Content-Disposition: form-data; name="endTime"
+
+20:00:00
+--boundary
+Content-Disposition: form-data; name="adultCount"
+
+2
+--boundary
+Content-Disposition: form-data; name="totalCount"
+
+80000
+--boundary--
+
+
+###
+# Rooftop Seach Cond 조회
+GET {{host}}/api/v1/rooftops/search?page=0&minPrice=45000&maxPrice=50000
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json

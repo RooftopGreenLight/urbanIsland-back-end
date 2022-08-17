@@ -39,3 +39,5 @@ out/
 .DS_Store
 src/main/generated
 store-file
+
+client/http-client.env.json
