@@ -31,7 +31,7 @@ public class RooftopPageResponse {
                                 rooftopDto.getDetail(),
                                 rooftopDto.getGrade(),
                                 rooftopDto.getTotalPrice(),
-                                rooftopDto.getStructureImage()
+                                rooftopDto.getMainImage()
                         )).collect(Collectors.toList())
         );
     }
