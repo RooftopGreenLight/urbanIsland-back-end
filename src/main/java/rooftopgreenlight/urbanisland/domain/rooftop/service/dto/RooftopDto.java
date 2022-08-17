@@ -28,6 +28,7 @@ public class RooftopDto {
 
     private List<RooftopImageDto> rooftopImages;
     private RooftopImageDto structureImage;
+    private RooftopImageDto mainImage;
 
     protected RooftopDto(Long id, String phoneNumber, String ownerContent, RooftopImageDto structureImage) {
         this.id = id;
@@ -37,14 +38,14 @@ public class RooftopDto {
     }
 
     protected RooftopDto(Long id, String city, String district, String detail,
-                         Double grade, Integer totalPrice, RooftopImage structureImage) {
+                         Double grade, Integer totalPrice, RooftopImage mainImage) {
         this.id = id;
         this.city = city;
         this.district = district;
         this.detail = detail;
         this.grade = grade;
         this.totalPrice = totalPrice;
-        this.structureImage = RooftopImageDto.of(structureImage);
+        this.mainImage = RooftopImageDto.of(mainImage);
     }
 
     protected RooftopDto(Long id, int widthPrice, Double width, String city, String district,
@@ -90,8 +91,8 @@ public class RooftopDto {
     }
 
     public RooftopDto RooftopSearchResultDto(Long id, String city, String district, String detail,
-                                             Double grade, Integer totalPrice, RooftopImage structureImage) {
-        return new RooftopDto(id, city, district, detail, grade, totalPrice, structureImage);
+                                             Double grade, Integer totalPrice, RooftopImage mainImage) {
+        return new RooftopDto(id, city, district, detail, grade, totalPrice, mainImage);
     }
 
     public static RooftopDto of(Rooftop rooftop, List<RooftopImageDto> imageDtos) {

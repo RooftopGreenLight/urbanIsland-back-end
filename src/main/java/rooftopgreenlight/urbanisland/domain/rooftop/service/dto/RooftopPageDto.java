@@ -32,7 +32,7 @@ public class RooftopPageDto {
                         rooftop.getGrade(),
                         rooftop.getTotalPrice(),
                         rooftop.getRooftopImages().stream()
-                                .filter(rooftopImage -> rooftopImage.getRooftopImageType() == ImageType.STRUCTURE)
+                                .filter(rooftopImage -> rooftopImage.getRooftopImageType() == ImageType.MAIN)
                                 .findFirst()
                                 .orElse(null)
                 )).collect(Collectors.toList())

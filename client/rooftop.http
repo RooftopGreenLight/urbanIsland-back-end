@@ -26,6 +26,10 @@ Content-Disposition: form-data; name="structureFile"; filename="usecase2.png"
 
 < /Users/yc/Documents/usecase/usecase2.png
 --boundary
+Content-Disposition: form-data; name="mainFile"; filename="usecase2.png"
+
+< /Users/yc/Documents/usecase/usecase2.png
+--boundary
 Content-Disposition: form-data; name="width"
 
 16
@@ -58,7 +62,7 @@ Content-Disposition: form-data; name="adultCount"
 
 2
 --boundary
-Content-Disposition: form-data; name="totalCount"
+Content-Disposition: form-data; name="totalPrice"
 
 80000
 --boundary--
@@ -66,6 +70,6 @@ Content-Disposition: form-data; name="totalCount"
 
 ###
 # Rooftop Seach Cond 조회
-GET {{host}}/api/v1/rooftops/search?page=0&minPrice=45000&maxPrice=50000
+GET {{host}}/api/v1/rooftops/search?page=0&minPrice=0&maxPrice=0
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

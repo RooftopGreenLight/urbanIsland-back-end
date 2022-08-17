@@ -33,6 +33,7 @@ public class RooftopResponse {
 
     private List<RooftopImageResponse> rooftopImages;
     private RooftopImageResponse structureImage;
+    private RooftopImageResponse mainImage;
 
     protected RooftopResponse(Long id, String phoneNumber, String ownerContent, RooftopImageResponse structureImage) {
         this.id = id;
@@ -68,19 +69,19 @@ public class RooftopResponse {
         this.structureImage = structureImage;
     }
 
-    protected RooftopResponse(Long id, String city, String district, String detail, Double grade, Integer totalPrice, RooftopImageDto structureImage) {
+    protected RooftopResponse(Long id, String city, String district, String detail, Double grade, Integer totalPrice, RooftopImageDto mainImage) {
         this.id = id;
         this.city = city;
         this.district = district;
         this.detail = detail;
         this.grade = grade;
         this.totalPrice = totalPrice;
-        this.structureImage = RooftopImageResponse.of(structureImage);
+        this.mainImage = RooftopImageResponse.of(mainImage);
     }
 
     public RooftopResponse RooftopSearchResultResponse(Long id, String city, String district, String detail,
-                                             Double grade, Integer totalPrice, RooftopImageDto structureImage) {
-        return new RooftopResponse(id, city, district, detail, grade, totalPrice, structureImage);
+                                             Double grade, Integer totalPrice, RooftopImageDto mainImage) {
+        return new RooftopResponse(id, city, district, detail, grade, totalPrice, mainImage);
     }
 
     public static RooftopResponse of(Long id, String phoneNumber, String ownerContent, RooftopImageDto structureImage) {
