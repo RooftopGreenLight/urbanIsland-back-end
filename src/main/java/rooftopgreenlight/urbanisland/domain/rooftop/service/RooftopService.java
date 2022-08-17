@@ -20,6 +20,7 @@ import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.repository.RooftopRepository;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
@@ -44,7 +45,7 @@ public class RooftopService {
      * Rooftop 저장
      */
     @Transactional
-    public void createGreenRooftop(String rooftopType, String width, String phoneNumber, String explainContent,
+    public void createGreenRooftop(String rooftopType, Double width, String phoneNumber, String explainContent,
                                    String refundContent, String roleContent, String ownerContent, LocalTime startTime,
                                    LocalTime endTime, Integer totalPrice, Integer widthPrice, RooftopPeopleCount peopleCount,
                                    Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
@@ -205,7 +206,7 @@ public class RooftopService {
     /**
      * 옥상 Entity 만들기
      */
-    private Rooftop createRooftop(String width, String phoneNumber, String explainContent, String refundContent,
+    private Rooftop createRooftop(Double width, String phoneNumber, String explainContent, String refundContent,
                                String roleContent, String ownerContent, LocalTime startTime, LocalTime endTime,
                                Integer totalPrice, Integer widthPrice, RooftopPeopleCount peopleCount,
                                   Address address, Integer deadLineType) {
@@ -265,5 +266,21 @@ public class RooftopService {
     @Transactional
     public void rejectRooftop(long rooftopId) {
         deleteRooftop(rooftopId, false);
+    }
+
+    /**
+     * Filter
+     * 조건에 맞는 옥상 검색
+     */
+    public RooftopPageDto searchRooftopByCond(int page, RooftopSearchCond searchCond) {
+        PageRequest pageRequest = PageRequest.of(page, 20);
+
+        Page<Rooftop> rooftopPage = rooftopRepository.searchRooftopByCond(pageRequest, searchCond);
+
+        return new RooftopPageDto().RooftopSearchPageDto(
+                rooftopPage.getTotalPages(),
+                rooftopPage.getTotalElements(),
+                rooftopPage.getContent()
+        );
     }
 }

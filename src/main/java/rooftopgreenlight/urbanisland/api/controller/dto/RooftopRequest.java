@@ -11,8 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class RooftopRequest {
 
-    @NotBlank(message = "올바른 넓이 입력 형식이 아닙니다.")
-    private String width;
+    private Double width;
     private String phoneNumber;
     private String explainContent;
     private String refundContent;

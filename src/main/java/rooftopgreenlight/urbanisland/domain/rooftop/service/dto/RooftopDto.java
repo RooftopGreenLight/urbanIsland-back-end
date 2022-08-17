@@ -1,6 +1,7 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.service.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
@@ -10,13 +11,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class RooftopDto {
     private Long id;
-    private int widthPrice;
+    private Integer totalPrice;
+    private Integer widthPrice;
     private Integer requiredTermType;
 
-    private String width;
     private String city;
+    private Double width;
+    private Double grade;
     private String district;
     private String detail;
     private String phoneNumber;
@@ -32,7 +36,18 @@ public class RooftopDto {
         this.structureImage = structureImage;
     }
 
-    protected RooftopDto(Long id, int widthPrice, String width, String city, String district,
+    protected RooftopDto(Long id, String city, String district, String detail,
+                         Double grade, Integer totalPrice, RooftopImage structureImage) {
+        this.id = id;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.grade = grade;
+        this.totalPrice = totalPrice;
+        this.structureImage = RooftopImageDto.of(structureImage);
+    }
+
+    protected RooftopDto(Long id, int widthPrice, Double width, String city, String district,
                          String detail, List<RooftopImageDto> rooftopImages) {
         this.id = id;
         this.widthPrice = widthPrice;
@@ -43,7 +58,7 @@ public class RooftopDto {
         this.rooftopImages = rooftopImages;
     }
 
-    protected RooftopDto(Long id, int widthPrice, int requiredTermType, String width, String city, String district,
+    protected RooftopDto(Long id, int widthPrice, int requiredTermType, Double width, String city, String district,
                          String detail, String phoneNumber, String ownerContent,
                          List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage) {
         this.id = id;
@@ -74,12 +89,17 @@ public class RooftopDto {
         );
     }
 
-    public static RooftopDto of (Rooftop rooftop, List<RooftopImageDto> imageDtos) {
+    public RooftopDto RooftopSearchResultDto(Long id, String city, String district, String detail,
+                                             Double grade, Integer totalPrice, RooftopImage structureImage) {
+        return new RooftopDto(id, city, district, detail, grade, totalPrice, structureImage);
+    }
+
+    public static RooftopDto of(Rooftop rooftop, List<RooftopImageDto> imageDtos) {
         return new RooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getWidth(),
                 rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), imageDtos);
     }
 
-    public static RooftopDto of(Long id, int widthPrice, Integer requiredTermType, String width, String city, String district, String detail, String phoneNumber, String ownerContent) {
+    public static RooftopDto of(Long id, int widthPrice, Integer requiredTermType, Double width, String city, String district, String detail, String phoneNumber, String ownerContent) {
         return new RooftopDto(id, widthPrice, requiredTermType, width, city, district, detail, phoneNumber, ownerContent, null, null);
     }
 

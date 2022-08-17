@@ -1,14 +1,19 @@
 package rooftopgreenlight.urbanisland.api.controller;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
+import rooftopgreenlight.urbanisland.api.controller.dto.RooftopPageResponse;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 import rooftopgreenlight.urbanisland.api.controller.dto.RooftopRequest;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
@@ -57,6 +62,19 @@ public class RooftopController {
 
         return APIResponse.empty();
 
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(
+            value = "옥상 조회 저장",
+            notes = "요청 데이터(Parameter) - key -> page, size, startTime, endTime, adultCount, kidCount," +
+                    "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, cond"
+    )
+    public APIResponse searchRooftop(@RequestParam int page, RooftopSearchCond searchCond) {
+        return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(
+            rooftopService.searchRooftopByCond(page, searchCond)
+        ));
     }
 
 }

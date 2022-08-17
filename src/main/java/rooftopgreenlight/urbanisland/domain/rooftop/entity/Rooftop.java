@@ -28,7 +28,8 @@ public class Rooftop extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String width;
+    private Double width;
+    private Double grade;
     private String phoneNumber;
 
     private String explainContent;
@@ -100,7 +101,7 @@ public class Rooftop extends BaseEntity {
     }
 
     @Builder(builderMethodName = "createRooftop")
-    public Rooftop(String width, String phoneNumber, String explainContent, String refundContent, String roleContent,
+    public Rooftop(Double width, String phoneNumber, String explainContent, String refundContent, String roleContent,
                    String ownerContent, LocalTime startTime, LocalTime endTime, Integer totalPrice,
                    Integer widthPrice, RooftopPeopleCount peopleCount, Address address, Integer views, Integer deadLineType) {
         this.width = width;
@@ -117,5 +118,6 @@ public class Rooftop extends BaseEntity {
         this.address = address;
         this.views = views;
         if(deadLineType != null) this.deadLineType = deadLineType;
+        this.grade = 0.0;
     }
 }

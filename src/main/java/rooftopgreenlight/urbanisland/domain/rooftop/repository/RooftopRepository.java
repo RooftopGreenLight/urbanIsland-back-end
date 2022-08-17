@@ -18,7 +18,9 @@ import java.util.Optional;
 
 public interface RooftopRepository extends
         JpaRepository<Rooftop, Long>,
-        QuerydslPredicateExecutor<Rooftop> {
+        QuerydslPredicateExecutor<Rooftop>,
+        RooftopRepositoryCustom
+{
 
     @Query("select distinct r from Rooftop r join r.rooftopImages ri join r.rooftopOptions ro " +
             "join r.rooftopDetails rd where r.rooftopType = :type")
