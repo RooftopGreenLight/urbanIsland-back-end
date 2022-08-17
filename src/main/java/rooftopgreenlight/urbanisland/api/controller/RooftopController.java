@@ -35,14 +35,15 @@ public class RooftopController {
             notes = "요청 데이터(Parameter) - key -> width, phoneNumber, explainContent, refundContent, roleContent, ownerContent," +
                     "startTime, endTime, totalPrice, widthPrice" +
                     "adultCount, kidCount, petCount, totalCount, county, city, detail, " +
-                    "rooftopType(G, NG), normalFile, structureFile, detailInfoNum, requiredItemNum, " +
+                    "rooftopType(G, NG), normalFile, structureFile, mainFile, detailInfoNum, requiredItemNum, " +
                     "deadLineNum, optionContent, optionPrice " +
-                    "<-> valueType : normalFile, structureFile -> MultipartType")
+                    "<-> valueType : normalFile, structureFile, mainFile -> MultipartType")
     public APIResponse createRooftop(@PK Long memberId,
                                      @Validated RooftopRequest request,
                                      @RequestParam(name = "rooftopType") String rooftopType,
                                      @RequestParam(name = "normalFile", required = false) List<MultipartFile> normalFiles,
                                      @RequestParam(name = "structureFile", required = false) List<MultipartFile> structureFiles,
+                                     @RequestParam(name = "mainFile", required = false) MultipartFile mainFile,
                                      @RequestParam(name = "detailInfoNum", required = false) List<Integer> detailInfos,
                                      @RequestParam(name = "requiredItemNum", required = false) List<Integer> requiredItems,
                                      @RequestParam(name = "deadLineNum", required = false) Integer deadLine,
@@ -58,7 +59,7 @@ public class RooftopController {
         rooftopService.createGreenRooftop(rooftopType, request.getWidth(), request.getPhoneNumber(), request.getExplainContent(),
                 request.getRefundContent(), request.getRoleContent(), request.getOwnerContent(), request.getStartTime(),
                 request.getEndTime(), request.getTotalPrice(), request.getWidthPrice(), peopleCount, address,
-                normalFiles, structureFiles, detailInfos, requiredItems, deadLine, options, prices, counts, memberId);
+                normalFiles, structureFiles, mainFile, detailInfos, requiredItems, deadLine, options, prices, counts, memberId);
 
         return APIResponse.empty();
 
@@ -67,7 +68,7 @@ public class RooftopController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(
-            value = "옥상 조회 저장",
+            value = "옥상 검색 조건 조회",
             notes = "요청 데이터(Parameter) - key -> page, size, startTime, endTime, adultCount, kidCount," +
                     "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, cond"
     )

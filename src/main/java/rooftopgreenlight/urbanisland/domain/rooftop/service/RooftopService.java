@@ -49,7 +49,7 @@ public class RooftopService {
                                    String refundContent, String roleContent, String ownerContent, LocalTime startTime,
                                    LocalTime endTime, Integer totalPrice, Integer widthPrice, RooftopPeopleCount peopleCount,
                                    Address address, List<MultipartFile> normalFiles, List<MultipartFile> structureFiles,
-                                   List<Integer> detailInfos, List<Integer> requiredItems, Integer deadLine,
+                                   MultipartFile mainFile, List<Integer> detailInfos, List<Integer> requiredItems, Integer deadLine,
                                    List<String> options, List<Integer> prices, List<Integer> counts, Long memberId) {
 
         int wPrice = rooftopType.equals("G") ? 0 : widthPrice;
@@ -61,7 +61,7 @@ public class RooftopService {
         rooftop.changeProgress(progress);
         rooftop.changeRooftopType(type);
 
-        saveRooftopImages(normalFiles, structureFiles, rooftop);
+        saveRooftopImages(normalFiles, structureFiles, mainFile, rooftop);
 
         if(rooftopType.equals("NG")) {
             saveRooftopDetails(requiredItems, RooftopDetailType.REQUIRED_ITEM, rooftop);
@@ -107,7 +107,7 @@ public class RooftopService {
     /**
      * RooftopImage 저장
      */
-    private void saveRooftopImages(List<MultipartFile> normalFiles, List<MultipartFile> structureFiles, Rooftop rooftop) {
+    private void saveRooftopImages(List<MultipartFile> normalFiles, List<MultipartFile> structureFiles, MultipartFile mainFile, Rooftop rooftop) {
         List<RooftopImage> rooftopImages = rooftop.getRooftopImages();
         if(normalFiles != null) {
             normalFiles.parallelStream()
@@ -124,6 +124,11 @@ public class RooftopService {
                         rooftopImage.changeRooftop(rooftop);
                         rooftopImages.add(rooftopImage);
                     });
+        }
+        if(mainFile != null) {
+            RooftopImage rooftopImage = (RooftopImage) fileService.createImage(mainFile, ImageType.MAIN, ImageName.ROOFTOP);
+            rooftopImage.changeRooftop(rooftop);
+            rooftopImages.add(rooftopImage);
         }
     }
 
