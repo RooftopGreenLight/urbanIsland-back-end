@@ -3,7 +3,6 @@ package rooftopgreenlight.urbanisland.api.controller.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopImageDto;
@@ -23,7 +22,7 @@ public class RooftopResponse {
     private Integer widthPrice;
     private Integer requiredTermType;
 
-    private Double grade;
+    private String grade;
     private Double width;
     private String city;
     private String district;
@@ -69,7 +68,7 @@ public class RooftopResponse {
         this.structureImage = structureImage;
     }
 
-    protected RooftopResponse(Long id, String city, String district, String detail, Double grade, Integer totalPrice, RooftopImageDto mainImage) {
+    protected RooftopResponse(Long id, String city, String district, String detail, String grade, Integer totalPrice, RooftopImageDto mainImage) {
         this.id = id;
         this.city = city;
         this.district = district;
@@ -80,7 +79,7 @@ public class RooftopResponse {
     }
 
     public RooftopResponse RooftopSearchResultResponse(Long id, String city, String district, String detail,
-                                             Double grade, Integer totalPrice, RooftopImageDto mainImage) {
+                                             String grade, Integer totalPrice, RooftopImageDto mainImage) {
         return new RooftopResponse(id, city, district, detail, grade, totalPrice, mainImage);
     }
 

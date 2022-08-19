@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
 
 import java.util.List;

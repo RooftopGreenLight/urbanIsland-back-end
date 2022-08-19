@@ -1,20 +1,15 @@
 package rooftopgreenlight.urbanisland.api.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
-import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
-import rooftopgreenlight.urbanisland.api.controller.dto.RooftopPageResponse;
+import rooftopgreenlight.urbanisland.api.controller.dto.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
-import rooftopgreenlight.urbanisland.api.controller.dto.RooftopRequest;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
@@ -78,4 +73,49 @@ public class RooftopController {
         ));
     }
 
+    @GetMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(
+            value = "나의 옥상 리뷰 조회",
+            notes = "요청 데이터(parameter) - key -> page"
+    )
+    public APIResponse deleteRooftopReview(
+            @PK Long memberId,
+            @RequestParam int page
+    ) {
+        return APIResponse.of(RooftopReviewPageResponse.from(rooftopService.findByMyRooftopReview(memberId, page)));
+    }
+
+    @PostMapping("/reviews/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(
+            value = "옥상 리뷰 등록",
+            notes = "요청 데이터(path, requestBody) - key -> rooftopId(path)" +
+                    "content(body), grade(body)"
+    )
+    public APIResponse createRooftopReview(
+            @PK Long memberId,
+            @PathVariable("rooftopId") Long rooftopId,
+            @RequestBody @Validated ReviewRequest dto
+    ) {
+        rooftopService.createReview(memberId, rooftopId, dto.getContent(), dto.getGrade());
+
+        return APIResponse.empty();
+    }
+
+    @DeleteMapping("/reviews/{rooftopId}/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(
+            value = "옥상 리뷰 삭제",
+            notes = "요청 데이터(path) - key -> rooftopId, reviewId"
+    )
+    public APIResponse deleteRooftopReview(
+            @PK Long memberId,
+            @PathVariable("rooftopId") Long rooftopId,
+            @PathVariable("reviewId") Long reviewId
+    ) {
+        rooftopService.deleteReview(memberId, rooftopId, reviewId);
+
+        return APIResponse.empty();
+    }
 }
