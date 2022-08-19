@@ -100,7 +100,7 @@ public class RooftopController {
     ) {
         rooftopService.createReview(memberId, rooftopId, dto.getContent(), dto.getGrade());
 
-        return APIResponse.empty();
+        return APIResponse.createEmpty();
     }
 
     @DeleteMapping("/reviews/{rooftopId}/{reviewId}")
