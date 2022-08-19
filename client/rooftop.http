@@ -32,44 +32,67 @@ Content-Disposition: form-data; name="mainFile"; filename="usecase2.png"
 --boundary
 Content-Disposition: form-data; name="width"
 
-16
+24
 --boundary
 Content-Disposition: form-data; name="county"
 
-testtset2
+testtset1
 --boundary
 Content-Disposition: form-data; name="city"
 
-testtset2
+testtset1
 --boundary
 Content-Disposition: form-data; name="detail"
 
-testtset2
+testtset1
 --boundary
 Content-Disposition: form-data; name="rooftopType"
 
-G
+NG
 --boundary
 Content-Disposition: form-data; name="startTime"
 
-15:00:00
+12:00:00
 --boundary
 Content-Disposition: form-data; name="endTime"
 
-20:00:00
+13:00:00
 --boundary
 Content-Disposition: form-data; name="adultCount"
 
-2
+5
 --boundary
 Content-Disposition: form-data; name="totalPrice"
 
-80000
+120000
 --boundary--
 
 
 ###
 # Rooftop Seach Cond 조회
 GET {{host}}/api/v1/rooftops/search?page=0&minPrice=0&maxPrice=0
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+# 본인 RooftopReview 조회
+GET {{host}}/api/v1/rooftops/reviews?page=0
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+# Rooftop Review 생성
+POST {{host}}/api/v1/rooftops/reviews/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "grade": 5,
+  "content": "test 용도입니다..."
+}
+
+###
+# Rooftop Review 삭제
+DELETE {{host}}/api/v1/rooftops/reviews/1/2
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
