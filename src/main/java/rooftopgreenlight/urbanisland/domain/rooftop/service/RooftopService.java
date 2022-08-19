@@ -10,13 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
+import rooftopgreenlight.urbanisland.domain.common.exception.NoMatchMemberIdException;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopReviewException;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.file.service.FileService;
 import rooftopgreenlight.urbanisland.domain.greenbee.entity.GreenBee;
 import rooftopgreenlight.urbanisland.domain.greenbee.service.GreenBeeService;
+import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.repository.RooftopRepository;
@@ -244,6 +247,16 @@ public class RooftopService {
     }
 
     /**
+     * 옥상 Id 기준으로 옥상 정보 가져오기
+     */
+    private Rooftop findByRooftopIdWithReview(Long rooftopId) {
+        Rooftop rooftop = rooftopRepository.findByIdWithReview(rooftopId).orElseThrow(() -> {
+            throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");
+        });
+        return rooftop;
+    }
+
+    /**
      * Admin
      * 옥상 Progress 기준으로 옥상 정보 가져오기
      */
@@ -288,4 +301,56 @@ public class RooftopService {
                 rooftopPage.getContent()
         );
     }
+
+    /**
+     * Review 생성
+     */
+    @Transactional
+    public void createReview(final Long memberId, final Long rooftopId, final String content, final int grade) {
+        Member findMember = memberService.findById(memberId);
+        Rooftop findRooftop = findByRooftopIdWithReview(rooftopId);
+
+        RooftopReview review = createReview(content, grade, findMember);
+
+        review.addRooftop(findRooftop);
+        findRooftop.addGrade(grade); // 평점 계산
+    }
+
+    @Transactional
+    public void deleteReview(final Long memberId, final Long rooftopId, final Long reviewId) {
+        Rooftop findRooftop = findByRooftopId(rooftopId);
+        RooftopReview findRooftopReview = rooftopRepository.findRooftopReviewByRooftopReviewId(reviewId).orElseThrow(
+                () -> {
+                    throw new NotFoundRooftopReviewException("옥상 리뷰를 찾을 수 없습니다.");
+                }
+        );
+
+        if (!isDeleteRooftopReviewValidation(memberId, findRooftopReview)) {
+            throw new NoMatchMemberIdException("MemberId가 일치하지 않아 Review를 삭제할 수 없습니다.");
+        }
+
+        findRooftop.minusGrade(findRooftopReview.getGrade());
+        rooftopRepository.deleteRooftopReviewByRooftopReviewId(reviewId);
+    }
+
+    public Page<RooftopReview> findByMyRooftopReview(final Long memberId, final int page) {
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
+
+        return rooftopRepository.findRooftopReviewPageByMemberId(memberId, pageRequest);
+    }
+
+    private RooftopReview createReview(final String content, final int grade, final Member findMember) {
+        RooftopReview review = RooftopReview.createReview()
+                .content(content)
+                .grade(grade)
+                .member(findMember)
+                .build();
+
+        return review;
+    }
+
+    private boolean isDeleteRooftopReviewValidation(final Long memberId, final RooftopReview findRooftopReview) {
+        return findRooftopReview.getCreatedBy().equals(String.valueOf(memberId));
+    }
+
 }

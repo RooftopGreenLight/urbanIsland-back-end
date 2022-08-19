@@ -9,8 +9,8 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
-import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopReview;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopType;
 
 import java.util.List;
@@ -30,6 +30,12 @@ public interface RooftopRepository extends
     @Query("delete from Rooftop r where r.id=:rooftopId")
     void deleteRooftopsById(@Param(value = "rooftopId") Long rooftopId);
 
+    @Query("select r from Rooftop r where r.rooftopProgress = :progress")
+    Page<Rooftop> findRooftopPageByProgress(@Param("progress")Progress progress, Pageable pageable);
+
+    @Query("select r from Rooftop r left join fetch r.reviews rr where r.id = :rooftopId")
+    Optional<Rooftop> findByIdWithReview(@Param("rooftopId") final Long rooftopId);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from RooftopDetail r where r.rooftop.id=:rooftopId")
     void deleteRooftopDetails(@Param(value = "rooftopId") Long rooftopId);
@@ -45,7 +51,14 @@ public interface RooftopRepository extends
     @Query("select r from RooftopImage r where r.rooftop.id=:rooftopId")
     List<RooftopImage> findRooftopImagesByRooftopId(@Param(value = "rooftopId") Long rooftopId);
 
-    @Query("select r from Rooftop r where r.rooftopProgress = :progress")
-    Page<Rooftop> findRooftopPageByProgress(@Param("progress")Progress progress, Pageable pageable);
+    @Query("select rr from RooftopReview rr where rr.id = :reviewId")
+    Optional<RooftopReview> findRooftopReviewByRooftopReviewId(final @Param("reviewId") long reviewId);
+
+    @Modifying
+    @Query("delete from RooftopReview rr where rr.id = :reviewId")
+    void deleteRooftopReviewByRooftopReviewId(final @Param("reviewId") long reviewId);
+
+    @Query("select rr from RooftopReview rr where rr.member.id = :memberId")
+    Page<RooftopReview> findRooftopReviewPageByMemberId(final @Param("memberId") long memberId, Pageable pageable);
 
 }
