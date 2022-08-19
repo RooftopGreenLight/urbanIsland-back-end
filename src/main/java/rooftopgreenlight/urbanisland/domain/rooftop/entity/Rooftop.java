@@ -29,7 +29,6 @@ public class Rooftop extends BaseEntity {
 
     @Column(nullable = false)
     private Double width;
-    private Double grade;
     private String phoneNumber;
 
     private String explainContent;
@@ -58,6 +57,29 @@ public class Rooftop extends BaseEntity {
     @Column(nullable = false)
     private RooftopPeopleCount peopleCount;
 
+    // Review
+    @Column(nullable = false, length = 3)
+    private String grade;
+    @Column(nullable = false)
+    private int gradeCount;
+
+    public void addGrade(int grade) {
+        this.gradeCount++;
+        double calcGrade = (Double.parseDouble(this.grade) + grade) / this.gradeCount;
+        this.grade = String.format("%.1f", calcGrade);
+    }
+
+    public void minusGrade(int grade) {
+        double nowGrade = Double.parseDouble(this.grade) * this.gradeCount;
+        this.gradeCount--;
+
+        if (this.gradeCount == 0) {
+            this.grade = "0";
+        } else {
+            this.grade = String.format("%.1f", ((nowGrade - grade) / this.gradeCount));
+        }
+    }
+
     @Embedded
     @AttributeOverrides(
             value = {
@@ -83,6 +105,10 @@ public class Rooftop extends BaseEntity {
     @BatchSize(size = 20)
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RooftopGreeningApply> rooftopGreeningApplies = new ArrayList<>();
+
+    @BatchSize(size = 30)
+    @OneToMany(mappedBy = "rooftop", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<RooftopReview> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -118,6 +144,7 @@ public class Rooftop extends BaseEntity {
         this.address = address;
         this.views = views;
         if(deadLineType != null) this.deadLineType = deadLineType;
-        this.grade = 0.0;
+        this.grade = "0";
+        this.gradeCount = 0;
     }
 }
