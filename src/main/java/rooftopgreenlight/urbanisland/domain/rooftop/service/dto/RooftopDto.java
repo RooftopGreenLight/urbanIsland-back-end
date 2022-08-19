@@ -20,7 +20,7 @@ public class RooftopDto {
 
     private String city;
     private Double width;
-    private Double grade;
+    private String grade;
     private String district;
     private String detail;
     private String phoneNumber;
@@ -38,7 +38,7 @@ public class RooftopDto {
     }
 
     protected RooftopDto(Long id, String city, String district, String detail,
-                         Double grade, Integer totalPrice, RooftopImage mainImage) {
+                         String grade, Integer totalPrice, RooftopImage mainImage) {
         this.id = id;
         this.city = city;
         this.district = district;
@@ -91,7 +91,7 @@ public class RooftopDto {
     }
 
     public RooftopDto RooftopSearchResultDto(Long id, String city, String district, String detail,
-                                             Double grade, Integer totalPrice, RooftopImage mainImage) {
+                                             String grade, Integer totalPrice, RooftopImage mainImage) {
         return new RooftopDto(id, city, district, detail, grade, totalPrice, mainImage);
     }
 

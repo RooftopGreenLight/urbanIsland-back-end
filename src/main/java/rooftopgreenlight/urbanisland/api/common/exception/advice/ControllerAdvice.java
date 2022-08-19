@@ -165,6 +165,28 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
 
+    /**
+     * 리뷰 조회 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse notFoundRooftopReviewException(NotFoundRooftopReviewException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
+     * MemberId 불일치 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse noMatchMemberIdException(NoMatchMemberIdException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
 
     /**
      * 최상위 오류
