@@ -26,17 +26,6 @@ public class AuthController {
     private final MemberService memberService;
     private final BCryptPasswordEncoder encoder;
 
-    @GetMapping("/health")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "서버 정상 동작하는지 확인", notes = "정상 동작 시 '서버 동작 중' 반환")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 동작"),
-            @ApiResponse(code = 500, message = "서버 문제")
-    })
-    public APIResponse health() {
-        return APIResponse.of("서버 동작 중...");
-    }
-
     /**
      * 로그인
      * @param loginDto
