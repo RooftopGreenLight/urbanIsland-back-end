@@ -26,6 +26,8 @@ import rooftopgreenlight.urbanisland.domain.member.entity.Authority;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class Oauth2Service {
         KakaoUserInfo kakaoUserInfo = getKakaoUserInfo("Bearer " + kakaoToken.getAccessToken());
 
         Member member = getMember(kakaoUserInfo.getId() + "@kakao.com", kakaoProperties.getClientSecret(),
-                kakaoUserInfo.getProperties().getNickname() + "K", kakaoUserInfo.getProperties().getProfileImage());
+                getTempNickname(), kakaoUserInfo.getProperties().getProfileImage());
 
         TokenDto tokenDto = getTokenDto(member);
 
@@ -59,7 +61,7 @@ public class Oauth2Service {
         NaverUserInfo naverUserInfo = getNaverUserInfo(naverToken);
 
         Member member = getMember(naverUserInfo.getId() + "@naver.com",
-                naverProperties.getClientSecret(), naverUserInfo.getName() + "N", null);
+                naverProperties.getClientSecret(), getTempNickname(), null);
 
         TokenDto tokenDto = getTokenDto(member);
 
@@ -73,7 +75,7 @@ public class Oauth2Service {
         GoogleUserInfo googleUserInfo = getGoogleUserInfo(googleToken);
 
         Member member = getMember(googleUserInfo.getId() + "@google.com",
-                googleProperties.getClientSecret(), googleUserInfo.getName() + "G", null);
+                googleProperties.getClientSecret(), getTempNickname(), null);
 
         TokenDto tokenDto = getTokenDto(member);
 
@@ -203,5 +205,9 @@ public class Oauth2Service {
         int len = splits.length - 1;
         String ext = splits[len];
         return ext;
+    }
+
+    private String getTempNickname() {
+        return UUID.randomUUID().toString().substring(0, 13);
     }
 }
