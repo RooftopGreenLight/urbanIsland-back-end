@@ -44,7 +44,7 @@ public class RooftopPageDto {
             return new RooftopPageDto(
                     totalPages,
                     totalElements,
-                    rooftops.stream().map(rooftop -> RooftopDto.of(
+                    rooftops.stream().map(rooftop -> RooftopDto.getAdminNGRooftopDto(
                             rooftop.getId(),
                             rooftop.getPhoneNumber(),
                             rooftop.getOwnerContent(),
@@ -56,7 +56,7 @@ public class RooftopPageDto {
         return new RooftopPageDto(
                 totalPages,
                 totalElements,
-                rooftops.stream().map(rooftop -> RooftopDto.of(rooftop, false)).collect(Collectors.toList())
+                rooftops.stream().map(rooftop -> RooftopDto.getNGRooftopDto(rooftop, false)).collect(Collectors.toList())
         );
     }
 }

@@ -2,10 +2,15 @@ package rooftopgreenlight.urbanisland.domain.rooftop.service.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,17 +23,39 @@ public class RooftopDto {
     private Integer widthPrice;
     private Integer requiredTermType;
 
-    private String city;
+    private Integer adultCount;
+    private Integer kidCount;
+    private Integer petCount;
+    private Integer totalCount;
+
+    private LocalTime startTime;
+    private LocalTime endTime;
+
     private Double width;
     private String grade;
+    private String city;
     private String district;
     private String detail;
     private String phoneNumber;
+    private String explainContent;
+    private String refundContent;
+    private String roleContent;
     private String ownerContent;
 
+    private String progress;
+    private LocalDateTime rooftopDate;
+
+    private List<Integer> detailNums;
     private List<RooftopImageDto> rooftopImages;
     private RooftopImageDto structureImage;
     private RooftopImageDto mainImage;
+    private List<RooftopReviewDto> rooftopReviews;
+
+    protected RooftopDto(Long id, String progress, LocalDateTime rooftopDate) {
+        this.id = id;
+        this.progress = progress;
+        this.rooftopDate = rooftopDate;
+    }
 
     protected RooftopDto(Long id, String phoneNumber, String ownerContent, RooftopImageDto structureImage) {
         this.id = id;
@@ -48,20 +75,17 @@ public class RooftopDto {
         this.mainImage = RooftopImageDto.of(mainImage);
     }
 
-    protected RooftopDto(Long id, int widthPrice, Double width, String city, String district,
-                         String detail, List<RooftopImageDto> rooftopImages) {
+    protected RooftopDto(Long id, int widthPrice, Double width, String city, String district, String detail) {
         this.id = id;
         this.widthPrice = widthPrice;
         this.width = width;
         this.city = city;
         this.district = district;
         this.detail = detail;
-        this.rooftopImages = rooftopImages;
     }
 
     protected RooftopDto(Long id, int widthPrice, int requiredTermType, Double width, String city, String district,
-                         String detail, String phoneNumber, String ownerContent,
-                         List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage) {
+                         String detail, String phoneNumber, String ownerContent) {
         this.id = id;
         this.widthPrice = widthPrice;
         this.requiredTermType = requiredTermType;
@@ -71,11 +95,39 @@ public class RooftopDto {
         this.detail = detail;
         this.phoneNumber = phoneNumber;
         this.ownerContent = ownerContent;
-        this.rooftopImages = rooftopImages;
-        this.structureImage = structureImage;
     }
 
-    public static RooftopDto of(Long id, String phoneNumber, String ownerContent, List<RooftopImage> rooftopImages) {
+    protected RooftopDto(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
+                         String refundContent, String grade, Double width, List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage,
+                         Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
+                         LocalTime startTime, LocalTime endTime, List<RooftopReviewDto> reviewDtos) {
+        this.id = id;
+        this.totalPrice = totalPrice;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.explainContent = explainContent;
+        this.roleContent = roleContent;
+        this.refundContent = refundContent;
+        this.grade = grade;
+        this.width = width;
+        this.rooftopImages = rooftopImages;
+        this.structureImage = structureImage;
+        this.adultCount = adultCount;
+        this.kidCount = kidCount;
+        this.petCount = petCount;
+        this.totalCount = totalCount;
+        this.detailNums = detailNums;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.rooftopReviews = reviewDtos;
+    }
+
+    public static RooftopDto getRooftopStatusDto(Long id, String progress, LocalDateTime rooftopDate) {
+        return new RooftopDto(id, progress, rooftopDate);
+    }
+
+    public static RooftopDto getAdminNGRooftopDto(Long id, String phoneNumber, String ownerContent, List<RooftopImage> rooftopImages) {
         return new RooftopDto(
                 id,
                 phoneNumber,
@@ -95,36 +147,51 @@ public class RooftopDto {
         return new RooftopDto(id, city, district, detail, grade, totalPrice, mainImage);
     }
 
-    public static RooftopDto of(Rooftop rooftop, List<RooftopImageDto> imageDtos) {
-        return new RooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getWidth(),
-                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), imageDtos);
+    public static RooftopDto getRooftopDto(Rooftop rooftop) {
+        Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
+        Address address = rooftop.getAddress();
+        RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
+        List<Integer> detailNums = new ArrayList<>();
+        rooftop.getRooftopDetails().forEach(detail -> {
+            detailNums.add(detail.getContentNum());
+        });
+
+        List<RooftopReviewDto> reviews = rooftop.getReviews().stream().map(review ->
+            RooftopReviewDto.of(review.getGrade(), review.getContent(), review.getCreatedDate(), review.getMember().getNickname())
+        ).collect(Collectors.toList());
+
+        return new RooftopDto(rooftop.getId(), rooftop.getTotalPrice(), address.getCity(), address.getDistrict(),
+                address.getDetail(), rooftop.getExplainContent(), rooftop.getRoleContent(), rooftop.getRefundContent(),
+                rooftop.getGrade(), rooftop.getWidth(), listMap.get(ImageType.NORMAL), listMap.get(ImageType.STRUCTURE).get(0),
+                peopleCount.getAdultCount(), peopleCount.getKidCount(), peopleCount.getPetCount(), peopleCount.getTotalCount(),
+                detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews);
     }
 
-    public static RooftopDto of(Long id, int widthPrice, Integer requiredTermType, Double width, String city, String district, String detail, String phoneNumber, String ownerContent) {
-        return new RooftopDto(id, widthPrice, requiredTermType, width, city, district, detail, phoneNumber, ownerContent, null, null);
-    }
-
-    public static RooftopDto of(Rooftop rooftop, boolean isOne) {
+    public static RooftopDto getNGRooftopDto(Rooftop rooftop, boolean isOne) {
         RooftopDto rooftopDto = isOne ? createDetailNGRooftopDto(rooftop) : createListInfoNGRooftopDto(rooftop);
+        Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
 
-        Map<Boolean, List<RooftopImageDto>> listMap = rooftop.getRooftopImages().stream().map(RooftopImageDto::of)
-                .collect(Collectors.partitioningBy(rooftopImageResponse -> rooftopImageResponse.getRooftopImageType() == ImageType.NORMAL));
-
-        rooftopDto.setRooftopImages(listMap.get(true));
-        if (listMap.get(false) != null) {
-            rooftopDto.setStructureImage(listMap.get(false).get(0));
+        rooftopDto.setRooftopImages(listMap.get(ImageType.NORMAL));
+        if (listMap.get(ImageType.STRUCTURE) != null) {
+            rooftopDto.setStructureImage(listMap.get(ImageType.STRUCTURE).get(0));
         }
 
         return rooftopDto;
     }
 
+    private static Map<ImageType, List<RooftopImageDto>> getRooftopImageByType(Rooftop rooftop) {
+        Map<ImageType, List<RooftopImageDto>> listMap = rooftop.getRooftopImages().stream().map(RooftopImageDto::of)
+                .collect(Collectors.groupingBy(RooftopImageDto::getRooftopImageType));
+        return listMap;
+    }
+
     private static RooftopDto createListInfoNGRooftopDto(Rooftop rooftop) {
         return new RooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getWidth(),
-                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), null);
+                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail());
     }
 
     private static RooftopDto createDetailNGRooftopDto(Rooftop rooftop) {
-        return RooftopDto.of(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getDeadLineType(), rooftop.getWidth(),
+        return new RooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getDeadLineType(), rooftop.getWidth(),
                 rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(),
                 rooftop.getPhoneNumber(), rooftop.getOwnerContent());
     }
