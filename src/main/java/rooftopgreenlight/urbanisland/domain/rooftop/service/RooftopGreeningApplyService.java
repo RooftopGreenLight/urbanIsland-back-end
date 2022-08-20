@@ -78,7 +78,9 @@ public class RooftopGreeningApplyService {
      */
     public RooftopGreeningApply getRooftopApplyByGreenBeeId(Long rooftopId, Long memberId) {
         return greeningApplyRepository.getRooftopApplyByGreenBeeId(rooftopId, memberId)
-                .orElseThrow(NotFoundRooftopException::new);
+                .orElseThrow(() -> {
+                    throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");
+                });
     }
 
     /**
@@ -86,5 +88,12 @@ public class RooftopGreeningApplyService {
      */
     public void deleteGreeningApplies(Long rooftopId) {
         greeningApplyRepository.deleteGreeningApplies(rooftopId);
+    }
+
+    /**
+     * 이미 신청 기록이 존재하는지 체크
+     */
+    public boolean isExistRooftopApplyByGreenBeeId(Long rooftopId, Long memberId) {
+       return greeningApplyRepository.isExistGreeningApplyByGreenBeeId(rooftopId, memberId);
     }
 }
