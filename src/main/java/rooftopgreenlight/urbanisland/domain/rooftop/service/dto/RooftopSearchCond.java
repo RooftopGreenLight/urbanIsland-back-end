@@ -31,6 +31,13 @@ public class RooftopSearchCond {
     private Double maxWidth;
     private Double minWidth;
 
+    // 단가
+    private Integer minWidthPrice;
+    private Integer maxWidthPrice;
+
+    // 시공기한
+    private Integer deadLineType;
+
     // 조건
     private Integer cond;
 
