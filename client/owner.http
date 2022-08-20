@@ -1,0 +1,37 @@
+# 옥상지기 로그인
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+
+> {%
+client.global.set("accessToken", response.body.data.tokenDto.accessToken);
+ %}
+
+###
+# 그린비 대기사항 - 옥상 정보 및 그린비 목록 가져오기
+GET {{host}}/api/v1/owners/greenbee-waiting?page=0
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 공고 내리기
+DELETE {{host}}/api/v1/owners/delete-ngrooftop/5
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 그린비 확정하기
+GET {{host}}/api/v1/owners/confirm-greenbee/6/7
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 대기 옥상 진행사항
+GET {{host}}/api/v1/owners/rooftop-status
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
