@@ -62,7 +62,7 @@ public class GreenBeeController {
     @GetMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "타인의 그린비 정보 가져오기",
-            notes = "요청 데이터(path) - /memberId")
+            notes = "요청 데이터(path) - key -> memberId")
     public APIResponse getOtherGreenBeeInfo(@PathVariable("memberId") Long memberId) {
 
         GreenBee greenBeeInfo = greenBeeService.getMyGreenBeeInfo(memberId);
@@ -75,7 +75,7 @@ public class GreenBeeController {
     @GetMapping("/required-green")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "마이페이지(그린비) - 녹화가 필요한 옥상 찾기",
-            notes = "요청 데이터(Parameter) - key : page")
+            notes = "요청 데이터(Parameter) - key -> page")
     public APIResponse getRequiredGreenRooftop(@RequestParam("page") int page) {
         RooftopPageDto ngRooftopPageDto = rooftopService.getNGRooftop(page);
 
@@ -85,9 +85,9 @@ public class GreenBeeController {
     @GetMapping("/required-green/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "녹화가 필요한 옥상 찾기 - 개별 NG 옥상 정보 조회",
-        notes = "요청 데이터(path) - /rooftopId")
+        notes = "요청 데이터(path) - key -> rooftopId")
     public APIResponse getRequiredGreenRooftopDetail(@PathVariable("rooftopId") Long rooftopId) {
-        RooftopDto rooftopDto = rooftopService.getNGRooftopDetail(rooftopId);
+        RooftopDto rooftopDto = rooftopService.getRooftopDetail(rooftopId, "NG");
 
         return APIResponse.of(RooftopResponse.of(rooftopDto, true));
     }
@@ -95,7 +95,7 @@ public class GreenBeeController {
     @GetMapping("/required-green/select/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "그린비 -> 옥상 녹화 신청하기 ",
-        notes = "요청 데이터(path) - /rooftopId")
+        notes = "요청 데이터(path) - key -> rooftopId")
     public APIResponse selectRequiredGreenRooftop(@PathVariable("rooftopId") Long rooftopId,
                                                   @PK Long memberId) {
         rooftopService.selectGreenBeeNGRooftop(rooftopId, memberId);
@@ -107,13 +107,13 @@ public class GreenBeeController {
     @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화 중인 옥상",
         notes = "요청 데이터 - 없음")
     public APIResponse getGreeningRooftop(@PK Long memberId) {
-        return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "ACCEPTED"));
+        return APIResponse.of(GreeningApplyResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "ACCEPTED"), "ACCEPTED"));
     }
 
     @GetMapping("/greening-rooftop/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화 확정하기",
-        notes = "요청 데이터(path) - /rooftopId")
+        notes = "요청 데이터(path) - key -> rooftopId")
     public APIResponse completeGreeningRooftop(@PathVariable(value = "rooftopId") Long rooftopId,
                                                @PK Long memberId) {
         rooftopService.completeGreeningRooftop(rooftopId, memberId);
@@ -125,7 +125,7 @@ public class GreenBeeController {
     @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화를 신청한 옥상",
         notes = "요청 데이터 - 없음")
     public APIResponse getSelectedRooftop(@PK Long memberId) {
-        return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "SELECTED"));
+        return APIResponse.of(GreeningApplyResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "SELECTED"), "SELECTED"));
     }
 
     @GetMapping("/greening-completed-rooftop")
@@ -133,7 +133,7 @@ public class GreenBeeController {
     @ApiOperation(value = "(16) 본인을 선택한 옥상 확인하기 - 녹화를 완료한 옥상",
         notes = "요청 데이터 - 없음")
     public APIResponse getCompletedRooftop(@PK Long memberId) {
-        return APIResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "COMPLETED"));
+        return APIResponse.of(GreeningApplyResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "COMPLETED"), "COMPLETED"));
     }
 
 }
