@@ -8,4 +8,5 @@ import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCon
 public interface RooftopRepositoryCustom {
 
     Page<Rooftop> searchRooftopByCond(Pageable pageable, RooftopSearchCond searchCond);
+    Page<Rooftop> searchNGRooftopByCond(Pageable pageable, RooftopSearchCond searchCond);
 }

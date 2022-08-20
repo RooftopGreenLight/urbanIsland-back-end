@@ -10,6 +10,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopType;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 
 import javax.persistence.EntityManager;
@@ -40,8 +41,6 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         priceCond(searchCond.getMaxPrice(), searchCond.getMinPrice()),
                         contentNumCond(searchCond.getContentNum()),
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
-                        widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
-                        deadLineTypeCond(searchCond.getDeadLineType()),
                         rooftop.rooftopProgress.eq(Progress.ADMIN_COMPLETED)
                 )
                 .orderBy(sortCond(searchCond.getCond()))
@@ -60,9 +59,42 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         priceCond(searchCond.getMaxPrice(), searchCond.getMinPrice()),
                         contentNumCond(searchCond.getContentNum()),
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
+                        rooftop.rooftopProgress.eq(Progress.ADMIN_COMPLETED)
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<Rooftop> searchNGRooftopByCond(Pageable pageable, RooftopSearchCond searchCond) {
+        List<Rooftop> content = query
+                .selectFrom(rooftop)
+                .distinct()
+                .leftJoin(rooftop.rooftopDetails, rooftopDetail)
+                .where(
+                        addressCond(searchCond.getCity(), searchCond.getDistrict()),
+                        contentNumCond(searchCond.getContentNum()),
+                        widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
                         widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
                         deadLineTypeCond(searchCond.getDeadLineType()),
-                        rooftop.rooftopProgress.eq(Progress.ADMIN_COMPLETED)
+                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = query
+                .select(rooftop.count())
+                .from(rooftop)
+                .distinct()
+                .leftJoin(rooftop.rooftopDetails, rooftopDetail)
+                .where(
+                        addressCond(searchCond.getCity(), searchCond.getDistrict()),
+                        contentNumCond(searchCond.getContentNum()),
+                        widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
+                        widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
+                        deadLineTypeCond(searchCond.getDeadLineType()),
+                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN)
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

@@ -10,10 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
-import rooftopgreenlight.urbanisland.domain.common.exception.ExistGreeningApplyException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NoMatchMemberIdException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopReviewException;
+import rooftopgreenlight.urbanisland.domain.common.exception.*;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
@@ -167,7 +164,7 @@ public class RooftopService {
     @Transactional
     public void selectGreenBeeNGRooftop(Long rooftopId, Long memberId) {
         if(greeningApplyService.isExistRooftopApplyByGreenBeeId(rooftopId, memberId))
-            throw new ExistGreeningApplyException("이미 신청을 완료하였습니다.");
+            throw new ExistObjectException("이미 신청을 완료하였습니다.");
 
         Rooftop rooftop = findByRooftopId(rooftopId);
         rooftop.changeProgress(Progress.GREENBEE_COMPLETED);
@@ -313,13 +310,15 @@ public class RooftopService {
      */
     public RooftopPageDto searchRooftopByCond(int page, RooftopSearchCond searchCond) {
         PageRequest pageRequest = PageRequest.of(page, 20);
-
-        Page<Rooftop> rooftopPage = rooftopRepository.searchRooftopByCond(pageRequest, searchCond);
+        Page<Rooftop> rooftopPage = searchCond.getType().equals("G") ?
+                rooftopRepository.searchRooftopByCond(pageRequest, searchCond)
+                : rooftopRepository.searchNGRooftopByCond(pageRequest, searchCond);
 
         return new RooftopPageDto().RooftopSearchPageDto(
                 rooftopPage.getTotalPages(),
                 rooftopPage.getTotalElements(),
-                rooftopPage.getContent()
+                rooftopPage.getContent(),
+                searchCond.getType()
         );
     }
 
