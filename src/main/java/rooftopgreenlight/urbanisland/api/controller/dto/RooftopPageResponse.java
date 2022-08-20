@@ -23,7 +23,7 @@ public class RooftopPageResponse {
                 rooftopPageDto.getTotalPages(),
                 rooftopPageDto.getTotalElements(),
                 rooftopPageDto.getRooftopResponses().stream().map(rooftopDto ->
-                        new RooftopResponse().RooftopSearchResultResponse(
+                        new RooftopResponse().rooftopSearchResultResponse(
                                 rooftopDto.getId(),
                                 rooftopDto.getCity(),
                                 rooftopDto.getDistrict(),

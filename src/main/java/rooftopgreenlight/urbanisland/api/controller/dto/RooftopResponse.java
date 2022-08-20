@@ -3,10 +3,13 @@ package rooftopgreenlight.urbanisland.api.controller.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import org.springframework.format.annotation.DateTimeFormat;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopImageDto;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,17 +25,42 @@ public class RooftopResponse {
     private Integer widthPrice;
     private Integer requiredTermType;
 
+    private Integer adultCount;
+    private Integer kidCount;
+    private Integer petCount;
+    private Integer totalCount;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalTime startTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalTime endTime;
+
     private String grade;
     private Double width;
     private String city;
     private String district;
     private String detail;
     private String phoneNumber;
+    private String explainContent;
+    private String refundContent;
+    private String roleContent;
     private String ownerContent;
 
+    private String progress;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime rooftopDate;
+
+    private List<Integer> detailNums;
     private List<RooftopImageResponse> rooftopImages;
     private RooftopImageResponse structureImage;
     private RooftopImageResponse mainImage;
+    private List<RooftopReviewResponse> rooftopReviews;
+
+    protected RooftopResponse(Long id, String progress, LocalDateTime rooftopDate) {
+        this.id = id;
+        this.progress = progress;
+        this.rooftopDate = rooftopDate;
+    }
 
     protected RooftopResponse(Long id, String phoneNumber, String ownerContent, RooftopImageResponse structureImage) {
         this.id = id;
@@ -78,8 +106,35 @@ public class RooftopResponse {
         this.mainImage = RooftopImageResponse.of(mainImage);
     }
 
-    public RooftopResponse RooftopSearchResultResponse(Long id, String city, String district, String detail,
-                                             String grade, Integer totalPrice, RooftopImageDto mainImage) {
+
+    protected RooftopResponse(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
+                         String refundContent, String grade, Double width, List<RooftopImageResponse> rooftopImages, RooftopImageResponse structureImage,
+                         Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
+                         LocalTime startTime, LocalTime endTime, List<RooftopReviewResponse> reviewDtos) {
+        this.id = id;
+        this.totalPrice = totalPrice;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.explainContent = explainContent;
+        this.roleContent = roleContent;
+        this.refundContent = refundContent;
+        this.grade = grade;
+        this.width = width;
+        this.rooftopImages = rooftopImages;
+        this.structureImage = structureImage;
+        this.adultCount = adultCount;
+        this.kidCount = kidCount;
+        this.petCount = petCount;
+        this.totalCount = totalCount;
+        this.detailNums = detailNums;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.rooftopReviews = reviewDtos;
+    }
+
+    public RooftopResponse rooftopSearchResultResponse(Long id, String city, String district, String detail,
+                                                       String grade, Integer totalPrice, RooftopImageDto mainImage) {
         return new RooftopResponse(id, city, district, detail, grade, totalPrice, mainImage);
     }
 
@@ -87,14 +142,9 @@ public class RooftopResponse {
         return new RooftopResponse(id, phoneNumber, ownerContent, RooftopImageResponse.of(structureImage));
     }
 
-    public static RooftopResponse of(Rooftop rooftop, List<RooftopImageResponse> greenBeeImages) {
-        return new RooftopResponse(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getWidth(),
-                rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(), greenBeeImages);
-    }
-
     public static RooftopResponse of(RooftopDto rooftopDto, boolean isOne) {
         if (isOne) {
-            return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), 3, rooftopDto.getWidth(),
+            return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), rooftopDto.getRequiredTermType(), rooftopDto.getWidth(),
                     rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(), rooftopDto.getPhoneNumber(),
                     rooftopDto.getOwnerContent(), rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()),
                     RooftopImageResponse.of(rooftopDto.getStructureImage()));
@@ -103,5 +153,25 @@ public class RooftopResponse {
             return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), rooftopDto.getWidth(),
                     rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(),
                     rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()));
+    }
+
+    public static RooftopResponse getRooftopDetail(RooftopDto rooftopDto) {
+        List<RooftopImageResponse> rooftopImages = rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList());
+        RooftopImageResponse structureImage = RooftopImageResponse.of(rooftopDto.getStructureImage());
+        List<RooftopReviewResponse> reviews = rooftopDto.getRooftopReviews().stream().map(RooftopReviewResponse::of).collect(Collectors.toList());
+
+        return new RooftopResponse(rooftopDto.getId(), rooftopDto.getTotalPrice(), rooftopDto.getCity(), rooftopDto.getDistrict(),
+                rooftopDto.getDetail(), rooftopDto.getExplainContent(), rooftopDto.getRoleContent(), rooftopDto.getRefundContent(),
+                rooftopDto.getGrade(), rooftopDto.getWidth(), rooftopImages, structureImage,
+                rooftopDto.getAdultCount(), rooftopDto.getKidCount(), rooftopDto.getPetCount(), rooftopDto.getTotalCount(),
+                rooftopDto.getDetailNums(), rooftopDto.getStartTime(), rooftopDto.getEndTime(), reviews);
+    }
+
+    public static List<RooftopResponse> getRooftopStatus(List<RooftopDto> rooftopDtos) {
+        List<RooftopResponse> responses = new ArrayList<>();
+        rooftopDtos.forEach(rooftopDto -> {
+            responses.add(new RooftopResponse(rooftopDto.getId(), rooftopDto.getProgress(), rooftopDto.getRooftopDate()));
+        });
+        return responses;
     }
 }
