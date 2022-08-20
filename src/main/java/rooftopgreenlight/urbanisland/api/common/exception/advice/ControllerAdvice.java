@@ -111,17 +111,6 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 멤버 중복 오류
-     * @param e
-     * @return 에러 정보 전달
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public APIErrorResponse existMemberException(ExistMemberException e) {
-        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
-    }
-
-    /**
      * 권한 오류
      * @param e
      * @return
@@ -177,11 +166,11 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 중복된 그린비 신청 오류
+     * 중복 객체 오류
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public APIErrorResponse existGreeningApplyException(ExistGreeningApplyException e){
+    public APIErrorResponse existObjectException(ExistObjectException e){
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
 
