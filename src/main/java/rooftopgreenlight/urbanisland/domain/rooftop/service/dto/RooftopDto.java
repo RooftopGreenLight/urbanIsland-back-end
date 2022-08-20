@@ -97,6 +97,17 @@ public class RooftopDto {
         this.ownerContent = ownerContent;
     }
 
+    protected RooftopDto(Long id, String city, String district, String detail,
+                         Double width, Integer widthPrice, RooftopImage mainImage) {
+        this.id = id;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.width = width;
+        this.widthPrice = widthPrice;
+        this.mainImage = RooftopImageDto.of(mainImage);
+    }
+
     protected RooftopDto(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
                          String refundContent, String grade, Double width, List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage,
                          Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
@@ -145,6 +156,11 @@ public class RooftopDto {
     public RooftopDto RooftopSearchResultDto(Long id, String city, String district, String detail,
                                              String grade, Integer totalPrice, RooftopImage mainImage) {
         return new RooftopDto(id, city, district, detail, grade, totalPrice, mainImage);
+    }
+
+    public RooftopDto NGRooftopSearchResultDto(Long id, String city, String district, String detail,
+                                               Double width, Integer widthPrice, RooftopImage mainImage) {
+        return new RooftopDto(id, city, district, detail, width, widthPrice, mainImage);
     }
 
     public static RooftopDto getRooftopDto(Rooftop rooftop) {

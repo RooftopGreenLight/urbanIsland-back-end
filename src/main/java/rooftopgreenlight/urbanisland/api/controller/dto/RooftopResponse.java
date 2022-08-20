@@ -106,6 +106,17 @@ public class RooftopResponse {
         this.mainImage = RooftopImageResponse.of(mainImage);
     }
 
+    protected RooftopResponse(Long id, String city, String district, String detail,
+                              Double width, Integer widthPrice, RooftopImageDto mainImage) {
+        this.id = id;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+        this.width = width;
+        this.widthPrice = widthPrice;
+        this.mainImage = RooftopImageResponse.of(mainImage);
+    }
+
 
     protected RooftopResponse(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
                          String refundContent, String grade, Double width, List<RooftopImageResponse> rooftopImages, RooftopImageResponse structureImage,
@@ -136,6 +147,11 @@ public class RooftopResponse {
     public RooftopResponse rooftopSearchResultResponse(Long id, String city, String district, String detail,
                                                        String grade, Integer totalPrice, RooftopImageDto mainImage) {
         return new RooftopResponse(id, city, district, detail, grade, totalPrice, mainImage);
+    }
+
+    public RooftopResponse ngRooftopSearchResultResponse(Long id, String city, String district, String detail,
+                                                         Double width, Integer widthPrice, RooftopImageDto mainImage) {
+        return new RooftopResponse(id, city, district, detail, width, widthPrice, mainImage);
     }
 
     public static RooftopResponse of(Long id, String phoneNumber, String ownerContent, RooftopImageDto structureImage) {
@@ -174,4 +190,5 @@ public class RooftopResponse {
         });
         return responses;
     }
+
 }

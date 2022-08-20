@@ -19,24 +19,37 @@ public class RooftopPageDto {
     private long totalElements;
     private List<RooftopDto> rooftopResponses;
 
-    public RooftopPageDto RooftopSearchPageDto(int totalPages, long totalElements, List<Rooftop> rooftops) {
-        return new RooftopPageDto(
-                totalPages,
-                totalElements,
+    public RooftopPageDto RooftopSearchPageDto(int totalPages, long totalElements, List<Rooftop> rooftops, String type) {
+        if(type.equals("G")) {
+            return new RooftopPageDto(
+                    totalPages,
+                    totalElements,
+                    rooftops.stream().map(rooftop ->
+                            new RooftopDto().RooftopSearchResultDto(
+                                    rooftop.getId(),
+                                    rooftop.getAddress().getCity(),
+                                    rooftop.getAddress().getDistrict(),
+                                    rooftop.getAddress().getDetail(),
+                                    rooftop.getGrade(),
+                                    rooftop.getTotalPrice(),
+                                    rooftop.getRooftopImages().stream()
+                                            .filter(rooftopImage -> rooftopImage.getRooftopImageType() == ImageType.MAIN)
+                                            .findFirst()
+                                            .orElse(null)
+                            )).collect(Collectors.toList())
+            );
+        }
+        return new RooftopPageDto(totalPages, totalElements,
                 rooftops.stream().map(rooftop ->
-                        new RooftopDto().RooftopSearchResultDto(
-                        rooftop.getId(),
-                        rooftop.getAddress().getCity(),
-                        rooftop.getAddress().getDistrict(),
-                        rooftop.getAddress().getDetail(),
-                        rooftop.getGrade(),
-                        rooftop.getTotalPrice(),
-                        rooftop.getRooftopImages().stream()
-                                .filter(rooftopImage -> rooftopImage.getRooftopImageType() == ImageType.MAIN)
-                                .findFirst()
-                                .orElse(null)
-                )).collect(Collectors.toList())
-        );
+                    new RooftopDto().NGRooftopSearchResultDto(
+                            rooftop.getId(),
+                            rooftop.getAddress().getCity(),
+                            rooftop.getAddress().getDistrict(),
+                            rooftop.getAddress().getDetail(),
+                            rooftop.getWidth(),
+                            rooftop.getWidthPrice(),
+                            rooftop.getRooftopImages().get(0)
+                    )).collect(Collectors.toList()));
     }
 
     public static RooftopPageDto of(int totalPages, long totalElements, List<Rooftop> rooftops, boolean isAdmin) {

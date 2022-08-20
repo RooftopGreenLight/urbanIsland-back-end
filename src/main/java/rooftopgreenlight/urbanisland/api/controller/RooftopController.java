@@ -66,11 +66,11 @@ public class RooftopController {
             value = "옥상 검색 조건 조회",
             notes = "요청 데이터(Parameter) - key -> page, size, startTime, endTime, adultCount, kidCount," +
                     "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, " +
-                    "minWidthPrice, maxWidthPrice, deadLineType, cond"
+                    "minWidthPrice, maxWidthPrice, deadLineType, cond, type(G, NG)"
     )
     public APIResponse searchRooftop(@RequestParam int page, RooftopSearchCond searchCond) {
         return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(
-            rooftopService.searchRooftopByCond(page, searchCond)
+            rooftopService.searchRooftopByCond(page, searchCond), searchCond.getType()
         ));
     }
 
