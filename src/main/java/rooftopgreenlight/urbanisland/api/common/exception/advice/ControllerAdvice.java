@@ -177,6 +177,15 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 중복된 그린비 신청 오류
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse existGreeningApplyException(ExistGreeningApplyException e){
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
+    /**
      * MemberId 불일치 오류
      * @param e
      * @return
