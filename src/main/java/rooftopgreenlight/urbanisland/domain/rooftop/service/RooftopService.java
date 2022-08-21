@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
-import rooftopgreenlight.urbanisland.domain.common.exception.NoMatchMemberIdException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopException;
-import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopReviewException;
+import rooftopgreenlight.urbanisland.domain.common.exception.*;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
@@ -23,13 +21,15 @@ import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.*;
 import rooftopgreenlight.urbanisland.domain.rooftop.repository.RooftopRepository;
-import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopPageDto;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -147,11 +147,15 @@ public class RooftopService {
     }
 
     /**
-     * 녹화되지 않은 옥상 개별 조회
+     * 옥상 개별 조회
      */
-    public RooftopDto getNGRooftopDetail(Long rooftopId) {
-        Rooftop rooftop = findByRooftopId(rooftopId);
-        return RooftopDto.of(rooftop, true);
+    public RooftopDto getRooftopDetail(Long rooftopId, String type) {
+        Rooftop rooftop = rooftopRepository.findRooftopWithAll(rooftopId).orElseThrow(() -> {
+            throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");
+        });
+        if(type.equals("G"))
+            return RooftopDto.getRooftopDto(rooftop);
+        return RooftopDto.getNGRooftopDto(rooftop, true);
     }
 
     /**
@@ -159,6 +163,9 @@ public class RooftopService {
      */
     @Transactional
     public void selectGreenBeeNGRooftop(Long rooftopId, Long memberId) {
+        if(greeningApplyService.isExistRooftopApplyByGreenBeeId(rooftopId, memberId))
+            throw new ExistObjectException("이미 신청을 완료하였습니다.");
+
         Rooftop rooftop = findByRooftopId(rooftopId);
         rooftop.changeProgress(Progress.GREENBEE_COMPLETED);
         GreenBee greenBee = greenBeeService.getGreenBee(memberId);
@@ -169,7 +176,14 @@ public class RooftopService {
      * 옥상 삭제
      */
     @Transactional
-    public void deleteRooftop(Long rooftopId, boolean isNg) {
+    public void deleteRooftop(Long memberId, Long rooftopId, boolean isNg) {
+        Rooftop findRooftop = rooftopRepository.findRooftopWithMember(rooftopId).orElseThrow(() -> {
+                    throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");});
+
+        if(isNg && !findRooftop.getCreatedBy().equals(String.valueOf(memberId))) {
+            throw new NoMatchMemberIdException("회원 정보가 일치하지 않습니다.");
+        }
+
         rooftopRepository.deleteRooftopDetails(rooftopId);
         rooftopRepository.deleteRooftopOptions(rooftopId);
         List<RooftopImage> rooftopImages = rooftopRepository.findRooftopImagesByRooftopId(rooftopId);
@@ -185,8 +199,10 @@ public class RooftopService {
      * 신청한 그린비 목록 중 확정하기
      */
     @Transactional
-    public void confirmGreenBeeNGRooftop(Long rooftopId, Long greenbeeId) {
+    public void confirmGreenBeeNGRooftop(Long rooftopId, Long greenbeeId, Long memberId) {
         Rooftop rooftop = findByRooftopId(rooftopId);
+        if(!rooftop.getCreatedBy().equals(String.valueOf(memberId)))
+            throw new NoMatchMemberIdException("권한이 없습니다.");
         rooftop.changeProgress(Progress.GREENING_ACCEPTED);
 
         List<RooftopGreeningApply> greeningApplies = greeningApplyService.getNotSelectedApply(rooftopId);
@@ -204,8 +220,10 @@ public class RooftopService {
     @Transactional
     public void completeGreeningRooftop(Long rooftopId, Long memberId) {
         RooftopGreeningApply rooftopGreeningApply = greeningApplyService.getRooftopApplyByGreenBeeId(rooftopId, memberId);
-        rooftopGreeningApply.changeProgress(Progress.ADMIN_COMPLETED);
+        if(!rooftopGreeningApply.getGreeningProgress().equals(Progress.GREENING_ACCEPTED))
+            throw new NotFoundRooftopException("옥상 녹화가 거절되었거나 존재하지 않는 옥상입니다.");
 
+        rooftopGreeningApply.changeProgress(Progress.ADMIN_COMPLETED);
         Rooftop findRooftop = findByRooftopId(rooftopId);
         findRooftop.changeProgress(Progress.ADMIN_COMPLETED);
         findRooftop.changeRooftopType(RooftopType.GREEN);
@@ -283,7 +301,7 @@ public class RooftopService {
      */
     @Transactional
     public void rejectRooftop(long rooftopId) {
-        deleteRooftop(rooftopId, false);
+        deleteRooftop(null, rooftopId, false);
     }
 
     /**
@@ -292,13 +310,15 @@ public class RooftopService {
      */
     public RooftopPageDto searchRooftopByCond(int page, RooftopSearchCond searchCond) {
         PageRequest pageRequest = PageRequest.of(page, 20);
-
-        Page<Rooftop> rooftopPage = rooftopRepository.searchRooftopByCond(pageRequest, searchCond);
+        Page<Rooftop> rooftopPage = searchCond.getType().equals("G") ?
+                rooftopRepository.searchRooftopByCond(pageRequest, searchCond)
+                : rooftopRepository.searchNGRooftopByCond(pageRequest, searchCond);
 
         return new RooftopPageDto().RooftopSearchPageDto(
                 rooftopPage.getTotalPages(),
                 rooftopPage.getTotalElements(),
-                rooftopPage.getContent()
+                rooftopPage.getContent(),
+                searchCond.getType()
         );
     }
 
@@ -316,6 +336,9 @@ public class RooftopService {
         findRooftop.addGrade(grade); // 평점 계산
     }
 
+    /**
+     * Review 삭제
+     */
     @Transactional
     public void deleteReview(final Long memberId, final Long rooftopId, final Long reviewId) {
         Rooftop findRooftop = findByRooftopId(rooftopId);
@@ -333,10 +356,24 @@ public class RooftopService {
         rooftopRepository.deleteRooftopReviewByRooftopReviewId(reviewId);
     }
 
+    /**
+     * Review 조회
+     */
     public Page<RooftopReview> findByMyRooftopReview(final Long memberId, final int page) {
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
 
         return rooftopRepository.findRooftopReviewPageByMemberId(memberId, pageRequest);
+    }
+
+    /**
+     * 옥상지기가 등록한 옥상 목록 조회
+     */
+    public List<RooftopDto> getRooftopByMemberId(Long memberId) {
+        List<Rooftop> rooftopLists = rooftopRepository.findRooftopByMemberId(memberId);
+        return rooftopLists.stream().map(rooftop -> {
+            LocalDateTime date = rooftop.getRooftopProgress() == Progress.ADMIN_WAIT ? rooftop.getCreatedDate() : rooftop.getLastModifiedDate();
+            return RooftopDto.getRooftopStatusDto(rooftop.getId(), rooftop.getRooftopProgress().name(), date);
+        }).collect(Collectors.toList());
     }
 
     private RooftopReview createReview(final String content, final int grade, final Member findMember) {

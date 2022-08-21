@@ -1,0 +1,81 @@
+# 그린비 로그인
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{greenbeeEmail}}",
+  "password": "{{greenbeePW}}"
+}
+
+> {%
+client.global.set("accessToken", response.body.data.tokenDto.accessToken);
+ %}
+
+###
+# 그린비 신청하기
+POST {{host}}/api/v1/green-bees/join
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: Bearer {{accessToken}}
+
+--boundary
+Content-Disposition: form-data; name="officeNumber"
+
+010-1234-5678
+--boundary
+Content-Disposition: form-data; name="content"
+
+test
+--boundary
+Content-Disposition: form-data; name="city"
+
+서울특별시
+--boundary
+Content-Disposition: form-data; name="district"
+
+동작구
+--boundary
+Content-Disposition: form-data; name="detail"
+
+상도동
+
+###
+# 녹화가 필요한 옥상 찾기
+GET {{host}}/api/v1/green-bees/required-green?page=0
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 개별 NG 옥상 조회하기
+GET {{host}}/api/v1/green-bees/required-green/4
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 그린비 -> 옥상 녹화 신청하기
+GET {{host}}/api/v1/green-bees/required-green/select/6
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 본인을 선택한 옥상 확인하기
+GET {{host}}/api/v1/green-bees/greening-rooftop
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 녹화 확정하기
+GET {{host}}/api/v1/green-bees/greening-rooftop/6
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 녹화를 신청한 옥상 확인하기 (옥상 신청 결과 확인하기)
+GET {{host}}/api/v1/green-bees/greening-select-rooftop
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 녹화를 완료한 옥상 확인하기
+GET {{host}}/api/v1/green-bees/greening-completed-rooftop
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

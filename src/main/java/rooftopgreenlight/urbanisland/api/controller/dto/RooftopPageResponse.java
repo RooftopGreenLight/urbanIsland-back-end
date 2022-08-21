@@ -18,21 +18,38 @@ public class RooftopPageResponse {
     private long totalElements;
     private List<RooftopResponse> rooftopResponses;
 
-    public RooftopPageResponse RooftopSearchPageResponse(RooftopPageDto rooftopPageDto) {
+    public RooftopPageResponse RooftopSearchPageResponse(RooftopPageDto rooftopPageDto, String type) {
+        if(type.equals("G")) {
+            return new RooftopPageResponse(
+                    rooftopPageDto.getTotalPages(),
+                    rooftopPageDto.getTotalElements(),
+                    rooftopPageDto.getRooftopResponses().stream().map(rooftopDto ->
+                            new RooftopResponse().rooftopSearchResultResponse(
+                                    rooftopDto.getId(),
+                                    rooftopDto.getCity(),
+                                    rooftopDto.getDistrict(),
+                                    rooftopDto.getDetail(),
+                                    rooftopDto.getGrade(),
+                                    rooftopDto.getTotalPrice(),
+                                    rooftopDto.getMainImage()
+                            )).collect(Collectors.toList())
+            );
+        }
+
         return new RooftopPageResponse(
                 rooftopPageDto.getTotalPages(),
                 rooftopPageDto.getTotalElements(),
                 rooftopPageDto.getRooftopResponses().stream().map(rooftopDto ->
-                        new RooftopResponse().RooftopSearchResultResponse(
+                        new RooftopResponse().ngRooftopSearchResultResponse(
                                 rooftopDto.getId(),
                                 rooftopDto.getCity(),
                                 rooftopDto.getDistrict(),
                                 rooftopDto.getDetail(),
-                                rooftopDto.getGrade(),
-                                rooftopDto.getTotalPrice(),
+                                rooftopDto.getWidth(),
+                                rooftopDto.getWidthPrice(),
                                 rooftopDto.getMainImage()
-                        )).collect(Collectors.toList())
-        );
+                        )).collect(Collectors.toList()));
+
     }
 
     public static RooftopPageResponse of(RooftopPageDto rooftopPageDto, boolean isAdmin) {
