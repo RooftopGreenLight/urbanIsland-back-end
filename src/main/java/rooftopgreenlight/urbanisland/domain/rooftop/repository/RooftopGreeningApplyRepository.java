@@ -12,13 +12,13 @@ import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopGreeningApply;
 import java.util.List;
 import java.util.Optional;
 
-public interface RooftopGreeningApplyRepository extends JpaRepository<RooftopGreeningApply, Long> {
+public interface RooftopGreeningApplyRepository
+        extends JpaRepository<RooftopGreeningApply, Long>, RooftopGreeningApplyRepositoryCustom{
 
     @Query("select distinct r from RooftopGreeningApply r join r.rooftop rt join r.greenBee rg " +
             "where rt.member.id = :memberId and not r.greeningProgress='ADMIN_COMPLETED'")
     Page<RooftopGreeningApply> getGreenBeeWaitingList(@Param(value = "memberId") Long memberId,
                                                       Pageable pageable);
-
 
     @Query("select r from RooftopGreeningApply r join r.rooftop rt where rt.id =:rooftopId")
     List<RooftopGreeningApply> getRooftopApply(@Param(value = "rooftopId") Long rooftopId);

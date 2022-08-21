@@ -70,7 +70,7 @@ Content-Disposition: form-data; name="totalPrice"
 
 ###
 # Rooftop Seach Cond 조회
-GET {{host}}/api/v1/rooftops/search?page=0&minPrice=0&maxPrice=0
+GET {{host}}/api/v1/rooftops/search?page=0&deadLineType=3
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -93,6 +93,12 @@ Content-Type: application/json
 
 ###
 # Rooftop Review 삭제
-DELETE {{host}}/api/v1/rooftops/reviews/1/2
+DELETE {{host}}/api/v1/rooftops/reviews/1/3
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+# Rooftop Detail 조회
+GET {{host}}/api/v1/rooftops/detail/1
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json

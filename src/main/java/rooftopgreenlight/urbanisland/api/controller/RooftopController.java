@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.controller.dto.*;
-import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCond;
 
 import java.util.List;
 
@@ -65,11 +65,12 @@ public class RooftopController {
     @ApiOperation(
             value = "옥상 검색 조건 조회",
             notes = "요청 데이터(Parameter) - key -> page, size, startTime, endTime, adultCount, kidCount," +
-                    "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, cond"
+                    "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, " +
+                    "minWidthPrice, maxWidthPrice, deadLineType, cond, type(G, NG)"
     )
     public APIResponse searchRooftop(@RequestParam int page, RooftopSearchCond searchCond) {
         return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(
-            rooftopService.searchRooftopByCond(page, searchCond)
+            rooftopService.searchRooftopByCond(page, searchCond), searchCond.getType()
         ));
     }
 
@@ -117,5 +118,16 @@ public class RooftopController {
         rooftopService.deleteReview(memberId, rooftopId, reviewId);
 
         return APIResponse.empty();
+    }
+
+
+    @GetMapping("/detail/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(
+            value = "(3) reservation detail page - 옥상 id에 따른 옥상 detail 내용 조회",
+            notes = "요청 데이터(path) - key -> rooftopId"
+    )
+    public APIResponse getRooftop(@PathVariable("rooftopId") Long rooftopId) {
+        return APIResponse.of(RooftopResponse.getRooftopDetail(rooftopService.getRooftopDetail(rooftopId, "G")));
     }
 }

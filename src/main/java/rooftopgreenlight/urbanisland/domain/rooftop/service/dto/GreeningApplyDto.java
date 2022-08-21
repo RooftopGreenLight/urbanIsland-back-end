@@ -1,6 +1,5 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
@@ -9,7 +8,6 @@ import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopGreeningApply;
 import java.time.LocalDateTime;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class GreeningApplyDto {
     private Long rooftopId;
     private String rooftopCity;

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
-import rooftopgreenlight.urbanisland.domain.common.exception.ExistObjectException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -36,13 +35,6 @@ public class RooftopReview extends BaseEntity {
     public void addRooftop(final Rooftop rooftop) {
         this.rooftop = rooftop;
         List<RooftopReview> reviews = rooftop.getReviews();
-
-        reviews.forEach(review -> {
-            if (review.getMember().getId().equals(this.member.getId())) {
-                throw new ExistObjectException("해당 회원의 리뷰가 이미 존재합니다.");
-            }
-        });
-
         reviews.add(this);
     }
 
