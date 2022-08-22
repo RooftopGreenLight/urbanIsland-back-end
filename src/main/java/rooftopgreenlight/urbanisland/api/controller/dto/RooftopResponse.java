@@ -147,6 +147,7 @@ public class RooftopResponse {
         this.rooftopReviews = reviewDtos;
     }
 
+
     public RooftopResponse rooftopSearchResultResponse(Long id, String city, String district, String detail,
                                                        String grade, Integer totalPrice, RooftopImageDto mainImage) {
         return new RooftopResponse(id, city, district, detail, grade, totalPrice, mainImage);
@@ -169,9 +170,8 @@ public class RooftopResponse {
                     RooftopImageResponse.of(rooftopDto.getStructureImage()));
         }
 
-            return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), rooftopDto.getWidth(),
-                    rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(),
-                    rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()));
+        return new RooftopResponse(rooftopDto.getId(), rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(),
+                rooftopDto.getWidth(), rooftopDto.getWidthPrice(),  rooftopDto.getRooftopImages().get(0));
     }
 
     public static RooftopResponse getRooftopDetail(RooftopDto rooftopDto) {
