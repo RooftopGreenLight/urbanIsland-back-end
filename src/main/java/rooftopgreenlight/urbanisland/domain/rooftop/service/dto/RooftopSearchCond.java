@@ -41,7 +41,4 @@ public class RooftopSearchCond {
     // 조건
     private Integer cond;
 
-    // 타입
-    private String type;
-
 }
