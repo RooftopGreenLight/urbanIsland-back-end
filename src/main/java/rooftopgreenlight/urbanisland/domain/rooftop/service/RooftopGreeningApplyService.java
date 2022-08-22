@@ -41,11 +41,11 @@ public class RooftopGreeningApplyService {
     }
 
     /**
-     * 옥상지기 -> 본인의 옥상 및 신청한 그린비 정보 가져오기
+     * 옥상지기 -> 옥상에 따른 그린비 신청 정보 가져오기
      */
-    public GreeningApplyPageDto getGreenBeeWaitingList(int page, Long memberId) {
-        PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.ASC,"applyTime"));
-        Page<RooftopGreeningApply> byGreenBeeCompleted = greeningApplyRepository.getGreenBeeWaitingList(memberId, pageRequest);
+    public GreeningApplyPageDto getGreenBeeWaitingList(int page, Long rooftopId) {
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC,"applyTime"));
+        Page<RooftopGreeningApply> byGreenBeeCompleted = greeningApplyRepository.getGreenBeeWaitingList(rooftopId, pageRequest);
         return GreeningApplyPageDto.of(byGreenBeeCompleted.getTotalPages(),
                 byGreenBeeCompleted.getTotalElements(), byGreenBeeCompleted.getContent());
     }

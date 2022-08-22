@@ -43,8 +43,12 @@ public interface RooftopRepository extends
             "left join r.rooftopDetails rd where r.id = :rooftopId")
     Optional<Rooftop> findRooftopWithAll(@Param("rooftopId") Long rooftopId);
 
-    @Query("select r from Rooftop r where r.member.id=:memberId")
-    List<Rooftop> findRooftopByMemberId(@Param("memberId") Long memberId);
+    @Query("select r from Rooftop r where r.member.id=:memberId and r.rooftopType='GREEN'" +
+            "and r.rooftopProgress in (:progress)")
+    List<Rooftop> findGreenRooftopByMemberId(@Param("memberId") Long memberId, List<Progress> progress);
+
+    @Query("select r from Rooftop r where r.member.id =:memberId and r.rooftopProgress in (:progress)")
+    List<Rooftop> findNGRooftopByMemberId(@Param("memberId") Long memberId, List<Progress> progress);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from RooftopDetail r where r.rooftop.id=:rooftopId")
