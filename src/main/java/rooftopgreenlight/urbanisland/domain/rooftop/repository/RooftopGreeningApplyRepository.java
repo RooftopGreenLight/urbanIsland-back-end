@@ -15,9 +15,9 @@ import java.util.Optional;
 public interface RooftopGreeningApplyRepository
         extends JpaRepository<RooftopGreeningApply, Long>, RooftopGreeningApplyRepositoryCustom{
 
-    @Query("select distinct r from RooftopGreeningApply r join r.rooftop rt join r.greenBee rg " +
-            "where rt.member.id = :memberId and not r.greeningProgress='ADMIN_COMPLETED'")
-    Page<RooftopGreeningApply> getGreenBeeWaitingList(@Param(value = "memberId") Long memberId,
+    @Query("select distinct r from RooftopGreeningApply r join r.greenBee rg " +
+            "where r.id = :rooftopId and not r.greeningProgress='ADMIN_COMPLETED'")
+    Page<RooftopGreeningApply> getGreenBeeWaitingList(@Param(value = "rooftopId") Long rooftopId,
                                                       Pageable pageable);
 
     @Query("select r from RooftopGreeningApply r join r.rooftop rt where rt.id =:rooftopId")

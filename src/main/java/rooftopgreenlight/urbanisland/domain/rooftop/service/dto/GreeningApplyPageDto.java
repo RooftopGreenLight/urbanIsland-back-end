@@ -19,13 +19,11 @@ public class GreeningApplyPageDto {
 
     public static GreeningApplyPageDto of (int totalPages, long totalElements, List<RooftopGreeningApply> greeningApplies) {
         List<GreeningApplyDto> greeningApplyDtos = greeningApplies.stream().map(greenApply -> {
-            Address rooftopAddress = greenApply.getRooftop().getAddress();
             Address greenBeeAddress = greenApply.getGreenBee().getAddress();
 
-            return GreeningApplyDto.of(greenApply.getRooftop().getId(), rooftopAddress.getCity(),
-                    rooftopAddress.getDistrict(), rooftopAddress.getDetail(),
-                    greenApply.getGreenBee().getMember().getId(), greenBeeAddress.getCity(), greenBeeAddress.getDistrict(), greenBeeAddress.getDetail(),
-                    greenApply.getGreenBee().getOfficeNumber(), LocalDateTime.now());
+            return GreeningApplyDto.of(greenApply.getRooftop().getId(), greenApply.getGreenBee().getMember().getId(),
+                    greenBeeAddress.getCity(), greenBeeAddress.getDistrict(), greenBeeAddress.getDetail(),
+                    greenApply.getGreenBee().getOfficeNumber(), greenApply.getApplyTime());
         }).collect(Collectors.toList());
 
         return new GreeningApplyPageDto(totalPages, totalElements, greeningApplyDtos);

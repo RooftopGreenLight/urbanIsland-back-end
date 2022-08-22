@@ -27,11 +27,8 @@ public class GreeningApplyResponse {
     private LocalDateTime applyTime;
     private Progress progress;
 
-    protected GreeningApplyResponse(Long rooftopId, String rooftopCity, String rooftopDistrict, String rooftopDetail, Long greenBeeId, String officeCity, String officeDistrict, String officeDetail, String officeNumber, LocalDateTime applyTime) {
+    protected GreeningApplyResponse(Long rooftopId, Long greenBeeId, String officeCity, String officeDistrict, String officeDetail, String officeNumber, LocalDateTime applyTime) {
         this.rooftopId = rooftopId;
-        this.rooftopCity = rooftopCity;
-        this.rooftopDistrict = rooftopDistrict;
-        this.rooftopDetail = rooftopDetail;
         this.greenBeeId = greenBeeId;
         this.officeCity = officeCity;
         this.officeDistrict = officeDistrict;
@@ -78,8 +75,7 @@ public class GreeningApplyResponse {
     }
 
     public static GreeningApplyResponse of(GreeningApplyDto greeningApply) {
-        return new GreeningApplyResponse(greeningApply.getRooftopId(), greeningApply.getRooftopCity(), greeningApply.getRooftopDistrict(),
-                greeningApply.getRooftopDistrict(), greeningApply.getGreenBeeId(), greeningApply.getOfficeCity(), greeningApply.getOfficeDistrict(),
-                greeningApply.getOfficeDetail(), greeningApply.getOfficeNumber(), greeningApply.getApplyTime());
+        return new GreeningApplyResponse(greeningApply.getRooftopId(), greeningApply.getGreenBeeId(), greeningApply.getOfficeCity(),
+                greeningApply.getOfficeDistrict(), greeningApply.getOfficeDetail(), greeningApply.getOfficeNumber(), greeningApply.getApplyTime());
     }
 }

@@ -56,8 +56,11 @@ public class RooftopResponse {
     private RooftopImageResponse mainImage;
     private List<RooftopReviewResponse> rooftopReviews;
 
-    protected RooftopResponse(Long id, String progress, LocalDateTime rooftopDate) {
+    protected RooftopResponse(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
         this.id = id;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
         this.progress = progress;
         this.rooftopDate = rooftopDate;
     }
@@ -185,9 +188,11 @@ public class RooftopResponse {
 
     public static List<RooftopResponse> getRooftopStatus(List<RooftopDto> rooftopDtos) {
         List<RooftopResponse> responses = new ArrayList<>();
-        rooftopDtos.forEach(rooftopDto -> {
-            responses.add(new RooftopResponse(rooftopDto.getId(), rooftopDto.getProgress(), rooftopDto.getRooftopDate()));
-        });
+        if(rooftopDtos != null)
+            rooftopDtos.forEach(rooftopDto -> {
+                responses.add(new RooftopResponse(rooftopDto.getId(), rooftopDto.getCity(), rooftopDto.getDistrict(),
+                        rooftopDto.getDetail(), rooftopDto.getProgress(), rooftopDto.getRooftopDate()));
+            });
         return responses;
     }
 
