@@ -51,8 +51,11 @@ public class RooftopDto {
     private RooftopImageDto mainImage;
     private List<RooftopReviewDto> rooftopReviews;
 
-    protected RooftopDto(Long id, String progress, LocalDateTime rooftopDate) {
+    protected RooftopDto(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
         this.id = id;
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
         this.progress = progress;
         this.rooftopDate = rooftopDate;
     }
@@ -134,8 +137,8 @@ public class RooftopDto {
         this.rooftopReviews = reviewDtos;
     }
 
-    public static RooftopDto getRooftopStatusDto(Long id, String progress, LocalDateTime rooftopDate) {
-        return new RooftopDto(id, progress, rooftopDate);
+    public static RooftopDto getRooftopStatusDto(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
+        return new RooftopDto(id, city, district, detail, progress, rooftopDate);
     }
 
     public static RooftopDto getAdminNGRooftopDto(Long id, String phoneNumber, String ownerContent, List<RooftopImage> rooftopImages) {

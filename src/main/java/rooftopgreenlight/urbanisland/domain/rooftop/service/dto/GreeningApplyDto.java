@@ -24,11 +24,8 @@ public class GreeningApplyDto {
     private LocalDateTime applyTime;
     private Progress progress;
 
-    protected GreeningApplyDto(Long rooftopId, String rooftopCity, String rooftopDistrict, String rooftopDetail, Long greenBeeId, String officeCity, String officeDistrict, String officeDetail, String officeNumber, LocalDateTime applyTime) {
+    protected GreeningApplyDto(Long rooftopId, Long greenBeeId, String officeCity, String officeDistrict, String officeDetail, String officeNumber, LocalDateTime applyTime) {
         this.rooftopId = rooftopId;
-        this.rooftopCity = rooftopCity;
-        this.rooftopDistrict = rooftopDistrict;
-        this.rooftopDetail = rooftopDetail;
         this.greenBeeId = greenBeeId;
         this.officeCity = officeCity;
         this.officeDistrict = officeDistrict;
@@ -53,10 +50,9 @@ public class GreeningApplyDto {
         this.progress = progress;
     }
 
-    public static GreeningApplyDto of(Long rooftopId, String rooftopCity, String rooftopDistrict, String rooftopDetail,
-                                      Long greenBeeId, String officeCity, String officeDistrict, String officeDetail,
-                                      String officeNumber, LocalDateTime applyTime) {
-        return new GreeningApplyDto(rooftopId, rooftopCity, rooftopDistrict, rooftopDetail, greenBeeId, officeCity, officeDistrict, officeDetail, officeNumber, applyTime);
+    public static GreeningApplyDto of(Long rooftopId, Long greenBeeId, String officeCity, String officeDistrict,
+                                      String officeDetail, String officeNumber, LocalDateTime applyTime) {
+        return new GreeningApplyDto(rooftopId, greenBeeId, officeCity, officeDistrict, officeDetail, officeNumber, applyTime);
     }
 
     public static GreeningApplyDto of(RooftopGreeningApply rooftopGreening, String type) {
