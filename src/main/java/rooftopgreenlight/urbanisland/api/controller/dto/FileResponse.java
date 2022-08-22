@@ -11,6 +11,8 @@ public class FileResponse {
     private String fileUrl;
 
     public static FileResponse fromProfile(Profile profile) {
+        if (profile == null) return null;
+
         return FileResponse.of(
                 profile.getType(),
                 profile.getFileUrl()
