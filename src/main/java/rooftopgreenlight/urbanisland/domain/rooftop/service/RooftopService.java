@@ -308,9 +308,9 @@ public class RooftopService {
      * Filter
      * 조건에 맞는 옥상 검색
      */
-    public RooftopPageDto searchRooftopByCond(int page, RooftopSearchCond searchCond) {
+    public RooftopPageDto searchRooftopByCond(int page, String type, RooftopSearchCond searchCond) {
         PageRequest pageRequest = PageRequest.of(page, 20);
-        Page<Rooftop> rooftopPage = searchCond.getType().equals("G") ?
+        Page<Rooftop> rooftopPage = type.equals("G") ?
                 rooftopRepository.searchRooftopByCond(pageRequest, searchCond)
                 : rooftopRepository.searchNGRooftopByCond(pageRequest, searchCond);
 
@@ -318,7 +318,7 @@ public class RooftopService {
                 rooftopPage.getTotalPages(),
                 rooftopPage.getTotalElements(),
                 rooftopPage.getContent(),
-                searchCond.getType()
+                type
         );
     }
 

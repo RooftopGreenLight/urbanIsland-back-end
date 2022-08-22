@@ -69,8 +69,14 @@ Content-Disposition: form-data; name="totalPrice"
 
 
 ###
-# Rooftop Seach Cond 조회
-GET {{host}}/api/v1/rooftops/search?page=0&deadLineType=3
+# Rooftop Seach Cond(NG) 조회
+GET {{host}}/api/v1/rooftops/search?page=0&type=NG&deadLineType=3
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+# Rooftop Seach Cond(G) 조회
+GET {{host}}/api/v1/rooftops/search?page=0&type=G
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 

@@ -28,7 +28,9 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
         this.query = new JPAQueryFactory(em);
     }
 
-
+    /**
+     * GREEN + ADMIN_COMPLETED
+     */
     @Override
     public Page<Rooftop> searchRooftopByCond(Pageable pageable, RooftopSearchCond searchCond) {
         List<Rooftop> content = query
@@ -59,12 +61,16 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         priceCond(searchCond.getMaxPrice(), searchCond.getMinPrice()),
                         contentNumCond(searchCond.getContentNum()),
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
+                        rooftop.rooftopType.eq(RooftopType.GREEN),
                         rooftop.rooftopProgress.eq(Progress.ADMIN_COMPLETED)
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    /**
+     * NG + GREENBEE_WAIT
+     */
     @Override
     public Page<Rooftop> searchNGRooftopByCond(Pageable pageable, RooftopSearchCond searchCond) {
         List<Rooftop> content = query
@@ -77,7 +83,8 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
                         widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
                         deadLineTypeCond(searchCond.getDeadLineType()),
-                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN)
+                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN),
+                        rooftop.rooftopProgress.eq(Progress.GREENBEE_WAIT)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -99,7 +106,6 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
-
 
     public BooleanExpression timeCond(String startTime, String endTime) {
         if (!StringUtils.hasText(startTime) || !StringUtils.hasText(endTime)) {

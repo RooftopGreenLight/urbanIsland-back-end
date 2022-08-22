@@ -68,9 +68,13 @@ public class RooftopController {
                     "petCount, city, district, maxPrice, minPrice, contentNum(list), maxWidth, minWidth, " +
                     "minWidthPrice, maxWidthPrice, deadLineType, cond, type(G, NG)"
     )
-    public APIResponse searchRooftop(@RequestParam int page, RooftopSearchCond searchCond) {
+    public APIResponse searchRooftop(
+            @RequestParam int page,
+            @RequestParam String type,
+            RooftopSearchCond searchCond
+            ) {
         return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(
-            rooftopService.searchRooftopByCond(page, searchCond), searchCond.getType()
+            rooftopService.searchRooftopByCond(page, type, searchCond), type
         ));
     }
 
