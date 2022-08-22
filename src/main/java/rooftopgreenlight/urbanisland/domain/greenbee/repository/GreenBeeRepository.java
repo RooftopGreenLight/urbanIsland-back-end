@@ -21,4 +21,6 @@ public interface GreenBeeRepository extends
 
     @Query("select g from GreenBee g left join fetch g.member gm where gm.id = :memberId")
     Optional<GreenBee> findByMemberIdWithMember(@Param("memberId") Long memberId);
+
+    boolean existsByMemberId(Long memberId);
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
+import rooftopgreenlight.urbanisland.domain.common.exception.ExistObjectException;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundGreenBeeException;
 import rooftopgreenlight.urbanisland.domain.file.entity.GreenBeeImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
@@ -42,25 +43,12 @@ public class GreenBeeService {
     public void saveGreenBee(Long memberId, String officeNumber, String content, Address address,
                              List<MultipartFile> normalFiles, MultipartFile confirmationFile) {
 
+        isGreenBeeJoinValid(memberId);
+
         Member member = memberService.findById(memberId);
 
         GreenBee greenBee = createGreenBee(officeNumber, content, address);
-        if (normalFiles != null) {
-            normalFiles.stream().parallel()
-                    .map(file -> (GreenBeeImage) fileService.createImage(file, ImageType.NORMAL, ImageName.GREENBEE))
-                    .forEach(image -> {
-                        image.changeGreenBee(greenBee);
-                        greenBee.addGreenBeeImage(image);
-                    });
-        }
-
-        if (confirmationFile != null) {
-            GreenBeeImage greenBeeConfirmationImage =
-                    (GreenBeeImage) fileService.createImage(confirmationFile, ImageType.CONFIRMATION, ImageName.GREENBEE);
-
-            greenBeeConfirmationImage.changeGreenBee(greenBee);
-            greenBee.addGreenBeeImage(greenBeeConfirmationImage);
-        }
+        registerImageFile(normalFiles, confirmationFile, greenBee);
 
         greenBee.changeMember(member);
         greenBee.changeProgress(Progress.ADMIN_WAIT);
@@ -127,10 +115,35 @@ public class GreenBeeService {
         greenBeeRepository.delete(greenBee);
     }
 
+    private void registerImageFile(List<MultipartFile> normalFiles, MultipartFile confirmationFile, GreenBee greenBee) {
+        if (normalFiles != null) {
+            normalFiles.stream().parallel()
+                    .map(file -> (GreenBeeImage) fileService.createImage(file, ImageType.NORMAL, ImageName.GREENBEE))
+                    .forEach(image -> {
+                        image.changeGreenBee(greenBee);
+                        greenBee.addGreenBeeImage(image);
+                    });
+        }
+
+        if (confirmationFile != null) {
+            GreenBeeImage greenBeeConfirmationImage =
+                    (GreenBeeImage) fileService.createImage(confirmationFile, ImageType.CONFIRMATION, ImageName.GREENBEE);
+
+            greenBeeConfirmationImage.changeGreenBee(greenBee);
+            greenBee.addGreenBeeImage(greenBeeConfirmationImage);
+        }
+    }
+
     public GreenBee getGreenBee(long memberId) {
         GreenBee greenBee = greenBeeRepository.findByMemberIdWithMember(memberId).orElseThrow(() -> {
             throw new NotFoundGreenBeeException("그린비 요청 정보를 찾을 수 없습니다.");
         });
         return greenBee;
+    }
+
+    private void isGreenBeeJoinValid(Long memberId) {
+        if (greenBeeRepository.existsByMemberId(memberId)) {
+            throw new ExistObjectException("그린비 등록을 할 수 없는 상태입니다.");
+        }
     }
 }
