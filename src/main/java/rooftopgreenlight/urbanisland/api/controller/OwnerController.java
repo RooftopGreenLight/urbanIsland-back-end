@@ -37,11 +37,21 @@ public class OwnerController {
 
     @GetMapping("/greenbee-waiting")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "(14) 그린비 대기사항 - 옥상 정보 및 그린비 목록 가져오기",
-        notes = "요청 데이터(Parameter) - key : page")
-    public APIResponse getGreenBeeWaitingList(@PK Long memberId,
+    @ApiOperation(value = "(14) 그린비 대기사항 - 옥상 정보 가져오기",
+                notes = "요청 데이터 - 없음")
+    public APIResponse getGreenBeeWaitingList(@PK Long memberId) {
+        return APIResponse.of(RooftopResponse.getRooftopStatus(rooftopService.getNGGreenRooftopByMemberId(memberId)));
+    }
+
+
+    @GetMapping("/greenbee-waiting/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(14) 그린비 대기사항 - 옥상에 따른 그린비 목록 가져오기",
+        notes = "요청 데이터(Parameter) - key -> page," +
+                "(path) - key -> rooftopId")
+    public APIResponse getGreenBeeWaitingList(@PathVariable(value = "rooftopId") Long rooftopId,
                                               @RequestParam("page") int page) {
-        return APIResponse.of(GreeningApplyPageResponse.of(greeningApplyService.getGreenBeeWaitingList(page, memberId)));
+        return APIResponse.of(GreeningApplyPageResponse.of(greeningApplyService.getGreenBeeWaitingList(page, rooftopId)));
     }
 
     @DeleteMapping("/delete-ngrooftop/{rooftopId}")
@@ -70,6 +80,6 @@ public class OwnerController {
     @ApiOperation(value = "(13) 대기 옥상 진행사항",
         notes = "요청 데이터 - 없음")
     public APIResponse getRooftopStatus(@PK Long memberId) {
-        return APIResponse.of(RooftopResponse.getRooftopStatus(rooftopService.getRooftopByMemberId(memberId)));
+        return APIResponse.of(RooftopResponse.getRooftopStatus(rooftopService.getGreenRooftopByMemberId(memberId)));
     }
 }

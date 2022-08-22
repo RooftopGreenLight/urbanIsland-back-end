@@ -27,6 +27,7 @@ import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopSearchCon
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -366,14 +367,29 @@ public class RooftopService {
     }
 
     /**
-     * 옥상지기가 등록한 옥상 목록 조회
+     * 녹화 완료된 옥상 중 관리자 결과 기다리는 옥상 리스트 조회
      */
-    public List<RooftopDto> getRooftopByMemberId(Long memberId) {
-        List<Rooftop> rooftopLists = rooftopRepository.findRooftopByMemberId(memberId);
-        return rooftopLists.stream().map(rooftop -> {
+    public List<RooftopDto> getGreenRooftopByMemberId(Long memberId) {
+        List<Progress> progress = Arrays.asList(Progress.ADMIN_WAIT, Progress.ADMIN_COMPLETED);
+        List<Rooftop> rooftopList = rooftopRepository.findGreenRooftopByMemberId(memberId, progress);
+        return rooftopList.stream().map(rooftop -> {
             LocalDateTime date = rooftop.getRooftopProgress() == Progress.ADMIN_WAIT ? rooftop.getCreatedDate() : rooftop.getLastModifiedDate();
-            return RooftopDto.getRooftopStatusDto(rooftop.getId(), rooftop.getRooftopProgress().name(), date);
+            return RooftopDto.getRooftopStatusDto(rooftop.getId(), rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(),
+                    rooftop.getAddress().getDetail(), rooftop.getRooftopProgress().name(), date);
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 녹화되지 않은 옥상 목록 조회
+     */
+    public List<RooftopDto> getNGGreenRooftopByMemberId(Long memberId) {
+        List<Progress> progress = Arrays.asList(Progress.GREENBEE_WAIT, Progress.GREENBEE_COMPLETED, Progress.GREENING_ACCEPTED);
+        List<Rooftop> rooftopList = rooftopRepository.findNGRooftopByMemberId(memberId, progress);
+
+        if(rooftopList != null)
+            return rooftopList.stream().map(rooftop ->
+                RooftopDto.getNGRooftopDto(rooftop, true)).collect(Collectors.toList());
+        return null;
     }
 
     private RooftopReview createReview(final String content, final int grade, final Member findMember) {
