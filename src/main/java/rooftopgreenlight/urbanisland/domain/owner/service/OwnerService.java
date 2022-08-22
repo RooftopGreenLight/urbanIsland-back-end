@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
+import rooftopgreenlight.urbanisland.domain.common.exception.ExistObjectException;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundOwnerException;
 import rooftopgreenlight.urbanisland.domain.file.entity.OwnerImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
@@ -18,6 +19,7 @@ import rooftopgreenlight.urbanisland.domain.member.entity.Authority;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
 import rooftopgreenlight.urbanisland.domain.owner.entity.Owner;
+import rooftopgreenlight.urbanisland.domain.owner.entity.QOwner;
 import rooftopgreenlight.urbanisland.domain.owner.repository.OwnerRepository;
 import rooftopgreenlight.urbanisland.domain.owner.service.dto.OwnerDto;
 
@@ -31,10 +33,13 @@ public class OwnerService {
     private final OwnerRepository ownerRepository;
 
     public void saveOwner(Long memberId, MultipartFile file) {
+        isOwnerJoinValid(memberId);
+
         Member member = memberService.findById(memberId);
 
-        Owner owner = createOwner((OwnerImage) fileService
-                .createImage(file, ImageType.CONFIRMATION, ImageName.Owner));
+        OwnerImage ownerImage = (file == null) ? null : (OwnerImage) fileService
+                .createImage(file, ImageType.CONFIRMATION, ImageName.Owner);
+        Owner owner = createOwner(ownerImage);
 
         owner.changeMember(member);
         owner.changeProgress(Progress.ADMIN_WAIT);
@@ -88,5 +93,11 @@ public class OwnerService {
         return Owner.createOwner()
                 .ownerImage(ownerImage)
                 .build();
+    }
+
+    private void isOwnerJoinValid(Long memberId) {
+        if (ownerRepository.exists(QOwner.owner.member.id.eq(memberId))) {
+            throw new ExistObjectException("옥상지기 등록을 할 수 없는 상태입니다.");
+        }
     }
 }
