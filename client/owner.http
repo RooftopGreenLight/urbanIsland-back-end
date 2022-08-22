@@ -13,6 +13,12 @@ client.global.set("accessToken", response.body.data.tokenDto.accessToken);
  %}
 
 ###
+# 옥상지기 등록
+POST {{host}}/api/v1/owners/join
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: Bearer {{accessToken}}
+
+###
 # 그린비 대기사항 - 옥상 정보 가져오기
 GET {{host}}/api/v1/owners/greenbee-waiting
 Content-Type: application/json
