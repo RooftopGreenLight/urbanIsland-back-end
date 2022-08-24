@@ -2,6 +2,7 @@ package rooftopgreenlight.urbanisland.domain.rooftop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -150,6 +151,7 @@ public class RooftopService {
     /**
      * 옥상 개별 조회
      */
+    @Cacheable(value = "rooftop", key = "#p0", condition = "#type == 'G'")
     public RooftopDto getRooftopDetail(Long rooftopId, String type) {
         Rooftop rooftop = rooftopRepository.findRooftopWithAll(rooftopId).orElseThrow(() -> {
             throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");

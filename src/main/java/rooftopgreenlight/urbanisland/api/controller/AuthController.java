@@ -1,13 +1,13 @@
 package rooftopgreenlight.urbanisland.api.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import rooftopgreenlight.urbanisland.api.common.annotation.Jwt;
+import rooftopgreenlight.urbanisland.api.common.annotation.PK;
 import rooftopgreenlight.urbanisland.api.common.exception.DuplicatedMemberException;
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.JoinRequest;
@@ -36,6 +36,19 @@ public class AuthController {
     @ApiOperation(value = "로그인 기능", notes = "key - email(@ 이메일 형식, null, blank X) , password(null, blank X)")
     public APIResponse login(@Validated @RequestBody LoginRequest loginDto) {
         return APIResponse.of(authService.login(loginDto.getEmail(), loginDto.getPassword()));
+    }
+
+    /**
+     * 로그아웃
+     */
+    @DeleteMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "로그아웃 기능", notes = "요청 데이터 X")
+    public APIResponse logout(@PK Long memberId,
+                              @Jwt String token) {
+        authService.logout(memberId, token);
+
+        return APIResponse.empty();
     }
 
     /**
@@ -98,11 +111,12 @@ public class AuthController {
      * @param refreshToken
      * @return 새로운 access-token
      */
-    @GetMapping("/check-refresh-token")
+    @GetMapping("/{memberId}/check-refresh-token")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Access-Token 갱신 기능", notes = "header - refresh-token")
-    public APIResponse checkRefreshToken(@RequestHeader(value = "refresh-token") String refreshToken) {
-        return APIResponse.of(authService.checkRefreshToken(refreshToken));
+    @ApiOperation(value = "Access-Token 갱신 기능", notes = "header - refresh-token, key(path) - memberId")
+    public APIResponse checkRefreshToken(@PathVariable("memberId") Long memberId,
+                                         @RequestHeader(value = "refresh-token") String refreshToken) {
+        return APIResponse.of(authService.checkRefreshToken(refreshToken, memberId));
     }
 
     private Member createMember(JoinRequest joinDto) {

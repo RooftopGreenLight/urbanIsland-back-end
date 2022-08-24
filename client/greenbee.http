@@ -46,7 +46,7 @@ Authorization: Bearer {{accessToken}}
 
 ###
 # 개별 NG 옥상 조회하기
-GET {{host}}/api/v1/green-bees/required-green/4
+GET {{host}}/api/v1/green-bees/required-green/2
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 

@@ -185,6 +185,17 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
 
+    /**
+     * 서버 접근 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrorResponse accessException(AccessException e) {
+        return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
+    }
+
 
     /**
      * 최상위 오류

@@ -1,12 +1,13 @@
 package rooftopgreenlight.urbanisland.domain.rooftop.service.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 
 @Data
-@ToString
+@NoArgsConstructor
 public class RooftopImageDto {
     private String type;
     private String uploadFilename;
