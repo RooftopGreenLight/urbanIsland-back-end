@@ -93,7 +93,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "grade": 5,
+  "grade": 4,
   "content": "test 용도입니다..."
 }
 
@@ -105,6 +105,6 @@ Content-Type: application/json
 
 ###
 # Rooftop Detail 조회
-GET {{host}}/api/v1/rooftops/detail/1
+GET {{host}}/api/v1/rooftops/detail/2
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
