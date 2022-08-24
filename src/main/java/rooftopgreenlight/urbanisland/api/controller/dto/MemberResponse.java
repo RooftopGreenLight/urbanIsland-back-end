@@ -15,14 +15,14 @@ public class MemberResponse {
     private String email;
     private String name;
     private String phoneNumber;
-    private Authority authority;
+    private String authority;
 
     private String profileUrl;
     private String profileType;
 
     private TokenDto tokenDto;
 
-    protected MemberResponse(long id, String email, String name, String phoneNumber, Authority authority) {
+    protected MemberResponse(long id, String email, String name, String phoneNumber, String authority) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -30,7 +30,7 @@ public class MemberResponse {
         this.authority = authority;
     }
 
-    protected MemberResponse(long id, String email, String name, String phoneNumber, Authority authority, String profileUrl, String profileType) {
+    protected MemberResponse(long id, String email, String name, String phoneNumber, String authority, String profileUrl, String profileType) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -40,27 +40,38 @@ public class MemberResponse {
         this.profileType = profileType;
     }
 
+    protected MemberResponse(Long id, String authority, TokenDto tokenDto) {
+        this.id = id;
+        this.authority = authority;
+        this.tokenDto = tokenDto;
+    }
+
     protected MemberResponse(Long id, TokenDto tokenDto) {
         this.id = id;
         this.tokenDto = tokenDto;
     }
 
-    public static MemberResponse of(long id, String email, String name, String phoneNumber, Authority authority) {
+    public static MemberResponse of(long id, String email, String name, String phoneNumber, String authority) {
         return new MemberResponse(id, email, name, phoneNumber, authority);
     }
 
-    public static MemberResponse of(long id, String email, String name, String phoneNumber, Authority authority, String profileUrl, String profileType) {
+    public static MemberResponse of(long id, String email, String name, String phoneNumber, String authority, String profileUrl, String profileType) {
         return new MemberResponse(id, email, name, phoneNumber, authority, profileUrl, profileType);
     }
 
     public static MemberResponse of(Member member) {
         Profile memberProfile = member.getProfile();
         if (memberProfile == null) {
-            return MemberResponse.of(member.getId(), member.getEmail(), member.getNickname(), member.getPhoneNumber(), member.getAuthority());
+            return MemberResponse.of(member.getId(), member.getEmail(), member.getNickname(),
+                    member.getPhoneNumber(), member.getAuthority().toString());
         }
 
         return MemberResponse.of(member.getId(), member.getEmail(), member.getNickname(), member.getPhoneNumber(),
-                member.getAuthority(), memberProfile.getFileUrl(), memberProfile.getType());
+                member.getAuthority().toString(), memberProfile.getFileUrl(), memberProfile.getType());
+    }
+
+    public static MemberResponse of(long id, String authority, TokenDto tokenDto) {
+        return new MemberResponse(id, authority, tokenDto);
     }
 
     public static MemberResponse of(long id, TokenDto tokenDto) {
