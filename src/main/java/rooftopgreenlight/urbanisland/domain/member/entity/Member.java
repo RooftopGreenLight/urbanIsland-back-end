@@ -28,8 +28,6 @@ public class Member extends BaseEntity {
     private String nickname;
     @Column(unique = true)
     private String phoneNumber;
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -48,10 +46,6 @@ public class Member extends BaseEntity {
     }
     public void changeNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void changeRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public void changeAuthority(Authority authority) {

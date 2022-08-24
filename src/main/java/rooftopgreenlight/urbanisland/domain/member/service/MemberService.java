@@ -59,17 +59,6 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
-    public Member findByRefreshToken(String refreshToken) {
-        return memberRepository.findMemberByRefreshToken(refreshToken)
-                .orElseThrow(() -> {throw new NotFoundMemberException("회원을 찾을 수 없습니다.");});
-    }
-
-    @Transactional
-    public Member changeRefreshToken(String refreshToken, Member findMember) {
-        findMember.changeRefreshToken(refreshToken);
-        return findMember;
-    }
-
     /**
      * 사용자 프로필과 함께 조회
      */

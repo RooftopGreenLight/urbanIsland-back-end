@@ -22,6 +22,8 @@ public enum ErrorCode {
     JWT_ACCESS_ERROR(HttpStatus.BAD_REQUEST.value() + 60, HttpStatus.BAD_REQUEST, "Please give refresh-token."),
     JWT_REFRESH_ERROR(HttpStatus.BAD_REQUEST.value() + 61, HttpStatus.BAD_REQUEST, "Refresh-Token Error"),
     MAIL_SEND_ERROR(HttpStatus.BAD_REQUEST.value() + 62, HttpStatus.BAD_REQUEST, "Mail-Send Error"),
+    ACCESS_ERROR(HttpStatus.BAD_REQUEST.value() + 63, HttpStatus.BAD_REQUEST, "Unusable token."),
+
 
     INTERNAL_SEVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error"),
     SPRING_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value() + 51, HttpStatus.INTERNAL_SERVER_ERROR, "Spring-Detected Internal Error"),
