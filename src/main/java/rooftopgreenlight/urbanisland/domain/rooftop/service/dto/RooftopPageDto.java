@@ -48,7 +48,10 @@ public class RooftopPageDto {
                             rooftop.getAddress().getDetail(),
                             rooftop.getWidth(),
                             rooftop.getWidthPrice(),
-                            rooftop.getRooftopImages().get(0)
+                            rooftop.getRooftopImages().stream()
+                                    .filter(rooftopImage -> rooftopImage.getRooftopImageType() == ImageType.MAIN)
+                                    .findFirst()
+                                    .orElse(null)
                     )).collect(Collectors.toList()));
     }
 

@@ -52,6 +52,7 @@ public class GreenBeeController {
             notes = "요청 데이터 - 없음")
     public APIResponse getMyGreenBeeInfo(@PK Long memberId) {
         GreenBee greenBeeInfo = greenBeeService.getMyGreenBeeInfo(memberId);
+        System.out.println("greenBeeInfo.getId() = " + greenBeeInfo.getId());
 
         return APIResponse.of(GreenBeeInfoResponse.of(
                 greenBeeInfo,
@@ -79,7 +80,7 @@ public class GreenBeeController {
     public APIResponse getRequiredGreenRooftop(@RequestParam("page") int page) {
         RooftopPageDto ngRooftopPageDto = rooftopService.getNGRooftop(page);
 
-        return APIResponse.of(RooftopPageResponse.of(ngRooftopPageDto, false));
+        return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(ngRooftopPageDto, "NG"));
     }
 
     @GetMapping("/required-green/{rooftopId}")

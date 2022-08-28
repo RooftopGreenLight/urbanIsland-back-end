@@ -44,7 +44,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers("/api/v1/green-bees/join", "/api/v1/owners/join").hasAnyRole("USER", "GREENBEE", "ROOFTOPOWNER")
                 .and()
-                .authorizeRequests().antMatchers("/api/v1/green-bees/**", "/api/v1/owners/**").hasAnyRole("GREENBEE", "ROOFTOPOWNER", "ADMIN")
+                .authorizeRequests().antMatchers("/api/v1/green-bees/**", "/api/v1/owners/**").hasAnyRole("GREENBEE", "ROOFTOPOWNER", "ALL", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

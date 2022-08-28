@@ -147,7 +147,7 @@ public class RooftopService {
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Rooftop> rooftopPage = rooftopRepository.findByNGRooftopPage(RooftopType.NOT_GREEN,
                 List.of(Progress.GREENBEE_WAIT, Progress.GREENBEE_COMPLETED), pageRequest);
-        return RooftopPageDto.of(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), false);
+        return new RooftopPageDto().RooftopSearchPageDto(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), "NG");
     }
 
     /**

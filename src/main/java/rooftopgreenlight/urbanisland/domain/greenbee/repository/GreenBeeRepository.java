@@ -13,7 +13,7 @@ public interface GreenBeeRepository extends
         QuerydslPredicateExecutor<GreenBee>,
         GreenBeeRepositoryCustom {
 
-    @Query("select g from GreenBee g left join fetch g.greenBeeImages gi where g.id = :memberId")
+    @Query("select g from GreenBee g left join fetch g.greenBeeImages gi where g.member.id = :memberId")
     Optional<GreenBee> findByIdWithImages(@Param("memberId") Long memberId);
 
     @Query("select g from GreenBee g left join fetch g.greenBeeImages gi where g.member.id = :memberId")
