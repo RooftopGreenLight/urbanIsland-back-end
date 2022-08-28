@@ -22,9 +22,9 @@ public interface RooftopRepository extends
         RooftopRepositoryCustom
 {
 
-    @Query("select distinct r from Rooftop r join r.rooftopImages ri join r.rooftopOptions ro " +
-            "join r.rooftopDetails rd where r.rooftopType = :type")
-    Page<Rooftop> findByNGRooftopPage(@Param("type") RooftopType type, Pageable pageable);
+    @Query("select distinct r from Rooftop r where r.rooftopType = :type and r.rooftopProgress in :progresses")
+    Page<Rooftop> findByNGRooftopPage(@Param("type") RooftopType type, @Param("progresses") List<Progress> progressList,
+                                      Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Rooftop r where r.id=:rooftopId")
