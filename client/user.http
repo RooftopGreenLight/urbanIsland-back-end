@@ -3,8 +3,8 @@ POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "{{email}}",
-  "password": "{{password}}"
+  "email": "gwangin1999@naver.com",
+  "password": "qorrhkddls1!"
 }
 
 > {%

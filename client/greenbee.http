@@ -3,8 +3,8 @@ POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@naver.com",
-  "password": "test1234"
+  "email": "gwangin1999@naver.com",
+  "password": "qorrhkddls1!"
 }
 
 > {%
@@ -77,5 +77,11 @@ Authorization: Bearer {{accessToken}}
 ###
 # 녹화를 완료한 옥상 확인하기
 GET {{host}}/api/v1/green-bees/greening-completed-rooftop
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 녹화를 완료한 옥상 확인하기
+GET {{host}}/api/v1/green-bees
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
