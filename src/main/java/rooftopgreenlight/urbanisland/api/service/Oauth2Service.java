@@ -47,7 +47,9 @@ public class Oauth2Service {
         KakaoToken kakaoToken = getKakaoToken(code);
         KakaoUserInfo kakaoUserInfo = getKakaoUserInfo("Bearer " + kakaoToken.getAccessToken());
 
-        Member member = getMember(kakaoUserInfo.getId() + "@kakao.com", kakaoProperties.getClientSecret(),
+        char[] idChars = getId(kakaoUserInfo.getId().toString());
+
+        Member member = getMember(String.valueOf(idChars) + "@kakao.com", kakaoProperties.getClientSecret(),
                 getTempNickname(), kakaoUserInfo.getProperties().getProfileImage());
 
         TokenDto tokenDto = getTokenDto(member);
@@ -60,7 +62,9 @@ public class Oauth2Service {
         NaverToken naverToken = getNaverToken(code);
         NaverUserInfo naverUserInfo = getNaverUserInfo(naverToken);
 
-        Member member = getMember(naverUserInfo.getId() + "@naver.com",
+        char[] idChars = getId(naverUserInfo.getId());
+
+        Member member = getMember(String.valueOf(idChars) + "@naver.com",
                 naverProperties.getClientSecret(), getTempNickname(), null);
 
         TokenDto tokenDto = getTokenDto(member);
@@ -74,7 +78,9 @@ public class Oauth2Service {
 
         GoogleUserInfo googleUserInfo = getGoogleUserInfo(googleToken);
 
-        Member member = getMember(googleUserInfo.getId() + "@google.com",
+        char[] idChars = getId(googleUserInfo.getId());
+
+        Member member = getMember(String.valueOf(idChars) + "@google.com",
                 googleProperties.getClientSecret(), getTempNickname(), null);
 
         TokenDto tokenDto = getTokenDto(member);
@@ -155,6 +161,14 @@ public class Oauth2Service {
         return result.getBody();
     }
 
+    private static char[] getId(String kakaoUserInfo) {
+        char[] idChars = kakaoUserInfo.toCharArray();
+        for (int i = 3; i < idChars.length; i++) {
+            idChars[i] = '*';
+        }
+        return idChars;
+    }
+
     private RequestEntity createPostRequestEntity(String url, HttpHeaders httpHeaders, MultiValueMap map) {
         return RequestEntity.post(url).headers(httpHeaders).body(map);
     }
@@ -197,7 +211,7 @@ public class Oauth2Service {
 
     private TokenDto getTokenDto(Member member) {
         return jwtProvider
-                .createJwt(String.valueOf(member.getId()), member.getAuthority().toString(), null);
+                .createJwt(String.valueOf(member.getId()), member.getEmail(), member.getAuthority().toString(), null);
     }
 
     private String getExt(String profileUrl) {

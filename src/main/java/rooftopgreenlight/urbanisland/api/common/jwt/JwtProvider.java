@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.api.common.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,7 +19,10 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static rooftopgreenlight.urbanisland.api.util.constant.RedisKey.REFRESH_TOKEN_KEY;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class JwtProvider {
 
     private Key key;
     private final JwtProperties jwtProperties;
+    private final RedisTemplate redisTemplate;
 
     @PostConstruct
     private void createKey() {
@@ -33,7 +38,7 @@ public class JwtProvider {
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto createJwt(String id, String authorities, String refreshToken) {
+    public TokenDto createJwt(String id, String email, String authorities, String refreshToken) {
         Date expirationDate = new Date(System.currentTimeMillis() + Long.parseLong(jwtProperties.getExpirationTime()));
 
         String token = Jwts.builder()
@@ -43,8 +48,13 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
+        if (refreshToken == null) {
+            refreshToken = createRefreshToken(id, authorities);
+            redisTemplate.opsForValue().set(REFRESH_TOKEN_KEY + email, refreshToken,
+                    Long.parseLong(jwtProperties.getRefreshExpirationTime()), TimeUnit.MILLISECONDS);
+        }
 
-        return TokenDto.of(jwtProperties.getType(), token, refreshToken == null ? createRefreshToken(id, authorities) : refreshToken);
+        return TokenDto.of(jwtProperties.getType(), token, refreshToken);
     }
 
     private String createRefreshToken(String id, String authorities) {
