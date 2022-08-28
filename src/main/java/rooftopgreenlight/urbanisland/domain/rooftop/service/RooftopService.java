@@ -2,9 +2,11 @@ package rooftopgreenlight.urbanisland.domain.rooftop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -408,4 +410,12 @@ public class RooftopService {
         return findRooftopReview.getCreatedBy().equals(String.valueOf(memberId));
     }
 
+    /**
+     * 나의 Rooftop 가져오기
+     */
+    public RooftopPageDto getMyRooftopInfo(Long memberId, Pageable pageable) {
+        Page<Rooftop> rooftopPage = rooftopRepository.findByMyRooftopInfo(memberId, pageable);
+
+        return new RooftopPageDto().RooftopSearchPageDto(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), "G");
+    }
 }

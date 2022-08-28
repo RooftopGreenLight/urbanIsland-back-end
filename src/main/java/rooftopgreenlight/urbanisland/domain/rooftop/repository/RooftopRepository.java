@@ -74,4 +74,7 @@ public interface RooftopRepository extends
 
     @Query("select rr from RooftopReview rr where rr.member.id = :memberId")
     Page<RooftopReview> findRooftopReviewPageByMemberId(final @Param("memberId") long memberId, Pageable pageable);
+
+    @Query("select r from Rooftop r where r.member.id = :memberId and r.rooftopType = 'GREEN'")
+    Page<Rooftop> findByMyRooftopInfo(@Param("memberId") Long memberId, Pageable pageable);
 }
