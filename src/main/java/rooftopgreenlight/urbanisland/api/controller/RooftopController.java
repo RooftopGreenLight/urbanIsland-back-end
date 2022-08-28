@@ -3,6 +3,9 @@ package rooftopgreenlight.urbanisland.api.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +61,20 @@ public class RooftopController {
 
         return APIResponse.empty();
 
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "내 옥상 관리하기",
+            notes = "요청 데이터(param) - key : page, size)")
+    public APIResponse createOwner(@PK Long memberId,
+                                   @PageableDefault(size = 3, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+                                   ){
+        rooftopService.getMyRooftopInfo(memberId, pageable);
+
+        return APIResponse.of(new RooftopPageResponse().RooftopSearchPageResponse(
+                rooftopService.getMyRooftopInfo(memberId, pageable), "G")
+        );
     }
 
     @GetMapping("/search")

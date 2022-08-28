@@ -32,23 +32,23 @@ Content-Disposition: form-data; name="mainFile"; filename="usecase2.png"
 --boundary
 Content-Disposition: form-data; name="width"
 
-24
+243
 --boundary
 Content-Disposition: form-data; name="county"
 
-testtset1
+testtset2
 --boundary
 Content-Disposition: form-data; name="city"
 
-testtset1
+testtset2
 --boundary
 Content-Disposition: form-data; name="detail"
 
-testtset1
+testtset2
 --boundary
 Content-Disposition: form-data; name="rooftopType"
 
-NG
+G
 --boundary
 Content-Disposition: form-data; name="startTime"
 
@@ -106,5 +106,11 @@ Content-Type: application/json
 ###
 # Rooftop Detail 조회
 GET {{host}}/api/v1/rooftops/detail/2
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+# 나의 Rooftop 조회
+GET {{host}}/api/v1/rooftops?page=0&size=1000000
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
