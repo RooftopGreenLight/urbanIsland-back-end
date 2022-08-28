@@ -171,7 +171,7 @@ public class RooftopResponse {
         }
 
         return new RooftopResponse(rooftopDto.getId(), rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(),
-                rooftopDto.getWidth(), rooftopDto.getWidthPrice(),  rooftopDto.getRooftopImages().get(0));
+                rooftopDto.getWidth(), rooftopDto.getWidthPrice(),  rooftopDto.getRooftopImages() == null ? null : rooftopDto.getRooftopImages().get(0));
     }
 
     public static RooftopResponse getRooftopDetail(RooftopDto rooftopDto) {
