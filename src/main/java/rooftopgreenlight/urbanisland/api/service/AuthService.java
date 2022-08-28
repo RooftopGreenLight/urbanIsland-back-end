@@ -52,11 +52,7 @@ public class AuthService {
                 .map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.joining(" "));
 
         String id = authenticate.getName();
-        TokenDto tokenDto = jwtProvider.createJwt(id, authorities, null);
-
-        // refreshToken 저장
-        redisTemplate.opsForValue().set(REFRESH_TOKEN_KEY + email, tokenDto.getRefreshToken(),
-                Long.parseLong(jwtProperties.getRefreshExpirationTime()), TimeUnit.MILLISECONDS);
+        TokenDto tokenDto = jwtProvider.createJwt(id, email, authorities, null);
 
         return MemberResponse.of(Long.valueOf(id), authorities, tokenDto);
     }
@@ -72,7 +68,8 @@ public class AuthService {
             throw new NotMatchedRefreshTokenException("Refresh-token is not matched. Please Re-Login.");
         }
 
-        return jwtProvider.createJwt(String.valueOf(memberId), findMember.getAuthority().toString(), refreshToken);
+        return jwtProvider.createJwt(String.valueOf(memberId), findMember.getEmail(),
+                findMember.getAuthority().toString(), refreshToken);
     }
 
     public String send(String email) {
