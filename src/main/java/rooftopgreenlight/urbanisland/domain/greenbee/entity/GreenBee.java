@@ -78,4 +78,9 @@ public class GreenBee extends BaseEntity {
         this.content = content;
         this.address = address;
     }
+
+    public void changeGreenBeeInfo(String officeNumber, String content) {
+        if(officeNumber != null) this.officeNumber = officeNumber;
+        if(content != null) this.content = content;
+    }
 }

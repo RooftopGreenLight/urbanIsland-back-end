@@ -88,7 +88,7 @@ public class GreenBeeService {
      */
     @Transactional
     public void acceptGreenBee(long memberId) {
-        GreenBee greenBee = getGreenBee(memberId);
+        GreenBee greenBee = getMyGreenBeeInfo(memberId);
 
         Member member = greenBee.getMember();
         if (member.getAuthority() == Authority.ROLE_ROOFTOPOWNER) {
@@ -115,11 +115,32 @@ public class GreenBeeService {
         greenBeeRepository.delete(greenBee);
     }
 
+    /**
+     * 그린비 정보 수정
+     */
+    @Transactional
+    public void editGreenBeeInfo(Long memberId, String officeNumber, String content, List<String> deleteImages, List<MultipartFile> addImages) {
+        GreenBee greenBee = getMyGreenBeeInfo(memberId);
+        greenBee.changeGreenBeeInfo(officeNumber, content);
+
+        if(addImages != null) {
+            registerImageFile(addImages, null, greenBee);
+        }
+
+        if(deleteImages != null) {
+            greenBeeRepository.deleteImagesByFileName(deleteImages);
+            deleteImages.forEach(fileService::deleteFileS3);
+        }
+    }
+
     private void registerImageFile(List<MultipartFile> normalFiles, MultipartFile confirmationFile, GreenBee greenBee) {
         if (normalFiles != null) {
             normalFiles.stream().parallel()
                     .map(file -> (GreenBeeImage) fileService.createImage(file, ImageType.NORMAL, ImageName.GREENBEE))
                     .forEach(image -> {
+                        System.out.println("image = " + image.toString());
+                        System.out.println("image.getStoreFilename() = " + image.getStoreFilename());
+
                         image.changeGreenBee(greenBee);
                         greenBee.addGreenBeeImage(image);
                     });
@@ -134,16 +155,10 @@ public class GreenBeeService {
         }
     }
 
-    public GreenBee getGreenBee(long memberId) {
-        GreenBee greenBee = greenBeeRepository.findByMemberIdWithMember(memberId).orElseThrow(() -> {
-            throw new NotFoundGreenBeeException("그린비 요청 정보를 찾을 수 없습니다.");
-        });
-        return greenBee;
-    }
-
     private void isGreenBeeJoinValid(Long memberId) {
         if (greenBeeRepository.existsByMemberId(memberId)) {
             throw new ExistObjectException("그린비 등록을 할 수 없는 상태입니다.");
         }
     }
+
 }
