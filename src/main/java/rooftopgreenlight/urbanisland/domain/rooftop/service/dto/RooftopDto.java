@@ -6,6 +6,8 @@ import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopDetail;
+import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopDetailType;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 
 import java.time.LocalDateTime;
@@ -88,7 +90,7 @@ public class RooftopDto {
     }
 
     protected RooftopDto(Long id, int widthPrice, int requiredTermType, Double width, String city, String district,
-                         String detail, String phoneNumber, String ownerContent) {
+                         String detail, String phoneNumber, String ownerContent, List<Integer> requiredItemNums) {
         this.id = id;
         this.widthPrice = widthPrice;
         this.requiredTermType = requiredTermType;
@@ -98,6 +100,7 @@ public class RooftopDto {
         this.detail = detail;
         this.phoneNumber = phoneNumber;
         this.ownerContent = ownerContent;
+        this.detailNums = requiredItemNums;
     }
 
     protected RooftopDto(Long id, String city, String district, String detail,
@@ -210,9 +213,17 @@ public class RooftopDto {
     }
 
     private static RooftopDto createDetailNGRooftopDto(Rooftop rooftop) {
+        List<Integer> requiredItemNums = null;
+        if(rooftop.getRooftopDetails() != null) {
+            requiredItemNums = rooftop.getRooftopDetails().stream().filter(rooftopDetail ->
+                            rooftopDetail.getRooftopDetailType().equals(RooftopDetailType.REQUIRED_ITEM))
+                    .map(RooftopDetail::getContentNum)
+                    .collect(Collectors.toList());
+        }
+
         return new RooftopDto(rooftop.getId(), rooftop.getWidthPrice(), rooftop.getDeadLineType(), rooftop.getWidth(),
                 rooftop.getAddress().getCity(), rooftop.getAddress().getDistrict(), rooftop.getAddress().getDetail(),
-                rooftop.getPhoneNumber(), rooftop.getOwnerContent());
+                rooftop.getPhoneNumber(), rooftop.getOwnerContent(), requiredItemNums);
     }
 
 }

@@ -85,7 +85,7 @@ public class RooftopResponse {
 
     protected RooftopResponse(Long id, int widthPrice, int requiredTermType, Double width, String city, String district,
                               String detail, String phoneNumber, String ownerContent, List<RooftopImageResponse> rooftopImages,
-                              RooftopImageResponse structureImage) {
+                              RooftopImageResponse structureImage,List<Integer> requiredItemNums) {
         this.id = id;
         this.widthPrice = widthPrice;
         this.requiredTermType = requiredTermType;
@@ -97,6 +97,7 @@ public class RooftopResponse {
         this.ownerContent = ownerContent;
         this.rooftopImages = rooftopImages;
         this.structureImage = structureImage;
+        this.detailNums = requiredItemNums;
     }
 
     protected RooftopResponse(Long id, String city, String district, String detail, String grade, Integer totalPrice, RooftopImageDto mainImage) {
@@ -164,15 +165,10 @@ public class RooftopResponse {
 
     public static RooftopResponse of(RooftopDto rooftopDto, boolean isOne) {
         if (isOne) {
-            System.out.println("rooftopDto.toString() = " + rooftopDto.toString());
-
-            System.out.println("rooftopDto.getOwnerContent() = " + rooftopDto.getOwnerContent());
-            System.out.println("rooftopDto.getRooftopImages() = " + rooftopDto.getRooftopImages());
-
             return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), rooftopDto.getRequiredTermType(), rooftopDto.getWidth(),
                     rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(), rooftopDto.getPhoneNumber(),
                     rooftopDto.getOwnerContent(), rooftopDto.getRooftopImages()==null ? null : rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()),
-                    RooftopImageResponse.of(rooftopDto.getStructureImage()));
+                    RooftopImageResponse.of(rooftopDto.getStructureImage()), rooftopDto.getDetailNums());
         }
 
         return new RooftopResponse(rooftopDto.getId(), rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(),
