@@ -3,8 +3,8 @@ POST {{host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "gwangin1999@naver.com",
-  "password": "qorrhkddls1!"
+  "email": "{{greenbeeEmail}}",
+  "password": "{{greenbeePW}}"
 }
 
 > {%
@@ -37,6 +37,43 @@ Content-Disposition: form-data; name="district"
 Content-Disposition: form-data; name="detail"
 
 상도동
+--boundary
+Content-Disposition: form-data; name="normalFile"; filename="good.png"
+
+< C:\Users\ljwon\OneDrive\good.png
+--boundary
+Content-Disposition: form-data; name="normalFile"; filename="mvc.png"
+
+< C:\Users\ljwon\OneDrive\mvc.png
+--boundary
+Content-Disposition: form-data; name="confirmationFile"; filename="join.png"
+
+< C:\Users\ljwon\OneDrive\join.png
+
+###
+# 그린비 정보 찾기
+GET {{host}}/api/v1/green-bees
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 그린비 페이지 수정하기
+POST {{host}}/api/v1/green-bees/edit
+Content-Type: multipart/form-data; boundary=boundary
+Authorization: Bearer {{accessToken}}
+
+--boundary
+Content-Disposition: form-data; name="content"
+
+test2
+--boundary
+Content-Disposition: form-data; name="deleteImages"
+
+c77006af-8878-4e12-aef2-54c19efba61d.png
+--boundary
+Content-Disposition: form-data; name="addImages"; filename="join.png"
+
+< C:\Users\ljwon\OneDrive\join.png
 
 ###
 # 녹화가 필요한 옥상 찾기
@@ -46,7 +83,7 @@ Authorization: Bearer {{accessToken}}
 
 ###
 # 개별 NG 옥상 조회하기
-GET {{host}}/api/v1/green-bees/required-green/2
+GET {{host}}/api/v1/green-bees/required-green/7
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 

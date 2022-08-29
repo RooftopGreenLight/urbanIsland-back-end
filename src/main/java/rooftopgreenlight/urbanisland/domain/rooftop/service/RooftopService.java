@@ -2,7 +2,6 @@ package rooftopgreenlight.urbanisland.domain.rooftop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
-import rooftopgreenlight.urbanisland.domain.common.exception.*;
+import rooftopgreenlight.urbanisland.domain.common.exception.ExistObjectException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NoMatchMemberIdException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopException;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundRooftopReviewException;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageName;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
@@ -173,7 +175,7 @@ public class RooftopService {
 
         Rooftop rooftop = findByRooftopId(rooftopId);
         rooftop.changeProgress(Progress.GREENBEE_COMPLETED);
-        GreenBee greenBee = greenBeeService.getGreenBee(memberId);
+        GreenBee greenBee = greenBeeService.getMyGreenBeeInfo(memberId);
         greeningApplyService.saveApply(rooftop, greenBee, memberId);
     }
 
