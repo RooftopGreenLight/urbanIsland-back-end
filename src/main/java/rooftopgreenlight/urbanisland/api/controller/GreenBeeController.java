@@ -52,7 +52,6 @@ public class GreenBeeController {
             notes = "요청 데이터 - 없음")
     public APIResponse getMyGreenBeeInfo(@PK Long memberId) {
         GreenBee greenBeeInfo = greenBeeService.getMyGreenBeeInfo(memberId);
-        System.out.println("greenBeeInfo.getId() = " + greenBeeInfo.getId());
 
         return APIResponse.of(GreenBeeInfoResponse.of(
                 greenBeeInfo,
@@ -135,6 +134,19 @@ public class GreenBeeController {
         notes = "요청 데이터 - 없음")
     public APIResponse getCompletedRooftop(@PK Long memberId) {
         return APIResponse.of(GreeningApplyResponse.of(greeningApplyService.getRooftopOfGreenBee(memberId, "COMPLETED"), "COMPLETED"));
+    }
+
+    @PostMapping("/edit")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(18) 그린비 페이지 수정",
+        notes = "요청 데이터(form-data) - key : officeNumber, content, deleteImages(String), addImages(MultipartFile)")
+    public APIResponse editGreenBeePage(@PK Long memberId,
+                                        @RequestParam(name = "officeNumber", required = false) String officeNumber,
+                                        @RequestParam(name = "content", required = false) String content,
+                                        @RequestParam(name = "deleteImages", required = false) List<String> deleteImages,
+                                        @RequestParam(name = "addImages", required = false) List<MultipartFile> addImages) {
+        greenBeeService.editGreenBeeInfo(memberId, officeNumber, content, deleteImages, addImages);
+        return APIResponse.empty();
     }
 
 }
