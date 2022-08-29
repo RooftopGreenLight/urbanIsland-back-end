@@ -164,9 +164,14 @@ public class RooftopResponse {
 
     public static RooftopResponse of(RooftopDto rooftopDto, boolean isOne) {
         if (isOne) {
+            System.out.println("rooftopDto.toString() = " + rooftopDto.toString());
+
+            System.out.println("rooftopDto.getOwnerContent() = " + rooftopDto.getOwnerContent());
+            System.out.println("rooftopDto.getRooftopImages() = " + rooftopDto.getRooftopImages());
+
             return new RooftopResponse(rooftopDto.getId(), rooftopDto.getWidthPrice(), rooftopDto.getRequiredTermType(), rooftopDto.getWidth(),
                     rooftopDto.getCity(), rooftopDto.getDistrict(), rooftopDto.getDetail(), rooftopDto.getPhoneNumber(),
-                    rooftopDto.getOwnerContent(), rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()),
+                    rooftopDto.getOwnerContent(), rooftopDto.getRooftopImages()==null ? null : rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList()),
                     RooftopImageResponse.of(rooftopDto.getStructureImage()));
         }
 
@@ -175,9 +180,9 @@ public class RooftopResponse {
     }
 
     public static RooftopResponse getRooftopDetail(RooftopDto rooftopDto) {
-        List<RooftopImageResponse> rooftopImages = rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList());
+        List<RooftopImageResponse> rooftopImages = rooftopDto.getRooftopImages()==null ? null : rooftopDto.getRooftopImages().stream().map(RooftopImageResponse::of).collect(Collectors.toList());
         RooftopImageResponse structureImage = RooftopImageResponse.of(rooftopDto.getStructureImage());
-        List<RooftopReviewResponse> reviews = rooftopDto.getRooftopReviews().stream().map(RooftopReviewResponse::of).collect(Collectors.toList());
+        List<RooftopReviewResponse> reviews = rooftopDto.getRooftopReviews() == null ? null : rooftopDto.getRooftopReviews().stream().map(RooftopReviewResponse::of).collect(Collectors.toList());
 
         return new RooftopResponse(rooftopDto.getId(), rooftopDto.getTotalPrice(), rooftopDto.getCity(), rooftopDto.getDistrict(),
                 rooftopDto.getDetail(), rooftopDto.getExplainContent(), rooftopDto.getRoleContent(), rooftopDto.getRefundContent(),
