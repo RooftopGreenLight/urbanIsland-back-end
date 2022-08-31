@@ -4,6 +4,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
+  "tid" : "12311471248182471",
   "startDate" : "2022-10-02",
   "endDate" : "2022-10-12",
   "startTime" : "10:00:00",
