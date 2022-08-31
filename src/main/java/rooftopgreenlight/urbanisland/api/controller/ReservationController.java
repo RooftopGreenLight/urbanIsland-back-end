@@ -17,14 +17,14 @@ public class ReservationController {
 
     @PostMapping("/{rooftopId}")
     @ApiOperation(value = "Reservation 저장",
-            notes = "요청 데이터(path) -> key(body) : startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, totalCount" +
+            notes = "요청 데이터(path) -> key(body) : tid, startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, totalCount" +
                     "paymentType(현재는 'KAKAO_PAY' 고정), totalPrice, contents(list), prices(list), counts(list)")
     public APIResponse createReservation(
             @PK Long memberId,
             @RequestBody ReservationRequest request,
             @PathVariable("rooftopId") Long rooftopId
     ) {
-        reservationService.create(memberId, rooftopId, request.getStartDate(), request.getEndDate(), request.getStartTime(), request.getEndTime(),
+        reservationService.create(memberId, rooftopId, request.getTid(), request.getStartDate(), request.getEndDate(), request.getStartTime(), request.getEndTime(),
                 request.getAdultCount(), request.getKidCount(), request.getPetCount(), request.getTotalCount(), request.getPaymentType(),
                 request.getTotalPrice(), request.getContents(), request.getPrices(), request.getCounts());
 

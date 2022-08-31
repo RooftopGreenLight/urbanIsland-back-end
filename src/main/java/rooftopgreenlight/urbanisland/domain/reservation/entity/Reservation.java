@@ -32,6 +32,8 @@ public class Reservation extends BaseEntity {
     @Column(name = "reservation_id")
     private Long id;
 
+    private String tid;
+
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -77,8 +79,9 @@ public class Reservation extends BaseEntity {
     }
 
     @Builder(builderMethodName = "createReservation")
-    public Reservation(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
+    public Reservation(String tid, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
                        RooftopPeopleCount rooftopPeopleCount, PaymentType paymentType, String totalPrice) {
+        this.tid = tid;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;

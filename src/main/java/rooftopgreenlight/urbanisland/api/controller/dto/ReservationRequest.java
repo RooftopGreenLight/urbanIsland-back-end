@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservationRequest {
 
+    private String tid;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

@@ -29,14 +29,14 @@ public class ReservationService {
     private final RooftopService rooftopService;
 
     @Transactional
-    public void create(Long memberId, Long rooftopId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
+    public void create(Long memberId, Long rooftopId, String tid, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
                        int adultCount, int kidCount, int petCount, int totalCount, PaymentType paymentType, String totalPrice,
                        List<String> contents, List<Integer> prices, List<Integer> counts) {
 
         Member member = memberService.findById(memberId);
         Rooftop rooftop = rooftopService.findByRooftopId(rooftopId);
 
-        Reservation reservation = createReservation(startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, totalCount, paymentType, totalPrice);
+        Reservation reservation = createReservation(tid, startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, totalCount, paymentType, totalPrice);
         reservation.changeMember(member);
         reservation.changeRooftop(rooftop);
 
@@ -58,8 +58,12 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    private static Reservation createReservation(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int adultCount, int kidCount, int petCount, int totalCount, PaymentType paymentType, String totalPrice) {
+    private static Reservation createReservation(String tid,LocalDate startDate, LocalDate endDate,
+                                                 LocalTime startTime, LocalTime endTime, int adultCount, int kidCount,
+                                                 int petCount, int totalCount, PaymentType paymentType,
+                                                 String totalPrice) {
         return Reservation.createReservation()
+                .tid(tid)
                 .startDate(startDate)
                 .endDate(endDate)
                 .startTime(startTime)
