@@ -151,4 +151,35 @@ public class RooftopController {
     public APIResponse getRooftop(@PathVariable("rooftopId") Long rooftopId) {
         return APIResponse.of(RooftopResponse.getRooftopDetail(rooftopService.getRooftopDetail(rooftopId, "G")));
     }
+
+    @PatchMapping("/detail/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(11-1) 옥상 수정하기",
+                notes = "요청 데이터(path) - key -> rooftopId \n" +
+                        "요청 데이터(form-data) - key -> addImages, deleteImages, mainImage, adultCount, kidCount, petCount, totalCount, startTime, endTime")
+    public APIResponse editRooftop(@PathVariable("rooftopId") Long rooftopId,
+                                   @PK Long memberId,
+                                   @RequestParam(value = "addImages", required = false) List<MultipartFile> addImages,
+                                   @RequestParam(value = "deleteImages", required = false) List<String> deleteFileNames,
+                                   @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+                                   RooftopEditRequest editRequest) {
+        rooftopService.editRooftopDetail(rooftopId, memberId, addImages, deleteFileNames, mainImage, editRequest.getAdultCount(),
+                editRequest.getKidCount(), editRequest.getPetCount(), editRequest.getTotalCount(), editRequest.getStartTime(), editRequest.getEndTime());
+        return APIResponse.empty();
+    }
+
+    @PostMapping("/detail/option/{rooftopId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(12-1-1) pay option change",
+            notes = "요청 데이터(path) - key -> rooftopId \n" +
+                    "요청 데이터(form-data) - key -> optionContent, optionPrice, optionCount")
+    public APIResponse editRooftopOptions(@PathVariable("rooftopId") Long rooftopId,
+                                          @PK Long memberId,
+                                          @RequestParam(value = "optionContent", required = false) List<String> contents,
+                                          @RequestParam(value = "optionPrice", required = false) List<Integer> prices,
+                                          @RequestParam(value = "optionCount", required = false) List<Integer> counts) {
+        rooftopService.editRooftopOption(rooftopId, memberId, contents, prices, counts);
+        return APIResponse.empty();
+    }
+
 }
