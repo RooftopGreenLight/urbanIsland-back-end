@@ -59,7 +59,6 @@ public class ReservationService {
     }
 
     private static Reservation createReservation(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int adultCount, int kidCount, int petCount, int totalCount, PaymentType paymentType, String totalPrice) {
-        System.out.println("paymentType = " + paymentType);
         return Reservation.createReservation()
                 .startDate(startDate)
                 .endDate(endDate)

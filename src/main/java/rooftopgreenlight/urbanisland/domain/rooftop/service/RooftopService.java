@@ -234,6 +234,7 @@ public class RooftopService {
         Rooftop findRooftop = findByRooftopId(rooftopId);
         findRooftop.changeProgress(Progress.ADMIN_COMPLETED);
         findRooftop.changeRooftopType(RooftopType.GREEN);
+        rooftopRepository.deleteRooftopRequiredItemOptions(rooftopId);
     }
 
     /**

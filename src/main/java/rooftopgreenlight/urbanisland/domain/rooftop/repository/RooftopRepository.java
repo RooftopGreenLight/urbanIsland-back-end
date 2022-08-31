@@ -62,6 +62,10 @@ public interface RooftopRepository extends
     @Query("delete from RooftopImage r where r.rooftop.id=:rooftopId")
     void deleteRooftopImages(@Param(value = "rooftopId") Long rooftopId);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from RooftopDetail r where r.rooftop.id=:rooftopId and r.rooftopDetailType='REQUIRED_ITEM'")
+    void deleteRooftopRequiredItemOptions(@Param("rooftopId") Long rooftopId);
+
     @Query("select r from RooftopImage r where r.rooftop.id=:rooftopId")
     List<RooftopImage> findRooftopImagesByRooftopId(@Param(value = "rooftopId") Long rooftopId);
 
