@@ -427,7 +427,8 @@ public class RooftopService {
      */
     @Transactional
     public void editRooftopDetail(Long rooftopId, Long memberId, List<MultipartFile> addImages, List<String> deleteFileNames, MultipartFile mainImage,
-                                  Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, LocalTime startTime, LocalTime endTime) {
+                                  Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount,
+                                  LocalTime startTime, LocalTime endTime, Integer totalPrice) {
         Rooftop rooftop = findByRooftopId(rooftopId);
 
         if(!rooftop.getCreatedBy().equals(String.valueOf(memberId)))
@@ -435,7 +436,7 @@ public class RooftopService {
 
         saveRooftopImages(addImages, null, mainImage, rooftop);
         RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
-        rooftop.updateRooftop(startTime, endTime, peopleCount.updatePeopleCount(adultCount, kidCount, petCount, totalCount));
+        rooftop.updateRooftop(startTime, endTime, peopleCount.updatePeopleCount(adultCount, kidCount, petCount, totalCount), totalPrice);
 
         if(deleteFileNames != null) {
             rooftopRepository.deleteImagesByFileName(deleteFileNames);

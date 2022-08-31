@@ -14,6 +14,8 @@ public class RooftopEditRequest {
     private Integer petCount;
     private Integer totalCount;
 
+    private Integer totalPrice;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime startTime;
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)

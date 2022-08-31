@@ -156,7 +156,7 @@ public class RooftopController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "(11-1) 옥상 수정하기",
                 notes = "요청 데이터(path) - key -> rooftopId \n" +
-                        "요청 데이터(form-data) - key -> addImages, deleteImages, mainImage, adultCount, kidCount, petCount, totalCount, startTime, endTime")
+                        "요청 데이터(form-data) - key -> addImages, deleteImages, mainImage, adultCount, kidCount, petCount, totalCount, startTime, endTime, totalPrice")
     public APIResponse editRooftop(@PathVariable("rooftopId") Long rooftopId,
                                    @PK Long memberId,
                                    @RequestParam(value = "addImages", required = false) List<MultipartFile> addImages,
@@ -164,13 +164,14 @@ public class RooftopController {
                                    @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
                                    RooftopEditRequest editRequest) {
         rooftopService.editRooftopDetail(rooftopId, memberId, addImages, deleteFileNames, mainImage, editRequest.getAdultCount(),
-                editRequest.getKidCount(), editRequest.getPetCount(), editRequest.getTotalCount(), editRequest.getStartTime(), editRequest.getEndTime());
+                editRequest.getKidCount(), editRequest.getPetCount(), editRequest.getTotalCount(), editRequest.getStartTime(),
+                editRequest.getEndTime(), editRequest.getTotalPrice());
         return APIResponse.empty();
     }
 
     @PostMapping("/detail/option/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "(12-1-1) pay option change",
+    @ApiOperation(value = "(11-1-1) pay option change",
             notes = "요청 데이터(path) - key -> rooftopId \n" +
                     "요청 데이터(form-data) - key -> optionContent, optionPrice, optionCount")
     public APIResponse editRooftopOptions(@PathVariable("rooftopId") Long rooftopId,
