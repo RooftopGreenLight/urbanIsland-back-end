@@ -147,4 +147,11 @@ public class Rooftop extends BaseEntity {
         this.grade = "0";
         this.gradeCount = 0;
     }
+
+    public void updateRooftop(LocalTime startTime, LocalTime endTime, RooftopPeopleCount updatePeopleCount, Integer totalPrice) {
+        if(startTime != null) this.startTime = startTime;
+        if(endTime != null) this.endTime = endTime;
+        this.peopleCount = updatePeopleCount;
+        if(totalPrice != null) this.totalPrice = totalPrice;
+    }
 }

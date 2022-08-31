@@ -30,4 +30,11 @@ public class RooftopPeopleCount {
         return new RooftopPeopleCount(adultCount, kidCount, petCount, totalCount);
     }
 
+    public RooftopPeopleCount updatePeopleCount(Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount) {
+        if(adultCount != null) this.adultCount = adultCount;
+        if(kidCount != null) this.kidCount = kidCount;
+        if(petCount != null) this.petCount = petCount;
+        if(totalCount != null) this.totalCount = totalCount;
+        return this;
+    }
 }

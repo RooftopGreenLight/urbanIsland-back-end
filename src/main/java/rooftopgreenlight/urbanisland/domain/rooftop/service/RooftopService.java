@@ -234,6 +234,7 @@ public class RooftopService {
         Rooftop findRooftop = findByRooftopId(rooftopId);
         findRooftop.changeProgress(Progress.ADMIN_COMPLETED);
         findRooftop.changeRooftopType(RooftopType.GREEN);
+        rooftopRepository.deleteRooftopRequiredItemOptions(rooftopId);
     }
 
     /**
@@ -264,7 +265,7 @@ public class RooftopService {
     /**
      * 옥상 Id 기준으로 옥상 정보 가져오기
      */
-    private Rooftop findByRooftopId(Long rooftopId) {
+    public Rooftop findByRooftopId(Long rooftopId) {
         Rooftop rooftop = rooftopRepository.findById(rooftopId).orElseThrow(() -> {
             throw new NotFoundRooftopException("옥상을 찾을 수 없습니다.");
         });
@@ -419,5 +420,41 @@ public class RooftopService {
         Page<Rooftop> rooftopPage = rooftopRepository.findByMyRooftopInfo(memberId, pageable);
 
         return new RooftopPageDto().RooftopSearchPageDto(rooftopPage.getTotalPages(), rooftopPage.getTotalElements(), rooftopPage.getContent(), "G");
+    }
+
+    /**
+     * 옥상 수정하기
+     */
+    @Transactional
+    public void editRooftopDetail(Long rooftopId, Long memberId, List<MultipartFile> addImages, List<String> deleteFileNames, MultipartFile mainImage,
+                                  Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount,
+                                  LocalTime startTime, LocalTime endTime, Integer totalPrice) {
+        Rooftop rooftop = findByRooftopId(rooftopId);
+
+        if(!rooftop.getCreatedBy().equals(String.valueOf(memberId)))
+            throw new NoMatchMemberIdException("권한이 없습니다.");
+
+        saveRooftopImages(addImages, null, mainImage, rooftop);
+        RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
+        rooftop.updateRooftop(startTime, endTime, peopleCount.updatePeopleCount(adultCount, kidCount, petCount, totalCount), totalPrice);
+
+        if(deleteFileNames != null) {
+            rooftopRepository.deleteImagesByFileName(deleteFileNames);
+            deleteFileNames.forEach(fileService::deleteFileS3);
+        }
+    }
+
+    /**
+     * 옥상 pay option 수정하기
+     */
+    @Transactional
+    public void editRooftopOption(Long rooftopId, Long memberId, List<String> contents, List<Integer> prices, List<Integer> counts) {
+        Rooftop rooftop = findByRooftopId(rooftopId);
+
+        if(!rooftop.getCreatedBy().equals(String.valueOf(memberId)))
+            throw new NoMatchMemberIdException("권한이 없습니다.");
+
+        rooftopRepository.deleteRooftopOptions(rooftopId);
+        saveRooftopOptions(contents, prices, counts, rooftop);
     }
 }

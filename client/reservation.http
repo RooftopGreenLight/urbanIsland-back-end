@@ -1,0 +1,21 @@
+# Reservation 등록
+POST {{host}}/api/v1/reservations/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "tid" : "12311471248182471",
+  "startDate" : "2022-10-02",
+  "endDate" : "2022-10-12",
+  "startTime" : "10:00:00",
+  "endTime" : "18:00:00",
+  "adultCount" : 2,
+  "kidCount" : 0,
+  "petCount" : 0,
+  "totalCount" : 2,
+  "paymentType" : "KAKAO_PAY",
+  "totalPrice" : 120000,
+  "contents" : ["0", "1"],
+  "prices" : [15000, 20000],
+  "counts" : [0, 1]
+}

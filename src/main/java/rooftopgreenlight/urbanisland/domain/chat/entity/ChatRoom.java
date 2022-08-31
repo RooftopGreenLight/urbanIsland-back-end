@@ -19,13 +19,15 @@ public class ChatRoom {
 
     private Long rooftopId;
     private Long memberId;
+    private Long ownerId;
 
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages = new ArrayList<>();
 
     @Builder(builderMethodName = "createChatRoom")
-    public ChatRoom(Long rooftopId, Long memberId) {
+    public ChatRoom(Long rooftopId, Long memberId, Long ownerId) {
         this.rooftopId = rooftopId;
         this.memberId = memberId;
+        this.ownerId = ownerId;
     }
 }
