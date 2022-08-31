@@ -18,33 +18,21 @@ Authorization: Bearer {{accessToken}}
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
-Content-Disposition: form-data; name="normalFile"; filename="usecase1.png"
-
-< /Users/yc/Documents/usecase/usecase1.png
---boundary
-Content-Disposition: form-data; name="structureFile"; filename="usecase2.png"
-
-< /Users/yc/Documents/usecase/usecase2.png
---boundary
-Content-Disposition: form-data; name="mainFile"; filename="usecase2.png"
-
-< /Users/yc/Documents/usecase/usecase2.png
---boundary
 Content-Disposition: form-data; name="width"
 
-243
+111
 --boundary
 Content-Disposition: form-data; name="county"
 
-testtset2
+test
 --boundary
 Content-Disposition: form-data; name="city"
 
-testtset2
+test
 --boundary
 Content-Disposition: form-data; name="detail"
 
-testtset2
+test
 --boundary
 Content-Disposition: form-data; name="rooftopType"
 
@@ -66,6 +54,29 @@ Content-Disposition: form-data; name="totalPrice"
 
 120000
 --boundary--
+Content-Disposition: form-data; name="optionContent"
+
+hihi
+--boundary--
+Content-Disposition: form-data; name="optionPrice"
+
+10000
+--boundary--
+Content-Disposition: form-data; name="optionCount"
+
+3
+--boundary--
+Content-Disposition: form-data; name="optionContent"
+
+hihi2
+--boundary--
+Content-Disposition: form-data; name="optionPrice"
+
+20000
+--boundary--
+Content-Disposition: form-data; name="optionCount"
+
+0
 
 
 ###
@@ -88,13 +99,13 @@ Content-Type: application/json
 
 ###
 # Rooftop Review 생성
-POST {{host}}/api/v1/rooftops/reviews/1
+POST {{host}}/api/v1/rooftops/reviews/13
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "grade": 4,
-  "content": "test 용도입니다..."
+  "grade": 3,
+  "content": "test 용도2222"
 }
 
 ###
@@ -105,7 +116,7 @@ Content-Type: application/json
 
 ###
 # Rooftop Detail 조회
-GET {{host}}/api/v1/rooftops/detail/2
+GET {{host}}/api/v1/rooftops/detail/13
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -114,3 +125,42 @@ Content-Type: application/json
 GET {{host}}/api/v1/rooftops?page=0&size=1000000
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
+
+###
+# Rooftop 수정
+PATCH {{host}}/api/v1/rooftops/detail/13
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="adultCount"
+
+3
+--boundary
+Content-Disposition: form-data; name="petCount"
+
+2
+--boundary
+Content-Disposition: form-data; name="endTime"
+
+14:00:00
+
+###
+# Rooftop Option 수정
+POST {{host}}/api/v1/rooftops/detail/option/13
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary--
+Content-Disposition: form-data; name="optionContent"
+
+bye2
+--boundary--
+Content-Disposition: form-data; name="optionPrice"
+
+1234
+--boundary--
+Content-Disposition: form-data; name="optionCount"
+
+7
+

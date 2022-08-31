@@ -40,7 +40,7 @@ public interface RooftopRepository extends
     Optional<Rooftop> findRooftopWithMember(@Param("rooftopId") Long rooftopId);
 
     @Query("select r from Rooftop r left join r.reviews rr left join r.rooftopImages ri left join r.rooftopOptions ro " +
-            "left join r.rooftopDetails rd where r.id = :rooftopId")
+            "left join r.rooftopDetails rd left join r.member rm where r.id = :rooftopId")
     Optional<Rooftop> findRooftopWithAll(@Param("rooftopId") Long rooftopId);
 
     @Query("select r from Rooftop r where r.member.id=:memberId and r.rooftopType='GREEN'" +
@@ -54,7 +54,7 @@ public interface RooftopRepository extends
     @Query("delete from RooftopDetail r where r.rooftop.id=:rooftopId")
     void deleteRooftopDetails(@Param(value = "rooftopId") Long rooftopId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying
     @Query("delete from RooftopOption r where r.rooftop.id=:rooftopId")
     void deleteRooftopOptions(@Param(value = "rooftopId") Long rooftopId);
 
@@ -71,6 +71,10 @@ public interface RooftopRepository extends
     @Modifying
     @Query("delete from RooftopReview rr where rr.id = :reviewId")
     void deleteRooftopReviewByRooftopReviewId(final @Param("reviewId") long reviewId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from RooftopImage ri where ri.storeFilename in :deleteFileNames")
+    void deleteImagesByFileName(@Param("deleteFileNames") List<String> deleteFileNames);
 
     @Query("select rr from RooftopReview rr where rr.member.id = :memberId")
     Page<RooftopReview> findRooftopReviewPageByMemberId(final @Param("memberId") long memberId, Pageable pageable);

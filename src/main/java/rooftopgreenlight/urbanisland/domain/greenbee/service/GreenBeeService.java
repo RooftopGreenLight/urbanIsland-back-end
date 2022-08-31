@@ -138,9 +138,6 @@ public class GreenBeeService {
             normalFiles.stream().parallel()
                     .map(file -> (GreenBeeImage) fileService.createImage(file, ImageType.NORMAL, ImageName.GREENBEE))
                     .forEach(image -> {
-                        System.out.println("image = " + image.toString());
-                        System.out.println("image.getStoreFilename() = " + image.getStoreFilename());
-
                         image.changeGreenBee(greenBee);
                         greenBee.addGreenBeeImage(image);
                     });

@@ -13,6 +13,7 @@ import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class RooftopDto {
     private Long id;
+    private Long ownerId;
+
     private Integer totalPrice;
     private Integer widthPrice;
     private Integer requiredTermType;
@@ -52,6 +55,7 @@ public class RooftopDto {
     private RooftopImageDto structureImage;
     private RooftopImageDto mainImage;
     private List<RooftopReviewDto> rooftopReviews;
+    private List<RooftopOptionDto> rooftopOptions;
 
     protected RooftopDto(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
         this.id = id;
@@ -115,9 +119,9 @@ public class RooftopDto {
     }
 
     protected RooftopDto(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
-                         String refundContent, String grade, Double width, List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage,
+                         String refundContent, String grade, Double width, RooftopImageDto mainImage, List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage,
                          Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
-                         LocalTime startTime, LocalTime endTime, List<RooftopReviewDto> reviewDtos) {
+                         LocalTime startTime, LocalTime endTime, List<RooftopReviewDto> reviews, Long ownerId, List<RooftopOptionDto> options) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.city = city;
@@ -128,6 +132,7 @@ public class RooftopDto {
         this.refundContent = refundContent;
         this.grade = grade;
         this.width = width;
+        this.mainImage= mainImage;
         this.rooftopImages = rooftopImages;
         this.structureImage = structureImage;
         this.adultCount = adultCount;
@@ -137,7 +142,19 @@ public class RooftopDto {
         this.detailNums = detailNums;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.rooftopReviews = reviewDtos;
+        this.rooftopReviews = reviews;
+        this.ownerId = ownerId;
+        this.rooftopOptions = options;
+    }
+
+    protected RooftopDto(String city, String district, String detail) {
+        this.city = city;
+        this.district = district;
+        this.detail = detail;
+    }
+
+    public static RooftopDto getRooftopAddress(String city, String district, String detail) {
+        return new RooftopDto(city, district, detail);
     }
 
     public static RooftopDto getRooftopStatusDto(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
@@ -173,27 +190,47 @@ public class RooftopDto {
         Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
         Address address = rooftop.getAddress();
         RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
-        List<Integer> detailNums = new ArrayList<>();
-        rooftop.getRooftopDetails().forEach(detail -> {
-            detailNums.add(detail.getContentNum());
-        });
 
-        List<RooftopReviewDto> reviews = rooftop.getReviews().stream().map(review ->
-            RooftopReviewDto.of(review.getGrade(), review.getContent(), review.getCreatedDate(), review.getMember().getNickname())
-        ).collect(Collectors.toList());
+        List<Integer> detailNums = null;
+        if(rooftop.getRooftopDetails() != null) {
+            detailNums = rooftop.getRooftopDetails().stream().map(RooftopDetail::getContentNum).collect(Collectors.toList());
+        }
+
+        List<RooftopOptionDto> options = null;
+        if(rooftop.getRooftopOptions() != null) {
+            options = rooftop.getRooftopOptions().stream().map(option ->
+                            RooftopOptionDto.of(option.getId(), option.getContent(), option.getPrice(), option.getCount()))
+                    .collect(Collectors.toList());
+        }
+
+        List<RooftopReviewDto> reviews = new ArrayList<>();
+        if(rooftop.getReviews() != null) {
+             reviews = rooftop.getReviews().stream().map(review ->
+                 RooftopReviewDto.of(review.getGrade(), review.getContent(), review.getCreatedDate(), getNewNickname(review.getMember().getNickname()))
+            ).collect(Collectors.toList());
+        }
+
 
         return new RooftopDto(rooftop.getId(), rooftop.getTotalPrice(), address.getCity(), address.getDistrict(),
                 address.getDetail(), rooftop.getExplainContent(), rooftop.getRoleContent(), rooftop.getRefundContent(),
-                rooftop.getGrade(), rooftop.getWidth(), listMap.get(ImageType.NORMAL), listMap.get(ImageType.STRUCTURE).get(0),
+                rooftop.getGrade(), rooftop.getWidth(), listMap.get(ImageType.MAIN) == null ? null : listMap.get(ImageType.MAIN).get(0),
+                listMap.get(ImageType.NORMAL), listMap.get(ImageType.CONFIRMATION) == null ? null : listMap.get(ImageType.STRUCTURE).get(0),
                 peopleCount.getAdultCount(), peopleCount.getKidCount(), peopleCount.getPetCount(), peopleCount.getTotalCount(),
-                detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews);
+                detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews, rooftop.getMember().getId(), options);
+    }
+
+    private static String getNewNickname(String nickname) {
+        return nickname.charAt(0) + "*".repeat(Math.max(0, nickname.length() - 2)) +
+                nickname.charAt(nickname.length() - 1);
     }
 
     public static RooftopDto getNGRooftopDto(Rooftop rooftop, boolean isOne) {
         RooftopDto rooftopDto = isOne ? createDetailNGRooftopDto(rooftop) : createListInfoNGRooftopDto(rooftop);
         Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
 
-        rooftopDto.setRooftopImages(listMap.get(ImageType.NORMAL));
+        if(listMap.get(ImageType.NORMAL) != null) {
+            rooftopDto.setRooftopImages(listMap.get(ImageType.NORMAL));
+        }
         if (listMap.get(ImageType.STRUCTURE) != null) {
             rooftopDto.setStructureImage(listMap.get(ImageType.STRUCTURE).get(0));
         }
