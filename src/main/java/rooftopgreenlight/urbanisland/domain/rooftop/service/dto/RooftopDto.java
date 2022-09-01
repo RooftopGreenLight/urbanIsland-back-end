@@ -188,6 +188,12 @@ public class RooftopDto {
 
     public static RooftopDto getRooftopDto(Rooftop rooftop) {
         Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
+
+        System.out.println("엥 여기가 안 찍힌다고...?");
+        for (ImageType key : listMap.keySet()) {
+            System.out.println("listMap = " + listMap.get(key).toString());
+        }
+
         Address address = rooftop.getAddress();
         RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
 
@@ -214,7 +220,7 @@ public class RooftopDto {
         return new RooftopDto(rooftop.getId(), rooftop.getTotalPrice(), address.getCity(), address.getDistrict(),
                 address.getDetail(), rooftop.getExplainContent(), rooftop.getRoleContent(), rooftop.getRefundContent(),
                 rooftop.getGrade(), rooftop.getWidth(), listMap.get(ImageType.MAIN) == null ? null : listMap.get(ImageType.MAIN).get(0),
-                listMap.get(ImageType.NORMAL), listMap.get(ImageType.CONFIRMATION) == null ? null : listMap.get(ImageType.STRUCTURE).get(0),
+                listMap.get(ImageType.NORMAL), listMap.get(ImageType.STRUCTURE) == null ? null : listMap.get(ImageType.STRUCTURE).get(0),
                 peopleCount.getAdultCount(), peopleCount.getKidCount(), peopleCount.getPetCount(), peopleCount.getTotalCount(),
                 detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews, rooftop.getMember().getId(), options);
     }

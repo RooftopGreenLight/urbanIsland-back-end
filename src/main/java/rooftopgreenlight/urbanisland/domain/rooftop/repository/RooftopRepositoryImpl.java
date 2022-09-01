@@ -33,6 +33,7 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
      */
     @Override
     public Page<Rooftop> searchRooftopByCond(Pageable pageable, RooftopSearchCond searchCond) {
+        System.out.println(searchCond.getMaxPrice());
         List<Rooftop> content = query
                 .selectFrom(rooftop)
                 .distinct()
@@ -101,7 +102,8 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
                         widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
                         deadLineTypeCond(searchCond.getDeadLineType()),
-                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN)
+                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN),
+                        rooftop.rooftopProgress.eq(Progress.GREENBEE_WAIT)
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -145,8 +147,10 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
     }
 
     private BooleanExpression priceCond(Integer maxPrice, Integer minPrice) {
-        if (maxPrice == null || minPrice == null) {
+        if (maxPrice == null && minPrice == null) {
             return null;
+        } else if (maxPrice == null) {
+            return rooftop.totalPrice.goe(minPrice);
         }
 
         return rooftop.totalPrice.between(minPrice, maxPrice);
@@ -161,16 +165,20 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
     }
 
     private BooleanExpression widthCond(Double maxWidth, Double minWidth) {
-        if (maxWidth == null || minWidth == null) {
+        if (maxWidth == null && minWidth == null) {
             return null;
+        } else if (maxWidth == null) {
+            return rooftop.width.goe(minWidth);
         }
 
         return rooftop.width.between(minWidth, maxWidth);
     }
 
     private BooleanExpression widthPriceCond(Integer maxWidthPrice, Integer minWidthPrice) {
-        if(maxWidthPrice == null || minWidthPrice == null) {
+        if(maxWidthPrice == null && minWidthPrice == null) {
             return null;
+        } else if (maxWidthPrice == null) {
+            return rooftop.widthPrice.goe(minWidthPrice);
         }
         return rooftop.widthPrice.between(minWidthPrice, maxWidthPrice);
     }
@@ -181,7 +189,6 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
         }
         return rooftop.deadLineType.loe(deadLineType);
     }
-
 
     private OrderSpecifier<?> sortCond(Integer cond) {
         if (cond == null) return rooftop.id.desc();
