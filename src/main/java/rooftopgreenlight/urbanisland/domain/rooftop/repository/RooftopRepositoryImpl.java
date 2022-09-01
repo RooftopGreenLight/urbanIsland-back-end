@@ -101,7 +101,8 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
                         widthCond(searchCond.getMaxWidth(), searchCond.getMinWidth()),
                         widthPriceCond(searchCond.getMaxWidthPrice(), searchCond.getMinWidthPrice()),
                         deadLineTypeCond(searchCond.getDeadLineType()),
-                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN)
+                        rooftop.rooftopType.eq(RooftopType.NOT_GREEN),
+                        rooftop.rooftopProgress.eq(Progress.GREENBEE_WAIT)
                 );
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
