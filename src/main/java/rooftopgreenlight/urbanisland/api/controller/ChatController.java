@@ -30,10 +30,6 @@ public class ChatController {
     private final ChatRoomService chatRoomService;
     private final MessageService messageService;
 
-    /**
-     * 문의 응답 확인하기
-     * @return List<ChatRoomResponse>
-     */
     @GetMapping("/inquiry/response")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "문의 응답 확인하기 (목록)",
@@ -43,12 +39,10 @@ public class ChatController {
         return APIResponse.of(getResponseWithMessage(roomList));
     }
 
-    /**
-     * 문의 응답 확인하기 (세부 정보)
-     */
     @GetMapping("/inquiry/room/{roomId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "문의 응답 확인하기 (세부 정보) + 옥상지기의 문의 알림 역시 동일",
+    @ApiOperation(value = "문의 응답 확인하기 (세부 정보) + 옥상지기의 문의 알림 역시 동일\n" +
+            "추가적으로 (7)에서 예약 정보의 채팅 내역으로도 사용",
             notes = "정상 동작 시 각 채팅방의 세부 정보 전달, 요소: roomId, city, district, detail, memberId, content, sendTime")
     public APIResponse getInquiryRoom(@PathVariable(value = "roomId") Long roomId,
                                       @PK Long memberId) {
@@ -61,9 +55,6 @@ public class ChatController {
                 rooftopDto.getDetail(), messageResponses));
     }
 
-    /**
-     * 문의 응답 확인하기 (세부정보) - 문의 삭제
-     */
     @DeleteMapping("/inquery/room/{roomId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "문의 응답 확인하기 - 문의 삭제")
@@ -73,25 +64,18 @@ public class ChatController {
         return APIResponse.empty();
     }
 
-
-    /**
-     * 문의하기
-     */
     @GetMapping("/inquiry/join/room/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "문의하기 버튼 클릭 시 동작",
+    @ApiOperation(value = "문의하기 버튼 클릭 시 동작 (1차적으로 채팅방이 생성되었는지 체크)",
             notes = "요청 데이터(path) - key : rooftopid" +
                     "(param) - key : ownerId" +
                     "정상 동작 시 roomId 리턴")
     public APIResponse joinChatRoom(@PathVariable(value = "rooftopId") Long rooftopId,
                                     @RequestParam(value = "ownerId") Long ownerId,
                                     @PK Long memberId) {
-        return APIResponse.of(chatRoomService.joinChatRoom(rooftopId, ownerId, memberId));
+        return APIResponse.of(chatRoomService.joinChatRoom(rooftopId, ownerId, memberId, "INQUIRY"));
     }
 
-    /**
-     * 문의 알림란 (옥상지기)
-     */
     @GetMapping("/inquiry/owner/response/{rooftopId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "(11) 옥상에 대한 문의알림란 (옥상지기 전용)",
@@ -102,6 +86,16 @@ public class ChatController {
         return APIResponse.of(getResponseWithMessage(roomList));
     }
 
+    @GetMapping("/inquiry/reservation/{reservationId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "(7) My plan에서 캘린더 클릭 시 1차적으로 채팅내역의 존재 여부 확인",
+        notes = "요청 데이터(path) - key -> reservationId\n" +
+                "정상 동작 시 roomId 리턴")
+    public APIResponse getReservationInquiryRoom(@PathVariable("reservationId") Long reservationId,
+                                                 @PK Long memberId,
+                                                 @RequestParam("ownerId") Long ownerId) {
+        return APIResponse.of(chatRoomService.joinChatRoom(reservationId, ownerId, memberId, "RESERVATION"));
+    }
 
     private List<ChatRoomResponse> getResponseWithMessage(List<ChatRoomDto> roomList) {
         return roomList.stream().map(chatRoom -> {
@@ -114,9 +108,6 @@ public class ChatController {
         }).collect(Collectors.toList());
     }
 
-    /**
-     * 메시지 전송
-     */
     @MessageMapping("/inquiry/room")
     @ApiOperation(value = "메시지 전송", notes = "정상 동작 시 memberId, roomId, content, sendTime 리턴")
     public APIResponse chat(ChatRequest chatRequest) {
