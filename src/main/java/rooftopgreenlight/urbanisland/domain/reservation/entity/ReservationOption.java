@@ -36,7 +36,7 @@ public class ReservationOption {
     private Integer price;
     private Integer count;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
