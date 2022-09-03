@@ -1,10 +1,11 @@
 # Reservation 등록
-POST {{host}}/api/v1/reservations/1
+POST {{host}}/api/v1/reservations
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "tid" : "12311471248182471",
+  "rooftopId" :  1,
   "startDate" : "2022-10-02",
   "endDate" : "2022-10-12",
   "startTime" : "10:00:00",
@@ -18,4 +19,27 @@ Authorization: Bearer {{accessToken}}
   "contents" : ["0", "1"],
   "prices" : [15000, 20000],
   "counts" : [0, 1]
+}
+
+###
+# Reservation 조회
+GET {{host}}/api/v1/reservations/5
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+###
+# Reservation 삭제
+DELETE {{host}}/api/v1/reservations/9
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# Reservation 변경
+POST {{host}}/api/v1/reservations/7
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "status" : "PAYMENT_COMPLETED"
 }

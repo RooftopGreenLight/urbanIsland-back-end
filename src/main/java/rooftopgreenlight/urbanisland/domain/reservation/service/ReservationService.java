@@ -3,8 +3,10 @@ package rooftopgreenlight.urbanisland.domain.reservation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundReservationException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentType;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationOption;
@@ -29,7 +31,7 @@ public class ReservationService {
     private final RooftopService rooftopService;
 
     @Transactional
-    public void create(Long memberId, Long rooftopId, String tid, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
+    public Long create(Long memberId, Long rooftopId, String tid, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
                        int adultCount, int kidCount, int petCount, int totalCount, PaymentType paymentType, String totalPrice,
                        List<String> contents, List<Integer> prices, List<Integer> counts) {
 
@@ -55,7 +57,26 @@ public class ReservationService {
 
         reservation.addReservationOption(reservationOptions);
 
-        reservationRepository.save(reservation);
+        return reservationRepository.save(reservation).getId();
+    }
+
+    public Reservation findById(Long reservationId) {
+        return reservationRepository.findById(reservationId).orElseThrow(() -> {
+            throw new NotFoundReservationException("예약 정보를 찾을 수 없습니다.");
+        });
+    }
+
+    @Transactional
+    public void deleteReservation(Long reservationId) {
+        reservationRepository.deleteOptionsById(reservationId);
+        reservationRepository.deleteReservationById(reservationId);
+    }
+
+    @Transactional
+    public void changeReservationStatus(long reservationId, PaymentStatus status) {
+        Reservation reservation = findById(reservationId);
+
+        reservation.changePaymentStatus(status);
     }
 
     private static Reservation createReservation(String tid,LocalDate startDate, LocalDate endDate,
@@ -68,7 +89,7 @@ public class ReservationService {
                 .endDate(endDate)
                 .startTime(startTime)
                 .endTime(endTime)
-                .rooftopPeopleCount(RooftopPeopleCount.of(adultCount, kidCount, petCount, totalCount))
+                .reservationPeopleCount(RooftopPeopleCount.of(adultCount, kidCount, petCount, totalCount))
                 .paymentType(paymentType)
                 .totalPrice(totalPrice)
                 .build();
