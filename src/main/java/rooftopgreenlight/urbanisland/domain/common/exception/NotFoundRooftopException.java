@@ -1,22 +1,11 @@
 package rooftopgreenlight.urbanisland.domain.common.exception;
 
-public class NotFoundRooftopException extends RuntimeException{
-    public NotFoundRooftopException() {
-    }
+import com.amazonaws.services.kms.model.NotFoundException;
+
+public class NotFoundRooftopException extends NotFoundException {
 
     public NotFoundRooftopException(String message) {
         super(message);
     }
 
-    public NotFoundRooftopException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NotFoundRooftopException(Throwable cause) {
-        super(cause);
-    }
-
-    public NotFoundRooftopException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

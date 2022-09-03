@@ -1,16 +1,10 @@
 package rooftopgreenlight.urbanisland.domain.common.exception;
 
-public class NotFoundProfileException extends RuntimeException{
+import com.amazonaws.services.kms.model.NotFoundException;
 
-    public NotFoundProfileException() {
-        super();
-    }
+public class NotFoundProfileException extends NotFoundException {
 
     public NotFoundProfileException(String message) {
         super(message);
-    }
-
-    public NotFoundProfileException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

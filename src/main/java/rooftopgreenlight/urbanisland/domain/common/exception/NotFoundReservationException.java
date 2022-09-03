@@ -1,8 +1,10 @@
 package rooftopgreenlight.urbanisland.domain.common.exception;
 
-public class NotFoundGreenBeeException extends RuntimeException {
+import com.amazonaws.services.kms.model.NotFoundException;
 
-    public NotFoundGreenBeeException(String message) {
+public class NotFoundReservationException extends NotFoundException {
+
+    public NotFoundReservationException(String message) {
         super(message);
     }
 
