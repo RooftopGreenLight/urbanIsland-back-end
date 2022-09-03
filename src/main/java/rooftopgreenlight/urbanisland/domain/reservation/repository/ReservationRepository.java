@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
 
     @Modifying
     @Query("delete from ReservationOption ro where ro.reservation.id = :reservationId")

@@ -22,6 +22,9 @@ public class MessageService {
     private final MemberService memberService;
     private final MessageRepository messageRepository;
 
+    /**
+     * 메시지 생성
+     */
     @Transactional
     public LocalDateTime sendMessage(Long roomId, Long memberId, String content) {
         Member findMember = memberService.findById(memberId);
@@ -40,13 +43,18 @@ public class MessageService {
         return date;
     }
 
-
+    /**
+     * 특정 채팅방의 메시지 목록 조회
+     */
     public List<MessageDto> getMessageByRoomId(Long memberId, Long roomId) {
         List<Message> messages = messageRepository.findByJoinFetchMember(memberId, roomId);
         return messages.stream().map(message -> MessageDto.of(message.getId(), message.getContent(),
                 message.getSendTime(), message.getMember().getId())).collect(Collectors.toList());
     }
 
+    /**
+     * 가장 마지막에 보낸 메시지 조회
+     */
     public MessageDto getLastMessage(Long roomId) {
         Message message = messageRepository.findLastMessageOrdered(roomId)
                 .stream().findFirst().orElse(null);
@@ -54,6 +62,9 @@ public class MessageService {
         return null;
     }
 
+    /**
+     * 문의 삭제하기
+     */
     public void deleteMessageByRoomId(Long memberId, Long roomId) {
         ChatRoom findChatRoom = chatRoomService.getChatRoomById(roomId);
         if(!findChatRoom.getMemberId().equals(memberId)) {

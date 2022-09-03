@@ -43,3 +43,9 @@ Authorization: Bearer {{accessToken}}
 {
   "status" : "PAYMENT_COMPLETED"
 }
+
+###
+# 내 예약 내역 확인
+GET {{host}}/api/v1/reservations?date=2022-10-02
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
