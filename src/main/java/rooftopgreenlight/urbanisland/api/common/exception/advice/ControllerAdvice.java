@@ -31,8 +31,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse clientException(ClientException e) {
-        log.error("ClientException = {}", e);
-
+        log.error("ClientException = ", e);
 
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
@@ -45,8 +44,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse notFoundException(NotFoundException e) {
-        log.error("NotFoundException = {}", e);
-
+        log.error("NotFoundException = ", e);
 
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
@@ -59,7 +57,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrorResponse exception(JwtException e) {
-        log.error("JwtException = {}", e);
+        log.error("JwtException = ", e);
 
         return APIErrorResponse.of(false, ErrorCode.BAD_REQUEST, e);
     }
@@ -91,8 +89,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
             errorList.add(ex.getMessage());
         }
 
-        log.info("ControllerAdvice Exception = {}", ex);
-
+        log.info("ControllerAdvice Exception = ", ex);
         return super.handleExceptionInternal(ex, APIErrorResponse.of(false, errorCode.getCode(), errorList), headers, status, request);
     }
 }
