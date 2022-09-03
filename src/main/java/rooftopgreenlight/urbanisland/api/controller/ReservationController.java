@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.api.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rooftopgreenlight.urbanisland.api.common.annotation.PK;
@@ -12,6 +13,7 @@ import rooftopgreenlight.urbanisland.api.controller.dto.ReservationResponse;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
 import rooftopgreenlight.urbanisland.domain.reservation.service.ReservationService;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Api(value = "예약 처리 API")
@@ -71,4 +73,12 @@ public class ReservationController {
 
         return APIResponse.empty();
     }
+    @GetMapping
+    @ApiOperation(value = "(7) My plan - 일정 관리",
+        notes = "요청 데이터(param) - key -> date")
+    public APIResponse getMyReservation(@PK Long memberId,
+                                        @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        return APIResponse.of(ReservationResponse.of(reservationService.getMyReservation(memberId, date)));
+    }
+
 }

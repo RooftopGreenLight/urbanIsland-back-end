@@ -3,6 +3,7 @@ package rooftopgreenlight.urbanisland.domain.reservation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundReservationException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
@@ -11,6 +12,7 @@ import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentType;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationOption;
 import rooftopgreenlight.urbanisland.domain.reservation.repository.ReservationRepository;
+import rooftopgreenlight.urbanisland.domain.reservation.service.dto.ReservationDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.RooftopService;
@@ -77,6 +79,27 @@ public class ReservationService {
         Reservation reservation = findById(reservationId);
 
         reservation.changePaymentStatus(status);
+    }
+
+    /**
+     * 내 예약 정보 조회
+     */
+    public ReservationDto getMyReservation(Long memberId, LocalDate date) {
+        List<Reservation> myReservation = reservationRepository.getMyReservationByDate(memberId, date);
+
+        System.out.println("myReservation.size() = " + myReservation.size());
+
+        if (myReservation.size() !=0) {
+            Reservation reservation = myReservation.get(0);
+            Rooftop rooftop = reservation.getRooftop();
+            Address address = rooftop.getAddress();
+            RooftopPeopleCount peopleCount = reservation.getReservationPeopleCount();
+
+            return ReservationDto.of(reservation.getId(), Long.valueOf(rooftop.getCreatedBy()), reservation.getStartDate(), reservation.getEndDate(),
+                    reservation.getStartTime(), reservation.getEndTime(), peopleCount.getAdultCount(), peopleCount.getKidCount(),
+                    peopleCount.getPetCount(), address.getCity(), address.getDistrict(), address.getDetail());
+        }
+        return null;
     }
 
     private static Reservation createReservation(String tid,LocalDate startDate, LocalDate endDate,
