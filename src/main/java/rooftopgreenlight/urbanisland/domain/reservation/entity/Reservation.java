@@ -41,7 +41,7 @@ public class Reservation extends BaseEntity {
     private LocalTime endTime;
 
     @Embedded
-    private RooftopPeopleCount rooftopPeopleCount;
+    private RooftopPeopleCount reservationPeopleCount;
 
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
@@ -49,10 +49,14 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    public void changePaymentStatus(PaymentStatus status) {
+        this.paymentStatus = status;
+    }
+
     @Column(length = 30)
     private String totalPrice;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.PERSIST)
     private List<ReservationOption> reservationOptions = new ArrayList<>();
 
     public void addReservationOption(List<ReservationOption> reservationOptionList) {
@@ -80,15 +84,15 @@ public class Reservation extends BaseEntity {
 
     @Builder(builderMethodName = "createReservation")
     public Reservation(String tid, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime,
-                       RooftopPeopleCount rooftopPeopleCount, PaymentType paymentType, String totalPrice) {
+                       RooftopPeopleCount reservationPeopleCount, PaymentType paymentType, String totalPrice) {
         this.tid = tid;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.rooftopPeopleCount = rooftopPeopleCount;
+        this.reservationPeopleCount = reservationPeopleCount;
         this.paymentType = paymentType;
         this.totalPrice = totalPrice;
-        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.paymentStatus = PaymentStatus.PAYMENT_PROGRESSING;
     }
 }
