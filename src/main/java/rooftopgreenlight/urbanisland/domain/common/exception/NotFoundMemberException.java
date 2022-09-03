@@ -1,16 +1,11 @@
 package rooftopgreenlight.urbanisland.domain.common.exception;
 
-public class NotFoundMemberException extends RuntimeException{
+import com.amazonaws.services.kms.model.NotFoundException;
 
-    public NotFoundMemberException() {
-        super();
-    }
+public class NotFoundMemberException extends NotFoundException {
 
     public NotFoundMemberException(String message) {
         super(message);
     }
 
-    public NotFoundMemberException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
