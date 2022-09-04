@@ -7,6 +7,8 @@ import rooftopgreenlight.urbanisland.domain.reservation.service.dto.ReservationD
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -27,11 +29,11 @@ public class ReservationResponse {
 
     private LocalTime endTime;
 
-    private int adultCount;
+    private Integer adultCount;
 
-    private int kidCount;
+    private Integer kidCount;
 
-    private int petCount;
+    private Integer petCount;
 
     private String city;
 
@@ -39,7 +41,9 @@ public class ReservationResponse {
 
     private String detail;
 
-    protected ReservationResponse(Long reservationId, Long ownerId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int adultCount, int kidCount, int petCount, String city, String district, String detail) {
+    protected ReservationResponse(Long reservationId, Long ownerId, LocalDate startDate, LocalDate endDate,
+                                  LocalTime startTime, LocalTime endTime, Integer adultCount, Integer kidCount,
+                                  Integer petCount, String city, String district, String detail) {
         this.reservationId = reservationId;
         this.ownerId = ownerId;
         this.startDate = startDate;
@@ -67,6 +71,18 @@ public class ReservationResponse {
         return new ReservationResponse(null, tid);
     }
 
+    public List<ReservationResponse> fromReservationDtoList(List<ReservationDto> reservationDtos) {
+        if (reservationDtos == null) return null;
+
+        return reservationDtos.stream().map(
+            reservationDto -> new ReservationResponse(
+                    reservationDto.getId(), null,
+                    reservationDto.getStartDate(), reservationDto.getEndDate(), reservationDto.getStartTime(), reservationDto.getEndTime(),
+                    null, null, null,
+                    reservationDto.getCity(), reservationDto.getDistrict(), reservationDto.getDetail()
+            )).collect(Collectors.toList());
+    }
+
     public static ReservationResponse of(ReservationDto reservationDto) {
         if (reservationDto != null) {
             return new ReservationResponse(reservationDto.getId(), reservationDto.getOwnerId(), reservationDto.getStartDate(), reservationDto.getEndDate(),
@@ -75,4 +91,5 @@ public class ReservationResponse {
         }
         return null;
     }
+
 }

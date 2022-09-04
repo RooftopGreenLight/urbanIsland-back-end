@@ -22,11 +22,11 @@ public class ReservationDto {
 
     private LocalTime endTime;
 
-    private int adultCount;
+    private Integer adultCount;
 
-    private int kidCount;
+    private Integer kidCount;
 
-    private int petCount;
+    private Integer petCount;
 
     private String city;
 
@@ -34,7 +34,9 @@ public class ReservationDto {
 
     private String detail;
 
-    public static ReservationDto of (Long id, Long ownerId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int adultCount, int kidCount, int petCount, String city, String district, String detail) {
+    public static ReservationDto of (Long id, Long ownerId, LocalDate startDate, LocalDate endDate,
+                                     LocalTime startTime, LocalTime endTime, Integer adultCount, Integer kidCount, Integer petCount,
+                                     String city, String district, String detail) {
         return new ReservationDto(id, ownerId, startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, city, district, detail);
     }
 }

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicUpdate;
 import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
@@ -49,7 +50,14 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    public void changePaymentStatus(PaymentStatus status) {
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus reservationStatus;
+
+    public void changeReservationStatus(final ReservationStatus status) {
+        this.reservationStatus = status;
+    }
+
+    public void changePaymentStatus(final PaymentStatus status) {
         this.paymentStatus = status;
     }
 
@@ -66,7 +74,7 @@ public class Reservation extends BaseEntity {
         });
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -74,7 +82,8 @@ public class Reservation extends BaseEntity {
         this.member = member;
     }
 
-    @ManyToOne
+    @BatchSize(size = 30)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rooftop_id")
     private Rooftop rooftop;
 
@@ -94,5 +103,6 @@ public class Reservation extends BaseEntity {
         this.paymentType = paymentType;
         this.totalPrice = totalPrice;
         this.paymentStatus = PaymentStatus.PAYMENT_PROGRESSING;
+        this.reservationStatus = ReservationStatus.WAITING;
     }
 }
