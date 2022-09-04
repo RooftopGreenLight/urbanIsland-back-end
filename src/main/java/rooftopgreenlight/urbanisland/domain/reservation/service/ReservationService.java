@@ -7,10 +7,7 @@ import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.common.exception.NotFoundReservationException;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
 import rooftopgreenlight.urbanisland.domain.member.service.MemberService;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentType;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationOption;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.*;
 import rooftopgreenlight.urbanisland.domain.reservation.repository.ReservationRepository;
 import rooftopgreenlight.urbanisland.domain.reservation.service.dto.ReservationDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
@@ -21,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,8 +85,6 @@ public class ReservationService {
     public ReservationDto getMyReservation(Long memberId, LocalDate date) {
         List<Reservation> myReservation = reservationRepository.getMyReservationByDate(memberId, date);
 
-        System.out.println("myReservation.size() = " + myReservation.size());
-
         if (myReservation.size() !=0) {
             Reservation reservation = myReservation.get(0);
             Rooftop rooftop = reservation.getRooftop();
@@ -100,6 +96,29 @@ public class ReservationService {
                     peopleCount.getPetCount(), address.getCity(), address.getDistrict(), address.getDetail());
         }
         return null;
+    }
+
+    public List<ReservationDto> getMyReservation(Long memberId, ReservationStatus status) {
+        List<Reservation> reservations = reservationRepository.findReservationsByMemberIdAndReservationStatusAndPaymentStatus(
+                memberId,
+                status,
+                PaymentStatus.PAYMENT_COMPLETED
+        );
+
+        return reservations.stream().map(reservation -> ReservationDto.of(
+                reservation.getId(),
+                null,
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                null,
+                null,
+                null,
+                reservation.getRooftop().getAddress().getCity(),
+                reservation.getRooftop().getAddress().getDistrict(),
+                reservation.getRooftop().getAddress().getDetail()
+        )).collect(Collectors.toList());
     }
 
     private static Reservation createReservation(String tid,LocalDate startDate, LocalDate endDate,

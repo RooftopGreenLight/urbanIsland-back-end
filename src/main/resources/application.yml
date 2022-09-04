@@ -5,6 +5,10 @@ spring:
   cache:
     type: redis
 
+  batch:
+    job:
+      names: ${job.name:NONE}
+
   jpa:
     hibernate:
       ddl-auto: update
