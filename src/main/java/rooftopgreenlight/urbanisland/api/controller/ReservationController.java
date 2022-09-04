@@ -11,9 +11,12 @@ import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.ReservationRequest;
 import rooftopgreenlight.urbanisland.api.controller.dto.ReservationResponse;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationStatus;
 import rooftopgreenlight.urbanisland.domain.reservation.service.ReservationService;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Api(value = "예약 처리 API")
@@ -79,6 +82,30 @@ public class ReservationController {
     public APIResponse getMyReservation(@PK Long memberId,
                                         @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return APIResponse.of(ReservationResponse.of(reservationService.getMyReservation(memberId, date)));
+    }
+
+    @GetMapping("/members/waiting")
+    @ApiOperation(value = "회원의 예약 데이터 가져오기(WAITING)",
+            notes = "요청 데이터 -> 없음")
+    public APIResponse getMemberWaitingReservation(@PK Long memberId) {
+        return APIResponse.of(
+                new ReservationResponse().fromReservationDtoList(reservationService.getMyReservation(
+                        memberId,
+                        ReservationStatus.WAITING
+                ))
+        );
+    }
+
+    @GetMapping("/members/completed")
+    @ApiOperation(value = "회원의 예약 데이터 가져오기(Completed)",
+            notes = "요청 데이터 -> 없음")
+    public APIResponse getMemberCompletedReservation(@PK Long memberId) {
+        return APIResponse.of(
+                new ReservationResponse().fromReservationDtoList(reservationService.getMyReservation(
+                        memberId,
+                        ReservationStatus.COMPLETED
+                ))
+        );
     }
 
 }
