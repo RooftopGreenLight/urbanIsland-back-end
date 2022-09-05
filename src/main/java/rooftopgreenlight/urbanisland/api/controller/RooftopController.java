@@ -52,7 +52,7 @@ public class RooftopController {
         RooftopPeopleCount peopleCount
                 = RooftopPeopleCount.of(request.getAdultCount(), request.getKidCount(), request.getPetCount(), request.getTotalCount());
         Address address
-                = Address.of(request.getCounty(), request.getCity(), request.getDetail());
+                = Address.of(request.getCity(), request.getDistrict(), request.getDetail());
 
         rooftopService.createGreenRooftop(rooftopType, request.getWidth(), request.getPhoneNumber(), request.getExplainContent(),
                 request.getRefundContent(), request.getRoleContent(), request.getOwnerContent(), request.getStartTime(),
