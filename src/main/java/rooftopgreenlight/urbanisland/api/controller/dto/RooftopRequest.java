@@ -32,9 +32,9 @@ public class RooftopRequest {
     private int totalCount;
 
     @NotBlank(message = "올바른 도/광역시 입력 형식이 아닙니다.")
-    private String county;
-    @NotBlank(message = "올바른 시/군/구 입력 형식이 아닙니다.")
     private String city;
+    @NotBlank(message = "올바른 시/군/구 입력 형식이 아닙니다.")
+    private String district;
     @NotBlank(message = "올바른 세부 주소 입력 형식이 아닙니다.")
     private String detail;
 
