@@ -11,6 +11,7 @@ import rooftopgreenlight.urbanisland.domain.common.BaseEntity;
 import rooftopgreenlight.urbanisland.domain.common.constant.Progress;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -109,6 +110,10 @@ public class Rooftop extends BaseEntity {
     @BatchSize(size = 30)
     @OneToMany(mappedBy = "rooftop", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<RooftopReview> reviews = new ArrayList<>();
+
+    @BatchSize(size = 30)
+    @OneToMany(mappedBy = "rooftop", cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import rooftopgreenlight.urbanisland.domain.common.Address;
 import rooftopgreenlight.urbanisland.domain.file.entity.RooftopImage;
 import rooftopgreenlight.urbanisland.domain.file.entity.constant.ImageType;
+import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.Rooftop;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopDetail;
 import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopDetailType;
@@ -13,7 +14,6 @@ import rooftopgreenlight.urbanisland.domain.rooftop.entity.RooftopPeopleCount;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,6 +56,8 @@ public class RooftopDto {
     private RooftopImageDto mainImage;
     private List<RooftopReviewDto> rooftopReviews;
     private List<RooftopOptionDto> rooftopOptions;
+
+    private List<ReservationDto> reservations;
 
     protected RooftopDto(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
         this.id = id;
@@ -121,7 +123,8 @@ public class RooftopDto {
     protected RooftopDto(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
                          String refundContent, String grade, Double width, RooftopImageDto mainImage, List<RooftopImageDto> rooftopImages, RooftopImageDto structureImage,
                          Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
-                         LocalTime startTime, LocalTime endTime, List<RooftopReviewDto> reviews, Long ownerId, List<RooftopOptionDto> options) {
+                         LocalTime startTime, LocalTime endTime, List<RooftopReviewDto> reviews, Long ownerId, List<RooftopOptionDto> options,
+                         List<Reservation> reservations) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.city = city;
@@ -145,6 +148,9 @@ public class RooftopDto {
         this.rooftopReviews = reviews;
         this.ownerId = ownerId;
         this.rooftopOptions = options;
+        this.reservations = reservations.size() > 0
+                ? reservations.stream().map(ReservationDto::from).collect(Collectors.toList())
+                : null;
     }
 
     protected RooftopDto(String city, String district, String detail) {
@@ -189,11 +195,6 @@ public class RooftopDto {
     public static RooftopDto getRooftopDto(Rooftop rooftop) {
         Map<ImageType, List<RooftopImageDto>> listMap = getRooftopImageByType(rooftop);
 
-        System.out.println("엥 여기가 안 찍힌다고...?");
-        for (ImageType key : listMap.keySet()) {
-            System.out.println("listMap = " + listMap.get(key).toString());
-        }
-
         Address address = rooftop.getAddress();
         RooftopPeopleCount peopleCount = rooftop.getPeopleCount();
 
@@ -216,13 +217,13 @@ public class RooftopDto {
             ).collect(Collectors.toList());
         }
 
-
         return new RooftopDto(rooftop.getId(), rooftop.getTotalPrice(), address.getCity(), address.getDistrict(),
                 address.getDetail(), rooftop.getExplainContent(), rooftop.getRoleContent(), rooftop.getRefundContent(),
                 rooftop.getGrade(), rooftop.getWidth(), listMap.get(ImageType.MAIN) == null ? null : listMap.get(ImageType.MAIN).get(0),
                 listMap.get(ImageType.NORMAL), listMap.get(ImageType.STRUCTURE) == null ? null : listMap.get(ImageType.STRUCTURE).get(0),
                 peopleCount.getAdultCount(), peopleCount.getKidCount(), peopleCount.getPetCount(), peopleCount.getTotalCount(),
-                detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews, rooftop.getMember().getId(), options);
+                detailNums, rooftop.getStartTime(), rooftop.getEndTime(), reviews, rooftop.getMember().getId(), options,
+                rooftop.getReservations());
     }
 
     private static String getNewNickname(String nickname) {

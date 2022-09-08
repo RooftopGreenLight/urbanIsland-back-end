@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.ReservationDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopImageDto;
 
@@ -57,6 +58,8 @@ public class RooftopResponse {
     private RooftopImageResponse mainImage;
     private List<RooftopReviewResponse> rooftopReviews;
     private List<RooftopOptionResponse> rooftopOptions;
+
+    private List<ReservationDto> reservations;
 
     protected RooftopResponse(Long id, String city, String district, String detail, String progress, LocalDateTime rooftopDate) {
         this.id = id;
@@ -116,7 +119,8 @@ public class RooftopResponse {
     protected RooftopResponse(Long id, Integer totalPrice, String city, String district, String detail, String explainContent, String roleContent,
                          String refundContent, String grade, Double width, RooftopImageResponse mainImage, List<RooftopImageResponse> rooftopImages, RooftopImageResponse structureImage,
                          Integer adultCount, Integer kidCount, Integer petCount, Integer totalCount, List<Integer> detailNums,
-                         LocalTime startTime, LocalTime endTime, List<RooftopReviewResponse> reviews, Long ownerId, List<RooftopOptionResponse> options) {
+                         LocalTime startTime, LocalTime endTime, List<RooftopReviewResponse> reviews, Long ownerId, List<RooftopOptionResponse> options,
+                              List<ReservationDto> reservations) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.city = city;
@@ -140,6 +144,7 @@ public class RooftopResponse {
         this.rooftopReviews = reviews;
         this.ownerId = ownerId;
         this.rooftopOptions = options;
+        this.reservations = reservations;
     }
 
 
@@ -180,7 +185,8 @@ public class RooftopResponse {
                 rooftopDto.getDetail(), rooftopDto.getExplainContent(), rooftopDto.getRoleContent(), rooftopDto.getRefundContent(),
                 rooftopDto.getGrade(), rooftopDto.getWidth(), mainImage, rooftopImages, structureImage,
                 rooftopDto.getAdultCount(), rooftopDto.getKidCount(), rooftopDto.getPetCount(), rooftopDto.getTotalCount(),
-                rooftopDto.getDetailNums(), rooftopDto.getStartTime(), rooftopDto.getEndTime(), reviews, rooftopDto.getOwnerId(), options);
+                rooftopDto.getDetailNums(), rooftopDto.getStartTime(), rooftopDto.getEndTime(), reviews, rooftopDto.getOwnerId(), options,
+                rooftopDto.getReservations());
     }
 
     public static List<RooftopResponse> getRooftopStatus(List<RooftopDto> rooftopDtos) {
