@@ -38,13 +38,7 @@ public class UrbanIslandApplication {
 
 	@Bean
 	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.findAndRegisterModules()
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL)
-				.registerModules(new JavaTimeModule(), new Jdk8Module());
-		return objectMapper;
+		return new ObjectMapper();
 	}
 
 	@Bean

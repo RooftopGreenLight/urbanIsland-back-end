@@ -17,14 +17,15 @@ import rooftopgreenlight.urbanisland.domain.chat.service.dto.ChatRoomDto;
 import rooftopgreenlight.urbanisland.domain.chat.service.dto.MessageDto;
 import rooftopgreenlight.urbanisland.domain.rooftop.service.dto.RooftopDto;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/chat")
+@RequiredArgsConstructor
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatRoomService chatRoomService;
@@ -110,7 +111,7 @@ public class ChatController {
 
     @MessageMapping("/inquiry/room")
     @ApiOperation(value = "메시지 전송", notes = "정상 동작 시 memberId, roomId, content, sendTime 리턴")
-    public APIResponse chat(ChatRequest chatRequest) {
+    public APIResponse chat(@RequestBody ChatRequest chatRequest) throws IOException {
         LocalDateTime sendTime = messageService.sendMessage(chatRequest.getRoomId(), chatRequest.getMemberId(), chatRequest.getContent());
         messagingTemplate.convertAndSend("/queue/" + chatRequest.getRoomId(),
                 ChatRequest.of(chatRequest.getMemberId(), chatRequest.getRoomId(), chatRequest.getContent(), sendTime));
