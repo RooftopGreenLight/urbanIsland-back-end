@@ -34,9 +34,11 @@ public class ReservationDto {
 
     private String detail;
 
+    private Long rooftopId;
+
     public static ReservationDto of (Long id, Long ownerId, LocalDate startDate, LocalDate endDate,
                                      LocalTime startTime, LocalTime endTime, Integer adultCount, Integer kidCount, Integer petCount,
-                                     String city, String district, String detail) {
-        return new ReservationDto(id, ownerId, startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, city, district, detail);
+                                     String city, String district, String detail, Long rooftopId) {
+        return new ReservationDto(id, ownerId, startDate, endDate, startTime, endTime, adultCount, kidCount, petCount, city, district, detail, rooftopId);
     }
 }

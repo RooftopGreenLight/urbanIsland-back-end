@@ -93,7 +93,7 @@ public class ReservationService {
 
             return ReservationDto.of(reservation.getId(), Long.valueOf(rooftop.getCreatedBy()), reservation.getStartDate(), reservation.getEndDate(),
                     reservation.getStartTime(), reservation.getEndTime(), peopleCount.getAdultCount(), peopleCount.getKidCount(),
-                    peopleCount.getPetCount(), address.getCity(), address.getDistrict(), address.getDetail());
+                    peopleCount.getPetCount(), address.getCity(), address.getDistrict(), address.getDetail(), rooftop.getId());
         }
         return null;
     }
@@ -117,7 +117,8 @@ public class ReservationService {
                 null,
                 reservation.getRooftop().getAddress().getCity(),
                 reservation.getRooftop().getAddress().getDistrict(),
-                reservation.getRooftop().getAddress().getDetail()
+                reservation.getRooftop().getAddress().getDetail(),
+                reservation.getRooftop().getId()
         )).collect(Collectors.toList());
     }
 
