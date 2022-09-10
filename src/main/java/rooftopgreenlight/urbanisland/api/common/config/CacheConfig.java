@@ -1,7 +1,11 @@
 package rooftopgreenlight.urbanisland.api.common.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +23,20 @@ import java.util.Map;
 
 @EnableCaching
 @Configuration
-@RequiredArgsConstructor
 public class CacheConfig extends CachingConfigurerSupport {
 
     private final ObjectMapper objectMapper;
+
+    public CacheConfig() {
+        ObjectMapper cacheObjectMapper = new ObjectMapper().findAndRegisterModules()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL)
+                .registerModules(new JavaTimeModule(), new Jdk8Module());
+
+        this.objectMapper = cacheObjectMapper;
+    }
+
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         return RedisCacheConfiguration
@@ -40,7 +54,7 @@ public class CacheConfig extends CachingConfigurerSupport {
     public RedisCacheManager redisCacheManager(
             RedisConnectionFactory redisConnectionFactory,
             RedisCacheConfiguration redisCacheConfiguration
-            ) {
+    ) {
         return RedisCacheManager
                 .RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory)

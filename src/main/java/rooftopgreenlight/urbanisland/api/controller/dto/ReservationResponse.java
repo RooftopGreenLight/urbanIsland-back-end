@@ -41,9 +41,11 @@ public class ReservationResponse {
 
     private String detail;
 
+    private Long rooftopId;
+
     protected ReservationResponse(Long reservationId, Long ownerId, LocalDate startDate, LocalDate endDate,
                                   LocalTime startTime, LocalTime endTime, Integer adultCount, Integer kidCount,
-                                  Integer petCount, String city, String district, String detail) {
+                                  Integer petCount, String city, String district, String detail, Long rooftopId) {
         this.reservationId = reservationId;
         this.ownerId = ownerId;
         this.startDate = startDate;
@@ -56,6 +58,7 @@ public class ReservationResponse {
         this.city = city;
         this.district = district;
         this.detail = detail;
+        this.rooftopId = rooftopId;
     }
 
     protected ReservationResponse(Long reservationId, String tid) {
@@ -79,7 +82,7 @@ public class ReservationResponse {
                     reservationDto.getId(), null,
                     reservationDto.getStartDate(), reservationDto.getEndDate(), reservationDto.getStartTime(), reservationDto.getEndTime(),
                     null, null, null,
-                    reservationDto.getCity(), reservationDto.getDistrict(), reservationDto.getDetail()
+                    reservationDto.getCity(), reservationDto.getDistrict(), reservationDto.getDetail(), reservationDto.getRooftopId()
             )).collect(Collectors.toList());
     }
 
@@ -87,7 +90,7 @@ public class ReservationResponse {
         if (reservationDto != null) {
             return new ReservationResponse(reservationDto.getId(), reservationDto.getOwnerId(), reservationDto.getStartDate(), reservationDto.getEndDate(),
                     reservationDto.getStartTime(), reservationDto.getEndTime(), reservationDto.getAdultCount(), reservationDto.getKidCount(),
-                    reservationDto.getPetCount(), reservationDto.getCity(), reservationDto.getDistrict(), reservationDto.getDetail());
+                    reservationDto.getPetCount(), reservationDto.getCity(), reservationDto.getDistrict(), reservationDto.getDetail(), reservationDto.getRooftopId());
         }
         return null;
     }
