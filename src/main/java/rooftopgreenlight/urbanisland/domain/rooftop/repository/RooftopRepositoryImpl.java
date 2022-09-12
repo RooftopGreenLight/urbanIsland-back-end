@@ -139,8 +139,16 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
     }
 
     private BooleanExpression addressCond(String city, String district) {
-        if (!StringUtils.hasText(city) || !StringUtils.hasText(district)) {
+        if (!StringUtils.hasText(city) && !StringUtils.hasText(district)) {
             return null;
+        }
+
+        if (StringUtils.hasText(city) && !StringUtils.hasText(district)) {
+            return rooftop.address.city.eq(city);
+        }
+
+        if (!StringUtils.hasText(city) && StringUtils.hasText(district)) {
+            return rooftop.address.district.eq(district);
         }
 
         return rooftop.address.city.eq(city).and(rooftop.address.district.eq(district));
