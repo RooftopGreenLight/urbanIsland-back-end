@@ -22,6 +22,8 @@ public class OwnerImageResponse {
     }
 
     public static OwnerImageResponse of(OwnerImage ownerImage) {
+        if (ownerImage == null) return null;
+
         return new OwnerImageResponse(
                 ownerImage.getType(),
                 ownerImage.getUploadFilename(),
