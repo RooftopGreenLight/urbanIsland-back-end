@@ -335,13 +335,16 @@ public class RooftopService {
      */
     @Transactional
     public void createReview(final Long memberId, final Long rooftopId, final String content, final int grade) {
-        Member findMember = memberService.findById(memberId);
-        Rooftop findRooftop = findByRooftopIdWithReview(rooftopId);
 
+        Rooftop rooftop = findByRooftopIdWithReview(rooftopId);
+
+        isValidMember(memberId, rooftop);
+
+        Member findMember = memberService.findById(memberId);
         RooftopReview review = createReview(content, grade, findMember);
 
-        review.addRooftop(findRooftop);
-        findRooftop.addGrade(grade); // 평점 계산
+        review.addRooftop(rooftop);
+        rooftop.addGrade(grade); // 평점 계산
     }
 
     /**
@@ -456,5 +459,13 @@ public class RooftopService {
 
         rooftopRepository.deleteRooftopOptions(rooftopId);
         saveRooftopOptions(contents, prices, counts, rooftop);
+    }
+
+    private static void isValidMember(Long memberId, Rooftop rooftop) {
+        for (RooftopReview review : rooftop.getReviews()) {
+            if (review.getMember().getId().equals(memberId)) {
+                throw new ExistObjectException("이미 리뷰를 등록한 회원입니다.");
+            }
+        }
     }
 }

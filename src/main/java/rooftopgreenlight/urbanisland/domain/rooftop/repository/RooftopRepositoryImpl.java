@@ -124,15 +124,18 @@ public class RooftopRepositoryImpl implements RooftopRepositoryCustom {
 
         BooleanExpression booleanExpression = null;
         if (adultCount != null) {
-            booleanExpression.and(rooftop.peopleCount.adultCount.goe(adultCount));
+            booleanExpression = booleanExpression == null ? rooftop.peopleCount.adultCount.goe(adultCount) :
+                    booleanExpression.and(rooftop.peopleCount.adultCount.goe(adultCount));
         }
 
         if (kidCount != null) {
-            booleanExpression.and(rooftop.peopleCount.kidCount.goe(kidCount));
+            booleanExpression = booleanExpression == null ? rooftop.peopleCount.kidCount.goe(kidCount) :
+                    booleanExpression.and(rooftop.peopleCount.kidCount.goe(kidCount));
         }
 
         if (petCount != null) {
-            booleanExpression.and(rooftop.peopleCount.petCount.goe(petCount));
+            booleanExpression = booleanExpression == null ? rooftop.peopleCount.petCount.goe(petCount) :
+                    booleanExpression.and(rooftop.peopleCount.petCount.goe(petCount));
         }
 
         return booleanExpression;
