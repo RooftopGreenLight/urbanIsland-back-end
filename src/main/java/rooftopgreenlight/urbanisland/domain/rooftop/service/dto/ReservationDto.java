@@ -15,13 +15,15 @@ import java.util.stream.Collectors;
 @Data
 public class ReservationDto {
 
+    private Long id;
     private LocalDate startDates;
     private LocalDate endDates;
 
     private LocalTime startTimes;
     private LocalTime endTimes;
 
-    protected ReservationDto(LocalDate startDates, LocalDate endDates, LocalTime startTimes, LocalTime endTimes) {
+    protected ReservationDto(Long id, LocalDate startDates, LocalDate endDates, LocalTime startTimes, LocalTime endTimes) {
+        this.id = id;
         this.startDates = startDates;
         this.endDates = endDates;
         this.startTimes = startTimes;
@@ -29,7 +31,7 @@ public class ReservationDto {
     }
 
     static public ReservationDto from(Reservation reservation) {
-        return new ReservationDto(reservation.getStartDate(), reservation.getEndDate(),
+        return new ReservationDto(reservation.getId(), reservation.getStartDate(), reservation.getEndDate(),
                 reservation.getStartTime(), reservation.getEndTime());
     }
 }

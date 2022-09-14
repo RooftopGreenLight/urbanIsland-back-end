@@ -213,7 +213,7 @@ public class RooftopDto {
         List<RooftopReviewDto> reviews = new ArrayList<>();
         if(rooftop.getReviews() != null) {
              reviews = rooftop.getReviews().stream().map(review ->
-                 RooftopReviewDto.of(review.getGrade(), review.getContent(), review.getCreatedDate(), getNewNickname(review.getMember().getNickname()))
+                 RooftopReviewDto.of(review.getId(), review.getGrade(), review.getContent(), review.getCreatedDate(), getNewNickname(review.getMember().getNickname()))
             ).collect(Collectors.toList());
         }
 
