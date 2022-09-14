@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class RooftopReviewDto {
+    private Long id;
     private int grade;
     private String content;
     private LocalDateTime createTime;
     private String memberNickname;
 
 
-    public static RooftopReviewDto of(int grade, String content, LocalDateTime createTime, String memberNickname) {
-        return new RooftopReviewDto(grade, content, createTime, memberNickname);
+    public static RooftopReviewDto of(Long id, int grade, String content, LocalDateTime createTime, String memberNickname) {
+        return new RooftopReviewDto(id, grade, content, createTime, memberNickname);
     }
 }
