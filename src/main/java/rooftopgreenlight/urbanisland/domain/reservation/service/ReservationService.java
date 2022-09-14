@@ -82,11 +82,14 @@ public class ReservationService {
     /**
      * 내 예약 정보 조회
      */
-    public ReservationDto getMyReservation(Long memberId, LocalDate date) {
+    public List<ReservationDto> getMyReservation(Long memberId, LocalDate date) {
         List<Reservation> myReservation = reservationRepository.getMyReservationByDate(memberId, date);
 
-        if (myReservation.size() !=0) {
-            Reservation reservation = myReservation.get(0);
+        if (myReservation.size() == 0) {
+            return null;
+        }
+
+        return myReservation.stream().map(reservation -> {
             Rooftop rooftop = reservation.getRooftop();
             Address address = rooftop.getAddress();
             RooftopPeopleCount peopleCount = reservation.getReservationPeopleCount();
@@ -94,8 +97,7 @@ public class ReservationService {
             return ReservationDto.of(reservation.getId(), Long.valueOf(rooftop.getCreatedBy()), reservation.getStartDate(), reservation.getEndDate(),
                     reservation.getStartTime(), reservation.getEndTime(), peopleCount.getAdultCount(), peopleCount.getKidCount(),
                     peopleCount.getPetCount(), address.getCity(), address.getDistrict(), address.getDetail(), rooftop.getId());
-        }
-        return null;
+        }).collect(Collectors.toList());
     }
 
     public List<ReservationDto> getMyReservation(Long memberId, ReservationStatus status) {

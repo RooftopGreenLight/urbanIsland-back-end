@@ -14,10 +14,12 @@ import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
 import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationStatus;
 import rooftopgreenlight.urbanisland.domain.reservation.service.ReservationService;
+import rooftopgreenlight.urbanisland.domain.reservation.service.dto.ReservationDto;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Api(value = "예약 처리 API")
 @RestController
@@ -81,7 +83,11 @@ public class ReservationController {
         notes = "요청 데이터(param) - key -> date")
     public APIResponse getMyReservation(@PK Long memberId,
                                         @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return APIResponse.of(ReservationResponse.of(reservationService.getMyReservation(memberId, date)));
+        List<ReservationDto> reservationList = reservationService.getMyReservation(memberId, date);
+        if (reservationList != null)
+            return APIResponse.of(reservationList.stream().map(ReservationResponse::of)
+                .collect(Collectors.toList()));
+        return null;
     }
 
     @GetMapping("/members/waiting")
