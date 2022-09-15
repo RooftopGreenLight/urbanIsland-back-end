@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class PasswordRequest {
 
+    private String email;
+
     @NotBlank(message = "올바른 비밀번호 입력 형식이 아닙니다.")
     private String password;
 

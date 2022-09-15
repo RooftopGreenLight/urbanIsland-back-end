@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,6 +40,7 @@ public class AuthService {
     private final JwtProperties jwtProperties;
     private final JavaMailSender javaMailSender;
     private final MailProperties mailProperties;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @Transactional
@@ -55,6 +57,15 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.createJwt(id, email, authorities, null);
 
         return MemberResponse.of(Long.valueOf(id), authorities, tokenDto);
+    }
+
+    /**
+     * 사용자 비밀번호 변경
+     */
+    @Transactional
+    public void changePassword(String email, String password) {
+        Member findMember = memberService.findByEmail(email);
+        findMember.changePassword(passwordEncoder.encode(password));
     }
 
     public TokenDto checkRefreshToken(String refreshToken, Long memberId) {

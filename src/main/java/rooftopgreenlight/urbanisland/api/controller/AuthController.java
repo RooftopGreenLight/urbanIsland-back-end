@@ -12,6 +12,7 @@ import rooftopgreenlight.urbanisland.api.common.exception.DuplicatedMemberExcept
 import rooftopgreenlight.urbanisland.api.controller.dto.APIResponse;
 import rooftopgreenlight.urbanisland.api.controller.dto.JoinRequest;
 import rooftopgreenlight.urbanisland.api.controller.dto.LoginRequest;
+import rooftopgreenlight.urbanisland.api.controller.dto.PasswordRequest;
 import rooftopgreenlight.urbanisland.api.service.AuthService;
 import rooftopgreenlight.urbanisland.domain.member.entity.Authority;
 import rooftopgreenlight.urbanisland.domain.member.entity.Member;
@@ -126,6 +127,15 @@ public class AuthController {
                 .nickname(joinDto.getNickname())
                 .authority(Authority.ROLE_USER)
                 .build();
+    }
+
+    @PostMapping("/change-password")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "로그인 전 회원 비밀번호 변경",
+            notes = "요청 데이터(Body) - key : password, valueType : String")
+    public APIResponse changeMemberPassword(@RequestBody @Validated PasswordRequest request) {
+        authService.changePassword(request.getEmail(), request.getPassword());
+        return APIResponse.empty();
     }
 
 }
