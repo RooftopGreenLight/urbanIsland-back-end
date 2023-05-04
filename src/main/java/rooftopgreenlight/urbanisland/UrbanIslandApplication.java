@@ -1,11 +1,6 @@
 package rooftopgreenlight.urbanisland;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,10 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableJpaAuditing
 @EnableBatchProcessing
 @SpringBootApplication
-@ConfigurationPropertiesScan(basePackages = {
-		"rooftopgreenlight.urbanisland.domain.common.properties",
-		"rooftopgreenlight.urbanisland.api.common.properties"}
-)
+@ConfigurationPropertiesScan
 public class UrbanIslandApplication {
 
 	public static void main(String[] args) {

@@ -2,13 +2,11 @@ package rooftopgreenlight.urbanisland.batch.job;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.launch.JobExecutionNotFailedException;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
@@ -20,10 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.PaymentStatus;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.Reservation;
-import rooftopgreenlight.urbanisland.domain.reservation.entity.ReservationStatus;
-import rooftopgreenlight.urbanisland.domain.reservation.repository.ReservationRepository;
+import rooftopgreenlight.urbanisland.domain.reservation.PaymentStatus;
+import rooftopgreenlight.urbanisland.domain.reservation.Reservation;
+import rooftopgreenlight.urbanisland.domain.reservation.ReservationStatus;
+import rooftopgreenlight.urbanisland.repository.reservation.ReservationRepository;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
